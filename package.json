@@ -29,6 +29,9 @@
     "tailwindcss-animate": "^1.0.7",
     "tldraw": "^3.3.1",
     "y-monaco": "^0.1.6",
+    "y-utility": "^0.1.4",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.20",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
