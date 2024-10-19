@@ -57,7 +57,7 @@ export default function SignUp() {
     setNotAllow(true);
   }, [nameValid, emailValid, pwValid]);
 
-  const onAddUser = async (e) => {
+  const onAddUser = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       e.preventDefault();
       const response = await axios.post(

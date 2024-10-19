@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import usePostLoginAxios from "@/hooks/UseAxios";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -13,20 +14,14 @@ export default function Login() {
 
   const [notAllow, setNotAllow] = useState(true);
 
-  const navigate = useNavigate();
-
-  const onEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setUserEmail(e.target.value);
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if (regex.test(userEmail)) {
-      setEmailValid(true);
-    } else {
-      setEmailValid(false);
-    }
+    setEmailValid(regex.test(userEmail));
   };
 
-  const onPw = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setUserPw(e.target.value);
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
@@ -45,38 +40,48 @@ export default function Login() {
     setNotAllow(true);
   }, [emailValid, pwValid]);
 
-  const onSignUpClick = () => {
-    navigate("/signup");
-  }
+  // const onSignIn = async (e: MouseEvent<HTMLButtonElement>) => {
+  //   try {
+  //     e.preventDefault();
+  //     const response = await axios.post("/auth/signin", {
+  //       useremail: userEmail,
+  //       userpw: userPw,
+  //     });
+  //     console.log("User Id:", response.data);
+  //   } catch (error) {
+  //     console.log("Error signin user:", error);
+  //   }
+  // };
+  const {data, error, postData} = usePostLoginAxios("https://jsonplaceholder.typicode.com/posts");
 
   const onSignIn = async (e) => {
-    try {
-      e.preventDefault();
-      const response = await axios.post(
-        "/auth/signin",
-        {
-          useremail: userEmail,
-          userpw: userPw,
-        }
-      );
-      console.log("User Id:", response.data);
-    } catch (error) {
-      console.log("Error signin user:", error);
-    }
-  };
+    e.preventDefault();
+    const loginData = {
+      useremail: userEmail,
+      userpw: userPw, 
+    };
+
+    await postData(loginData);
+    console.log(data);
+  }
+  // useEffect(() => {
+  //   console.log(data);
+  // },[data])
+  
 
   return (
     <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
       <form className="max-w-[200px]">
         <div>
-          <label htmlFor = "useremail">Email
-          <Input
-          id = "useremail"
-            type = "text"
-            value={userEmail}
-            onChange={onEmail}
-            placeholder="jungle@gmail.com"
-          />
+          <label htmlFor="useremail">
+            Email
+            <Input
+              id="useremail"
+              type="text"
+              value={userEmail}
+              onChange={onEmail}
+              placeholder="jungle@gmail.com"
+            />
           </label>
         </div>
         <div className="text-rose-700 text-xs">
@@ -85,14 +90,15 @@ export default function Login() {
           )}
         </div>
         <div>
-          <label htmlFor = "userpassword">Password
-          <Input
-          id = "userpassword"
-            value={userPw}
-            onChange={onPw}
-            placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-            type="password"
-          />
+          <label htmlFor="userpassword">
+            Password
+            <Input
+              id="userpassword"
+              value={userPw}
+              onChange={onPassword}
+              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+              type="password"
+            />
           </label>
         </div>
         <div className="text-rose-700 text-xs">
@@ -111,15 +117,16 @@ export default function Login() {
             로그인
           </Button>
         </div>
-        <div className="flex w-full gap-3 [&>*]:flex-1 px-5">
-          <Button
-            onClick = {onSignUpClick}
-            className="bg-blue-900 text-white hover:bg-blue-800"
-            variant={"destructive"}
-          >
-            회원가입
-          </Button>
-        </div>
+        <Link to="/signup">
+          <div className="flex w-full gap-3 [&>*]:flex-1 px-5">
+            <Button
+              className="bg-blue-900 text-white hover:bg-blue-800"
+              variant={"destructive"}
+            >
+              회원가입
+            </Button>
+          </div>
+        </Link>
       </form>
     </div>
   );
