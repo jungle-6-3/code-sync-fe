@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [userName, setUserName] = useState("");
@@ -13,7 +15,9 @@ export default function SignUp() {
 
   const [notAllow, setNotAllow] = useState(true);
 
-  const onName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const navigate = useNavigate();
+
+  const onName = (e: ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
     const regex = /^[가-힣]{2,4}$/;
     if (regex.test(userName)) {
@@ -23,7 +27,7 @@ export default function SignUp() {
     }
   };
 
-  const onEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setUserEmail(e.target.value);
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -34,7 +38,7 @@ export default function SignUp() {
     }
   };
 
-  const onPw = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPw = (e: ChangeEvent<HTMLInputElement>) => {
     setUserPw(e.target.value);
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
@@ -53,13 +57,32 @@ export default function SignUp() {
     setNotAllow(true);
   }, [nameValid, emailValid, pwValid]);
 
+  const onAddUser = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post(
+        "/auth/signup",
+        {
+          username: userName,
+          useremail: userEmail,
+          userpw: userPw,
+        }
+      );
+      console.log("User added:", response.data);
+      navigate("/");
+    } catch (error) {
+      console.log("Error adding user:", error);
+    }
+  };
+
   return (
     <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
       <form className="max-w-[200px]">
         <div>
-          <label>
+          <label htmlFor="username">
             Name
             <Input
+              id="username"
               type="text"
               value={userName}
               onChange={onName}
@@ -73,13 +96,16 @@ export default function SignUp() {
           )}
         </div>
         <div>
-          <label>Email</label>
-          <Input
-            type="text"
-            value={userEmail}
-            onChange={onEmail}
-            placeholder="jungle@gmail.com"
-          />
+          <label htmlFor="useremail">
+            Email
+            <Input
+              id="useremail"
+              type="text"
+              value={userEmail}
+              onChange={onEmail}
+              placeholder="jungle@gmail.com"
+            />
+          </label>
         </div>
         <div className="text-rose-700 text-xs">
           {!emailValid && userEmail.length > 0 && (
@@ -87,13 +113,16 @@ export default function SignUp() {
           )}
         </div>
         <div>
-          <label>Password</label>
-          <Input
-            value={userPw}
-            onChange={onPw}
-            placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-            type="password"
-          />
+          <label htmlFor="userpassword">
+            Password
+            <Input
+              id="userpassword"
+              value={userPw}
+              onChange={onPw}
+              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+              type="password"
+            />
+          </label>
         </div>
         <div className="text-rose-700 text-xs">
           {!pwValid && userPw.length > 0 && (
@@ -106,6 +135,7 @@ export default function SignUp() {
             variant={"destructive"}
             className="bg-blue-900 text-white hover:bg-blue-800"
             disabled={notAllow}
+            onClick={onAddUser}
           >
             회원가입
           </Button>

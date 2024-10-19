@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 
@@ -48,17 +49,35 @@ export default function Login() {
     navigate("/signup");
   }
 
+  const onSignIn = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post(
+        "/auth/signin",
+        {
+          useremail: userEmail,
+          userpw: userPw,
+        }
+      );
+      console.log("User Id:", response.data);
+    } catch (error) {
+      console.log("Error signin user:", error);
+    }
+  };
+
   return (
     <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
       <form className="max-w-[200px]">
         <div>
-          <label>ID</label>
+          <label htmlFor = "useremail">Email
           <Input
+          id = "useremail"
             type = "text"
             value={userEmail}
             onChange={onEmail}
             placeholder="jungle@gmail.com"
           />
+          </label>
         </div>
         <div className="text-rose-700 text-xs">
           {!emailValid && userEmail.length > 0 && (
@@ -66,13 +85,15 @@ export default function Login() {
           )}
         </div>
         <div>
-          <label>Password</label>
+          <label htmlFor = "userpassword">Password
           <Input
+          id = "userpassword"
             value={userPw}
             onChange={onPw}
             placeholder="영문, 숫자, 특수문자 포함 8자 이상"
             type="password"
           />
+          </label>
         </div>
         <div className="text-rose-700 text-xs">
           {!pwValid && userPw.length > 0 && (
@@ -85,6 +106,7 @@ export default function Login() {
             className="bg-blue-900 text-white hover:bg-blue-800"
             variant={"destructive"}
             disabled={notAllow}
+            onClick={onSignIn}
           >
             로그인
           </Button>
