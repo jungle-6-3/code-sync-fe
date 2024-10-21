@@ -13,9 +13,9 @@ const ConversationPage = () => {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="border-b p-1">
+      <nav className="border-b p-1">
         <TopGNB />
-      </div>
+      </nav>
       <div className="flex h-full">
         <nav className="border-r">
           <LeftGNB />
