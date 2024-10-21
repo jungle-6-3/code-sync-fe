@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChangeEvent, useEffect, useState } from "react";
-import axios from "axios";
+import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import usePostData from "@/hooks/useQuery";
 
 export default function SignUp() {
   const [userName, setUserName] = useState("");
@@ -38,7 +38,7 @@ export default function SignUp() {
     }
   };
 
-  const onPw = (e: ChangeEvent<HTMLInputElement>) => {
+  const onPassWord = (e: ChangeEvent<HTMLInputElement>) => {
     setUserPw(e.target.value);
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
@@ -57,22 +57,18 @@ export default function SignUp() {
     setNotAllow(true);
   }, [nameValid, emailValid, pwValid]);
 
-  const onAddUser = async (e: ChangeEvent<HTMLInputElement>) => {
-    try {
-      e.preventDefault();
-      const response = await axios.post(
-        "/auth/signup",
-        {
-          username: userName,
-          useremail: userEmail,
-          userpw: userPw,
-        }
-      );
-      console.log("User added:", response.data);
-      navigate("/");
-    } catch (error) {
-      console.log("Error adding user:", error);
-    }
+  const { signup } = usePostData();
+
+  const onSignUp = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    signup.mutate({
+      username: userName,
+      useremail: userEmail,
+      userpw: userPw,
+    });
+    console.log(signup.variables);
+    navigate("/");
   };
 
   return (
@@ -118,7 +114,7 @@ export default function SignUp() {
             <Input
               id="userpassword"
               value={userPw}
-              onChange={onPw}
+              onChange={onPassWord}
               placeholder="영문, 숫자, 특수문자 포함 8자 이상"
               type="password"
             />
@@ -135,7 +131,7 @@ export default function SignUp() {
             variant={"destructive"}
             className="bg-blue-900 text-white hover:bg-blue-800"
             disabled={notAllow}
-            onClick={onAddUser}
+            onClick={onSignUp}
           >
             회원가입
           </Button>

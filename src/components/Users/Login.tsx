@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import usePostLoginAxios from "@/hooks/UseAxios";
-import axios from "axios";
-import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
+import usePostData from "@/hooks/useQuery";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
@@ -40,34 +39,16 @@ export default function Login() {
     setNotAllow(true);
   }, [emailValid, pwValid]);
 
-  // const onSignIn = async (e: MouseEvent<HTMLButtonElement>) => {
-  //   try {
-  //     e.preventDefault();
-  //     const response = await axios.post("/auth/signin", {
-  //       useremail: userEmail,
-  //       userpw: userPw,
-  //     });
-  //     console.log("User Id:", response.data);
-  //   } catch (error) {
-  //     console.log("Error signin user:", error);
-  //   }
-  // };
-  const {data, error, postData} = usePostLoginAxios("https://jsonplaceholder.typicode.com/posts");
+  const { signin } = usePostData();
 
   const onSignIn = async (e) => {
     e.preventDefault();
-    const loginData = {
+    signin.mutate({
       useremail: userEmail,
-      userpw: userPw, 
-    };
-
-    await postData(loginData);
-    console.log(data);
-  }
-  // useEffect(() => {
-  //   console.log(data);
-  // },[data])
-  
+      userpw: userPw,
+    });
+    console.log(signin.variables);
+  };
 
   return (
     <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
