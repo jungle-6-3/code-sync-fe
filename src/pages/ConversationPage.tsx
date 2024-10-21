@@ -1,6 +1,7 @@
 // import { useParams } from "react-router-dom";
 
 import { CodeEditor } from "@/components/CodeEditor";
+import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -12,8 +13,13 @@ const ConversationPage = () => {
 
   return (
     <div className="flex h-screen flex-col">
+      <div className="border-b p-1">
+        <TopGNB />
+      </div>
       <div className="flex h-full">
-        <div className="w-16 bg-blue-200">left sidebar</div>
+        <nav className="border-r">
+          <LeftGNB />
+        </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>left pannal</ResizablePanel>
           <ResizableHandle />
