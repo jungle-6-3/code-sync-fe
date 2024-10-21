@@ -1,18 +1,33 @@
 // import { useParams } from "react-router-dom";
 
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
 const ConversationPage = () => {
   // const { conversationId } = useParams<{ conversationId: string }>();
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex max-h-screen flex-1">
-        <nav className="w-20 bg-slate-400">nav</nav>
-        <div className="w-64 bg-yellow-300">left</div>
-        <div className="flex flex-1 flex-col">
-          <div className="flex-1">body</div>
-          <div className="h-52 bg-lime-300">bottom</div>
-        </div>
+      <div className="flex h-full">
+        <div className="w-16 bg-blue-200">left sidebar</div>
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={20}>left pannal</ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={80}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={70}>MainBlock</ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={30}>
+                bottom commit pannal
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
+      <div className="bg-blue-400 p-1">bottom status</div>
     </div>
   );
 };
