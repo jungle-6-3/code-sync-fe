@@ -1,5 +1,6 @@
 // import { useParams } from "react-router-dom";
 
+import { CodeEditor } from "@/components/CodeEditor";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -18,7 +19,9 @@ const ConversationPage = () => {
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={70}>MainBlock</ResizablePanel>
+              <ResizablePanel defaultSize={70}>
+                <CodeEditor initialValue="// hello world" />
+              </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
                 bottom commit pannal
