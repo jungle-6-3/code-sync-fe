@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { socket } from "@/lib/socket";
-import { useEffect, useRef, useState } from "react";
-import { Video, VideoOff } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { userMediaStore } from "@/stores/userMedia.store";
+import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 
 interface ConversationReadyPageProps {
   setOnline: (online: boolean) => void;
@@ -9,80 +10,43 @@ interface ConversationReadyPageProps {
 
 const ConversationReadyPage = ({ setOnline }: ConversationReadyPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
-  const [isWebCamOn, setIsWebCamOn] = useState(false);
+  const mediaStream = userMediaStore((state) => state.mediaStream);
+  const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
+  const startWebcam = userMediaStore((state) => state.startWebcam);
 
   const onStartConversation = () => {
-    if (socket.connected) setOnline(true);
+    if (socket.connected && isUserMediaOn.audio) setOnline(true);
   };
 
-  const startWebcam = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      setMediaStream(stream);
-      setIsWebCamOn(true);
-    } catch (error) {
-      alert("Error accessing webcam");
-      console.error("Error accessing webcam", error);
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.srcObject = mediaStream;
     }
-  };
-
-  const stopWebcam = () => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach((track) => {
-        track.stop();
-      });
-      setMediaStream(null);
-      setIsWebCamOn(false);
-    }
-  };
+  });
 
   useEffect(() => {
     // connecting when conversation ready page is mounted
     socket.connect();
-
-    startWebcam();
-  }, []);
+    startWebcam({ audio: true, video: true });
+  }, [startWebcam]);
 
   return (
-    <div>
-      <h1>Conversation Ready Page</h1>
-      <Button onClick={onStartConversation}>Start Conversation</Button>
-      <div className="relative w-full max-w-[40rem] p-8">
-        <div className="absolute bottom-12 left-1/2 z-50 -translate-x-1/2 transform">
-          {isWebCamOn ? (
-            <Button
-              onClick={stopWebcam}
-              variant="ghost"
-              size="icon"
-              className="rounded-full border bg-slate-50 p-6"
-            >
-              <VideoOff />
-            </Button>
-          ) : (
-            <Button
-              onClick={startWebcam}
-              variant="ghost"
-              size="icon"
-              className="rounded-full border bg-slate-50 p-6"
-            >
-              <Video />
-            </Button>
-          )}
+    <div className="flex min-h-screen items-center justify-center gap-8 max-lg:flex-col">
+      <div className="relative aspect-[16/10] h-full w-full max-w-[40rem] p-8">
+        <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 transform gap-4">
+          <WebCamVideoButton />
+          <WebCamAudioButton />
         </div>
-
         <video
           ref={videoRef}
           autoPlay
           muted
-          className="aspect-[16/10] rounded-md object-cover"
+          className="aspect-[16/10] w-full rounded-md bg-slate-200 object-cover"
         />
+      </div>
+      <div className="flex flex-col gap-4 text-center">
+        <h1>Conversation Ready Page</h1>
+        <Button onClick={onStartConversation}>Start Conversation</Button>
       </div>
     </div>
   );
