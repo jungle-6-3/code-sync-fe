@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import usePostData from "@/hooks/useQuery";
 
 export default function SignUp() {
@@ -20,33 +20,23 @@ export default function SignUp() {
   const onName = (e: ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
     const regex = /^[가-힣]{2,4}$/;
-    if (regex.test(userName)) {
-      setNameValid(true);
-    } else {
-      setNameValid(false);
-    }
+
+    setNameValid(regex.test(userName));
   };
 
   const onEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setUserEmail(e.target.value);
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if (regex.test(userEmail)) {
-      setEmailValid(true);
-    } else {
-      setEmailValid(false);
-    }
+    setEmailValid(regex.test(userEmail));
   };
 
   const onPassWord = (e: ChangeEvent<HTMLInputElement>) => {
     setUserPw(e.target.value);
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
-    if (regex.test(userPw)) {
-      setPwValid(true);
-    } else {
-      setPwValid(false);
-    }
+
+    setPwValid(regex.test(userPw))
   };
 
   useEffect(() => {
@@ -63,16 +53,17 @@ export default function SignUp() {
     e.preventDefault();
 
     signup.mutate({
-      username: userName,
-      useremail: userEmail,
-      userpw: userPw,
+      name: userName,
+      email: userEmail,
+      password: userPw,
     });
     console.log(signup.variables);
     navigate("/");
   };
 
   return (
-    <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
+    <div className="absolute right-0 flex h-full min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
+      <div className = "">Already a member ? <Link className ="text-sky-700" to ="/">Log In</Link></div>
       <form className="max-w-[200px]">
         <div>
           <label htmlFor="username">

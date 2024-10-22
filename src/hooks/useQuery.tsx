@@ -1,32 +1,32 @@
+import https from "@/lib/https";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
 const signUpFetch = ({
-  username,
-  useremail,
-  userpw,
+  name,
+  email,
+  password,
 }: {
-  username: string;
-  useremail: string;
-  userpw: string;
+  name: string;
+  email: string;
+  password: string;
 }) => {
-  return axios.post("https://jsonplaceholder.typicode.com/posts", {
-    username,
-    useremail,
-    userpw,
+  return https.post("auth/signUp", {
+    name,
+    email,
+    password,
   });
 };
 
 const signInFetch = ({
-  useremail,
-  userpw,
+  email,
+  password,
 }: {
-  useremail: string;
-  userpw: string;
+  email: string;
+  password: string;
 }) => {
-  return axios.post("https://jsonplaceholder.typicode.com/posts", {
-    useremail,
-    userpw,
+  return https.post("auth/signin", {
+    email,
+    password,
   });
 };
 

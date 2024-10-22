@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import usePostData from "@/hooks/useQuery";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
@@ -24,11 +25,8 @@ export default function Login() {
     setUserPw(e.target.value);
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
-    if (regex.test(userPw)) {
-      setPwValid(true);
-    } else {
-      setPwValid(false);
-    }
+
+    setPwValid(regex.test(userPw));
   };
 
   useEffect(() => {
@@ -41,17 +39,17 @@ export default function Login() {
 
   const { signin } = usePostData();
 
-  const onSignIn = async (e) => {
+  const onSignIn = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     signin.mutate({
-      useremail: userEmail,
-      userpw: userPw,
+      email: userEmail,
+      password: userPw,
     });
     console.log(signin.variables);
   };
 
   return (
-    <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
+    <div className="absolute right-0 flex h-full min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
       <form className="max-w-[200px]">
         <div>
           <label htmlFor="useremail">
