@@ -5,17 +5,17 @@ import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 
 interface ConversationReadyPageProps {
-  setOnline: (online: boolean) => void;
+  setJoin: (online: boolean) => void;
 }
 
-const ConversationReadyPage = ({ setOnline }: ConversationReadyPageProps) => {
+const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
 
   const onStartConversation = () => {
-    if (socket.connected && isUserMediaOn.audio) setOnline(true);
+    if (socket.connected && isUserMediaOn.audio) setJoin(true);
   };
 
   useEffect(() => {

@@ -3,18 +3,18 @@ import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 import { useState } from "react";
 
 const ConversationJunctionPage = () => {
-  const [isOnline, setIsOnline] = useState(false);
+  const [isJoin, setIsJoin] = useState(false);
 
-  const onSetOnline = () => {
-    setIsOnline(true);
+  const onSetJoin = () => {
+    setIsJoin(true);
   };
 
   return (
     <div>
-      {isOnline ? (
+      {isJoin ? (
         <ConversationPage />
       ) : (
-        <ConversationReadyPage setOnline={onSetOnline} />
+        <ConversationReadyPage setJoin={onSetJoin} />
       )}
     </div>
   );
