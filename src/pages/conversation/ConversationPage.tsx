@@ -15,7 +15,6 @@ const ConversationPage = () => {
 
   // connecting when conversation page is mounted
   useEffect(() => {
-    socket.connect();
     return () => {
       socket.disconnect();
     };
