@@ -7,9 +7,19 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { socket } from "@/lib/socket";
+import { useEffect } from "react";
 
 const ConversationPage = () => {
   // const { conversationId } = useParams<{ conversationId: string }>();
+
+  // connecting when conversation page is mounted
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <div className="flex h-screen flex-col">
