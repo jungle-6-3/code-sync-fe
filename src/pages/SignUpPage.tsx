@@ -1,6 +1,6 @@
 import SignUp from "@/components/Users/SignUp";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   return (
     <div className="flex h-screen relative">
       <div className="relative flex-[3_1_0] bg-gradient-to-br from-slate-700 to-black">

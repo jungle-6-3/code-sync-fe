@@ -1,10 +1,9 @@
 import LoginPage from "@/pages/LoginPage";
 import ConversationPage from "@/pages/ConversationPage";
 import { createBrowserRouter } from "react-router-dom";
-import SignUp from "@/components/Users/SignUp";
+import SignUpPage from "@/pages/SignUpPage";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <></> },
   {
     path: "/:conversationId",
     element: <ConversationPage />,
@@ -15,6 +14,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    element: <SignUp />,
+    element: <SignUpPage />,
   },
 ]);

@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChangeEvent, useEffect, useState, MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import usePostData from "@/hooks/useQuery";
+import usePostData from "@/hooks/SignUp/useSignUpQuery";
+import { AxiosResponse } from "axios";
 
 export default function SignUp() {
   const [userName, setUserName] = useState("");
@@ -36,7 +37,7 @@ export default function SignUp() {
     const regex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
 
-    setPwValid(regex.test(userPw))
+    setPwValid(regex.test(userPw));
   };
 
   useEffect(() => {
@@ -52,18 +53,32 @@ export default function SignUp() {
   const onSignUp = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    signup.mutate({
-      name: userName,
-      email: userEmail,
-      password: userPw,
-    });
-    console.log(signup.variables);
-    navigate("/");
+    signup.mutate(
+      {
+        name: userName,
+        email: userEmail,
+        password: userPw,
+      },
+      {
+        onSuccess: (data: AxiosResponse) => {
+          console.log(data);
+          navigate("/");
+        },
+        onError: (error: Error) => {
+          console.error(error);
+        },
+      },
+    );
   };
 
   return (
-    <div className="absolute right-0 flex h-full min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
-      <div className = "">Already a member ? <Link className ="text-sky-700" to ="/">Log In</Link></div>
+    <div className="absolute right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+      <div className="">
+        Already a member ?{" "}
+        <Link className="text-sky-700" to="/">
+          Log In
+        </Link>
+      </div>
       <form className="max-w-[200px]">
         <div>
           <label htmlFor="username">
@@ -77,7 +92,7 @@ export default function SignUp() {
             />
           </label>
         </div>
-        <div className="text-rose-700 text-xs">
+        <div className="text-xs text-rose-700">
           {!nameValid && userName.length > 0 && (
             <div>올바른 이름을 입력해주세요</div>
           )}
@@ -94,7 +109,7 @@ export default function SignUp() {
             />
           </label>
         </div>
-        <div className="text-rose-700 text-xs">
+        <div className="text-xs text-rose-700">
           {!emailValid && userEmail.length > 0 && (
             <div>올바른 이메일을 입력해주세요.</div>
           )}
@@ -111,12 +126,12 @@ export default function SignUp() {
             />
           </label>
         </div>
-        <div className="text-rose-700 text-xs">
+        <div className="text-xs text-rose-700">
           {!pwValid && userPw.length > 0 && (
             <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
           )}
         </div>
-        <div className="flex w-full gap-3 [&>*]:flex-1 px-5 py-5">
+        <div className="flex w-full gap-3 px-5 py-5 [&>*]:flex-1">
           <Button
             type="submit"
             variant={"destructive"}
