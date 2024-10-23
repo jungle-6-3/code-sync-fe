@@ -54,3 +54,14 @@ export const getFileContent = async (
   });
   return response;
 };
+
+export const checkValidPullRequest = async (url: string) => {
+  const splitedUrl = url.split("/").filter((item) => item !== "");
+  const owner = splitedUrl[2];
+  const repo = splitedUrl[3];
+  const prNumber = splitedUrl[5];
+  const response = await githubHttps.get(
+    `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`,
+  );
+  return response;
+};
