@@ -8,8 +8,6 @@ import {
 import { prInfoStore } from "@/stores/github";
 import { useEffect } from "react";
 
-// https://github.com/JNU-econovation/econo-homepage/pull/133
-
 const owner = "JNU-econovation";
 const repo = "econo-homepage";
 const prNumber = 126;
@@ -20,8 +18,6 @@ const ConversationPage = () => {
   useEffect(() => {
     setPrChangedFileList(owner, repo, prNumber);
   }, []);
-
-  if (!prChangedFileList) return <div>loading</div>;
 
   return (
     <div className="flex h-screen flex-col">

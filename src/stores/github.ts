@@ -1,5 +1,5 @@
-import { getFileContent, getPrCommitsData, getPrData } from "@/api/pr/pr";
 import { create } from "zustand";
+import { getFileContent, getPrCommitsData, getPrData } from "@/api/pr/pr";
 
 interface PrInfoProps {
   userId: string;
