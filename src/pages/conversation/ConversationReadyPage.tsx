@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { socket } from "@/lib/socket";
+import socket from "@/lib/socket";
 import { useEffect, useRef } from "react";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
@@ -15,7 +15,8 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const startWebcam = userMediaStore((state) => state.startWebcam);
 
   const onStartConversation = () => {
-    if (socket.connected && isUserMediaOn.audio) setJoin(true);
+    // if (socket.connected && isUserMediaOn.audio) setJoin(true);
+    setJoin(true);
   };
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
 
   useEffect(() => {
     // connecting when conversation ready page is mounted
-    socket.connect();
+    // socket.connect();
     startWebcam({ audio: true, video: true });
   }, [startWebcam]);
 

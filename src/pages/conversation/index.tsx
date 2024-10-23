@@ -9,14 +9,10 @@ const ConversationJunctionPage = () => {
     setIsJoin(true);
   };
 
-  return (
-    <div>
-      {isJoin ? (
-        <ConversationPage />
-      ) : (
-        <ConversationReadyPage setJoin={onSetJoin} />
-      )}
-    </div>
+  return isJoin ? (
+    <ConversationPage />
+  ) : (
+    <ConversationReadyPage setJoin={onSetJoin} />
   );
 };
 
