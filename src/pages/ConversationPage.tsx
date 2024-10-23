@@ -1,4 +1,3 @@
-import { getPrData, getPrCommitsData, getFileData } from "@/api/pr/pr";
 import { CodeSplitEditor } from "@/components/CodeEditor";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
@@ -6,94 +5,23 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ChangedFile, PrInfoProps } from "@/types/pr";
-import { useEffect, useState } from "react";
+import { prInfoStore } from "@/stores/github";
+import { useEffect } from "react";
 
-const owner = "JNU-Parking-Ticket-Project";
-const repo = "Parking-Ticket-FE";
-const prNumber = 243;
+// https://github.com/JNU-econovation/econo-homepage/pull/133
+
+const owner = "JNU-econovation";
+const repo = "econo-homepage";
+const prNumber = 126;
 
 const ConversationPage = () => {
-  const [prInfo, setPrInfo] = useState<PrInfoProps>({
-    requestBranch: "",
-    receiveBranch: "",
-    userId: "",
-  });
-  const [changedFiles, setChangedFiles] = useState<ChangedFile[]>([]);
-
-  const fetchPrData = async () => {
-    try {
-      const response = await getPrData({
-        owner,
-        repo,
-        prNumber,
-      });
-      setPrInfo({
-        requestBranch: response.head.ref,
-        receiveBranch: response.base.ref,
-        userId: response.user.login,
-      });
-    } catch (error) {
-      console.error("Error fetching PR data:", error);
-    }
-  };
-  const fetchCommitsData = async () => {
-    try {
-      const response = await getPrCommitsData({ owner, repo, prNumber });
-      const processedFiles = await Promise.all(
-        response.map(async (commit) => {
-          const beforeContent = await getFileContent(
-            owner, // userId 대신 owner 사용
-            repo,
-            prInfo.receiveBranch,
-            commit.filename,
-          );
-          return {
-            filename: commit.filename,
-            status: commit.status,
-            additions: commit.additions,
-            deletions: commit.deletions,
-            raw_url: commit.raw_url,
-            beforeContent,
-          };
-        }),
-      );
-
-      setChangedFiles(processedFiles);
-    } catch (error) {
-      console.error("Error fetching commits data:", error);
-    }
-  };
-
-  const getFileContent = async (
-    owner: string,
-    repo: string,
-    branchName: string,
-    fileName: string,
-  ) => {
-    try {
-      const response = await getFileData({
-        owner,
-        repo,
-        branchName,
-        fileName,
-      });
-      return response;
-    } catch (error) {
-      console.error(`Error fetching file content: ${error}`);
-      return null;
-    }
-  };
+  const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
 
   useEffect(() => {
-    fetchPrData();
+    setPrChangedFileList(owner, repo, prNumber);
   }, []);
 
-  useEffect(() => {
-    if (prInfo.receiveBranch && prInfo.userId && prInfo.requestBranch) {
-      fetchCommitsData();
-    }
-  }, [prInfo]);
+  if (!prChangedFileList) return <div>loading</div>;
 
   return (
     <div className="flex h-screen flex-col">
@@ -109,7 +37,7 @@ const ConversationPage = () => {
             <div className="p-4">
               <h2 className="text-lg font-semibold">Changed Files</h2>
               <ul className="mt-2">
-                {changedFiles.map((file, index) => (
+                {prChangedFileList.map((file, index) => (
                   <li key={index} className="py-1 text-sm">
                     {file.filename}
                   </li>
@@ -121,17 +49,23 @@ const ConversationPage = () => {
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                <CodeSplitEditor
-                  originalValue="123123213"
-                  modifiedValue="4543534634"
-                />
+                {prChangedFileList.map((file, _) => {
+                  return (
+                    <CodeSplitEditor
+                      originalValue={file.beforeContent}
+                      modifiedValue={file.afterContent}
+                      key={_}
+                    />
+                  );
+                })}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
                 <div className="p-4">
                   <h3 className="font-medium">Commit Information</h3>
                   <p className="mt-2 text-sm">
-                    Branch: {prInfo.requestBranch} → {prInfo.receiveBranch}
+                    Branch: {prInfo.requireUserInfo.branchName} →{" "}
+                    {prInfo.requestUserInfo.branchName}
                   </p>
                 </div>
               </ResizablePanel>

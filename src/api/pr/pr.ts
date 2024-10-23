@@ -39,3 +39,18 @@ export const getFileData = async ({
   );
   return response.data;
 };
+
+export const getFileContent = async (
+  owner: string,
+  repo: string,
+  branchName: string,
+  fileName: string,
+) => {
+  const response = getFileData({
+    owner,
+    repo,
+    branchName,
+    fileName,
+  });
+  return response;
+};

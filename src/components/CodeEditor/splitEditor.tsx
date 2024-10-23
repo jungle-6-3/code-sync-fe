@@ -12,11 +12,11 @@ const CodeSplitEditor = ({
   return (
     <>
       <DiffEditor
-        height="100px"
+        height="1000px"
         original={originalValue}
         modified={modifiedValue}
-        originalLanguage="javascript"
-        modifiedLanguage="type"
+        originalLanguage="typescript"
+        modifiedLanguage="typescript"
       />
     </>
   );
