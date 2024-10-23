@@ -27,7 +27,7 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
 
   useEffect(() => {
     // connecting when conversation ready page is mounted
-    // socket.connect();
+    socket.connect();
     startWebcam({ audio: true, video: true });
   }, [startWebcam]);
 
