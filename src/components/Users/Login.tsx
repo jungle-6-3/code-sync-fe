@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import usePostData from "@/hooks/useQuery";
+import usePostData from "@/hooks/react-query/useQuery";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -51,7 +51,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex h-full w-[300px] min-w-[28rem]  flex-col items-center justify-center rounded-lg bg-white p-8">
+    <div className="flex h-full w-[300px] min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
       <form className="max-w-[200px]">
         <div>
           <label htmlFor="useremail">
@@ -65,7 +65,7 @@ export default function Login() {
             />
           </label>
         </div>
-        <div className="text-rose-700 text-xs">
+        <div className="text-xs text-rose-700">
           {!emailValid && userEmail.length > 0 && (
             <div>올바른 이메일을 입력해주세요.</div>
           )}
@@ -82,12 +82,12 @@ export default function Login() {
             />
           </label>
         </div>
-        <div className="text-rose-700 text-xs">
+        <div className="text-xs text-rose-700">
           {!pwValid && userPw.length > 0 && (
             <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
           )}
         </div>
-        <div className="flex w-full gap-3 [&>*]:flex-1 p-5">
+        <div className="flex w-full gap-3 p-5 [&>*]:flex-1">
           <Button
             type="submit"
             className="bg-blue-900 text-white hover:bg-blue-800"
@@ -99,7 +99,7 @@ export default function Login() {
           </Button>
         </div>
         <Link to="/signup">
-          <div className="flex w-full gap-3 [&>*]:flex-1 px-5">
+          <div className="flex w-full gap-3 px-5 [&>*]:flex-1">
             <Button
               className="bg-blue-900 text-white hover:bg-blue-800"
               variant={"destructive"}
