@@ -16,11 +16,7 @@ importers:
         version: 0.17.1(@tiptap/pm@2.8.0)(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@blocknote/react':
         specifier: ^0.17.0
-<<<<<<< HEAD
         version: 0.17.1(@tiptap/pm@2.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-=======
-        version: 0.17.0(@tiptap/pm@2.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
->>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -68,11 +64,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-hook-form:
         specifier: ^7.53.0
-<<<<<<< HEAD
         version: 7.53.1(react@18.3.1)
-=======
-        version: 7.53.0(react@18.3.1)
->>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
       react-resizable-panels:
         specifier: ^2.1.4
         version: 2.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -82,12 +74,9 @@ importers:
       socket.io-client:
         specifier: ^4.8.0
         version: 4.8.0
-<<<<<<< HEAD
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-=======
->>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.5.4
@@ -119,6 +108,9 @@ importers:
       '@eslint/js':
         specifier: ^9.11.1
         version: 9.13.0
+      '@hookform/resolvers':
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.53.1(react@18.3.1))
       '@tanstack/eslint-plugin-query':
         specifier: ^5.59.7
         version: 5.59.7(eslint@9.13.0(jiti@1.21.6))(typescript@5.6.3)
@@ -391,6 +383,11 @@ packages:
 
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+
+  '@hookform/resolvers@3.9.0':
+    resolution: {integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
 
   '@humanfs/core@0.19.0':
     resolution: {integrity: sha512-2cbWIHbZVEweE853g8jymffCA+NCMiuqeECeBBLm8dg2oFdjuGJhgN4UAbI+6v0CKbbhvtXA4qV8YR5Ji86nmw==}
@@ -3609,6 +3606,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
+  '@hookform/resolvers@3.9.0(react-hook-form@7.53.1(react@18.3.1))':
+    dependencies:
+      react-hook-form: 7.53.1(react@18.3.1)
+
   '@humanfs/core@0.19.0': {}
 
   '@humanfs/node@0.16.5':
@@ -6415,11 +6416,8 @@ snapshots:
 
   sdp@3.2.0: {}
 
-<<<<<<< HEAD
   semver@7.6.3: {}
 
-=======
->>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
