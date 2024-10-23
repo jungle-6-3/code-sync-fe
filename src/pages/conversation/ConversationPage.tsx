@@ -5,6 +5,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import socket from "@/lib/socket";
 import { prInfoStore } from "@/stores/github";
 import { useEffect } from "react";
 
@@ -17,7 +18,11 @@ const ConversationPage = () => {
 
   useEffect(() => {
     setPrChangedFileList(owner, repo, prNumber);
-  }, []);
+    return () => {
+      // cjonnecting when conversation page is mounted
+      socket.disconnect();
+    };
+  }, [setPrChangedFileList]);
 
   return (
     <div className="flex h-screen flex-col">
