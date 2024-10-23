@@ -1,3 +1,4 @@
+
 export interface GitHubPrResponse {
   url: string;
   id: number;
@@ -11,20 +12,8 @@ export interface GitHubPrResponse {
   closed_at: string | null;
   merged_at: string | null;
   merge_commit_sha: string;
-  head: {
-    label: string;
-    ref: string; // PR의 source branch
-    sha: string;
-    user: GitHubUser;
-    repo: GitHubRepository;
-  };
-  base: {
-    label: string;
-    ref: string; // PR의 target branch
-    sha: string;
-    user: GitHubUser;
-    repo: GitHubRepository;
-  };
+  head: GithubRepositoryReport;
+  base: GithubRepositoryReport;
   merged: boolean;
   mergeable: boolean | null;
   mergeable_state: string;
@@ -49,6 +38,14 @@ export interface GitHubUser {
   site_admin: boolean;
 }
 
+interface GithubRepositoryReport {
+  label: string;
+  ref: string; // PR의 source branch
+  sha: string;
+  user: GitHubUser;
+  repo: GitHubRepository;
+};
+
 // GitHub 저장소 정보 인터페이스
 export interface GitHubRepository {
   id: number;
@@ -67,14 +64,7 @@ export interface GitHubRepository {
   default_branch: string;
 }
 
-// PR 정보 상태를 위한 인터페이스export
-export interface PrInfoProps {
-  requestBranch: string; // head.ref
-  receiveBranch: string; // base.ref
-  userId: string;
-}
-
-export interface GitHubFileChange {
+export interface GitHubFileChangeResponse {
   sha: string;
   filename: string;
   status: "modified" | "added" | "removed" | "renamed";
@@ -88,12 +78,6 @@ export interface GitHubFileChange {
   previous_filename?: string;
 }
 
-export interface GetPrDataParams {
-  owner: string;
-  repo: string;
-  prNumber: number;
-}
-
 export interface GetFileDataParams {
   owner: string;
   repo: string;
@@ -101,10 +85,9 @@ export interface GetFileDataParams {
   fileName: string;
 }
 
-export interface ChangedFile {
-  filename: string;
-  status: string;
-  additions: number;
-  deletions: number;
-  raw_url?: string;
+
+export interface GetPrDataParams {
+  owner: string;
+  repo: string;
+  prNumber: number;
 }

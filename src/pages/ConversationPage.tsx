@@ -1,13 +1,12 @@
 import { getPrData, getPrCommitsData, getFileData } from "@/api/pr/pr";
-import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
+import { CodeSplitEditor } from "@/components/CodeEditor";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ChangedFile, GetPrDataParams, PrInfoProps } from "@/types/pr";
-import { userInfo } from "os";
+import { ChangedFile, prInifoStore } from "@/stores/github";
 import { useEffect, useState } from "react";
 
 const owner = "JNU-Parking-Ticket-Project";
@@ -32,11 +31,13 @@ function decodeByType(data: string, encodingType: string) {
 }
 
 const ConversationPage = () => {
-  const [prInfo, setPrInfo] = useState<PrInfoProps>({
-    requestBranch: "",
-    receiveBranch: "",
-    userId: "",
-  });
+  // const [prInfo, setPrInfo] = useState<PrInfoProps>({
+  //   requestBranch: "",
+  //   receiveBranch: "",
+  //   userId: "",
+  // });
+  const prInfo = prInifoStore((state) => state);
+
   const [changedFiles, setChangedFiles] = useState<ChangedFile[]>([]);
 
   const fetchPrData = async () => {
@@ -45,8 +46,8 @@ const ConversationPage = () => {
         owner,
         repo,
         prNumber,
-      } as GetPrDataParams);
-      setPrInfo({
+      });
+      prInfo.setPrInfo({
         requestBranch: response.head.ref,
         receiveBranch: response.base.ref,
         userId: response.user.login,

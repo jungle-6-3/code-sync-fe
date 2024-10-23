@@ -10,15 +10,12 @@ const CodeSplitEditor = ({
   modifiedValue,
 }: CodeSplitEditorProps) => {
   return (
-    <>
-      <DiffEditor
-        height="100px"
-        original={originalValue}
-        modified={modifiedValue}
-        originalLanguage="javascript"
-        modifiedLanguage="type"
-      />
-    </>
+    <DiffEditor
+      original={originalValue}
+      modified={modifiedValue}
+      originalLanguage="javascript"
+      modifiedLanguage="type"
+    />
   );
 };
 
