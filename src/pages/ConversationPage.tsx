@@ -1,35 +1,17 @@
 import { getPrData, getPrCommitsData, getFileData } from "@/api/pr/pr";
-import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
+import { CodeSplitEditor } from "@/components/CodeEditor";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ChangedFile, GetPrDataParams, PrInfoProps } from "@/types/pr";
-import { userInfo } from "os";
+import { ChangedFile, PrInfoProps } from "@/types/pr";
 import { useEffect, useState } from "react";
 
 const owner = "JNU-Parking-Ticket-Project";
 const repo = "Parking-Ticket-FE";
 const prNumber = 243;
-
-function decodeByType(data: string, encodingType: string) {
-  switch (encodingType.toLowerCase()) {
-    case "base64":
-      return Buffer.from(data, "base64").toString("utf-8");
-    case "url":
-    case "url-encoded":
-      return decodeURIComponent(data);
-    case "unicode":
-    case "utf-8":
-      return unescape(encodeURIComponent(data));
-    case "json":
-      return JSON.parse(data);
-    default:
-      throw new Error(`Unsupported encoding type: ${encodingType}`);
-  }
-}
 
 const ConversationPage = () => {
   const [prInfo, setPrInfo] = useState<PrInfoProps>({
@@ -45,7 +27,7 @@ const ConversationPage = () => {
         owner,
         repo,
         prNumber,
-      } as GetPrDataParams);
+      });
       setPrInfo({
         requestBranch: response.head.ref,
         receiveBranch: response.base.ref,

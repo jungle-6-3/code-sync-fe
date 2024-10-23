@@ -36,7 +36,6 @@ export interface GitHubPrResponse {
   deletions: number;
   changed_files: number;
 }
-
 // GitHub 사용자 정보 인터페이스
 export interface GitHubUser {
   login: string;
@@ -67,14 +66,7 @@ export interface GitHubRepository {
   default_branch: string;
 }
 
-// PR 정보 상태를 위한 인터페이스export
-export interface PrInfoProps {
-  requestBranch: string; // head.ref
-  receiveBranch: string; // base.ref
-  userId: string;
-}
-
-export interface GitHubFileChange {
+export interface GitHubFileChangeResponse {
   sha: string;
   filename: string;
   status: "modified" | "added" | "removed" | "renamed";
@@ -99,12 +91,4 @@ export interface GetFileDataParams {
   repo: string;
   branchName: string;
   fileName: string;
-}
-
-export interface ChangedFile {
-  filename: string;
-  status: string;
-  additions: number;
-  deletions: number;
-  raw_url?: string;
 }
