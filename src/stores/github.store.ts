@@ -13,9 +13,9 @@ interface PrUserInfo {
   branchName: string;
 }
 
-interface PrChangedFileInfo {
+export interface PrChangedFileInfo {
   filename: string;
-  status: "modified" | "added" | "removed" | "renamed";
+  status: "init" | "modified" | "added" | "removed" | "renamed";
   language: string;
   additions: number;
   deletions: number;
@@ -32,9 +32,11 @@ export interface PrMetaDataInfo {
 interface PrInfoPropsStore {
   prMetaData: PrMetaDataInfo;
   prInfo: PrInfoProps;
+  selectedFile: PrChangedFileInfo;
   prChangedFileList: PrChangedFileInfo[];
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
+  setSelectedFile: (newFile: PrChangedFileInfo) => void;
   setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
   resetPrMeTaData: () => void;
 }
@@ -56,9 +58,19 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       branchName: "",
     },
   },
+  selectedFile: {
+    filename: "",
+    status: "init",
+    language: "",
+    additions: 0,
+    deletions: 0,
+    afterContent: "",
+    beforeContent: ",",
+  },
   prChangedFileList: [],
   setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
   setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
+  setSelectedFile: (newFile) => set({ selectedFile: newFile }),
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
   setPrChangedFileList: async ({
@@ -66,15 +78,16 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     repo,
     prNumber,
   }: {
-    owner: string,
-    repo: string,
-    prNumber: number,
+    owner: string;
+    repo: string;
+    prNumber: number;
   }) => {
     const response = await getPrData({
       owner,
       repo,
       prNumber,
     });
+    console.log(response);
     const [requireUser, requireBranchName] = response.head.label.split(":");
     const [requestOner, requestBranchName] = response.base.label.split(":");
     const newPrInfo = {
@@ -92,24 +105,42 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
     const processedFiles = await Promise.all(
       fetchCommitsData.map(async (commit) => {
-        const beforeContent =
-          commit.status === "modified"
-            ? await getFileContent(
+        let beforeContent;
+        let afterContent;
+        if (commit.status === "modified") {
+          try {
+            beforeContent = await getFileContent(
               newPrInfo.requestUserInfo.owner,
               repo,
               newPrInfo.requestUserInfo.branchName,
               commit.filename,
-            )
-            : "";
-        const afterContent =
-          commit.status === "added" || commit.status === "modified"
-            ? await getFileContent(
+            );
+          } catch (e: unknown) {
+            beforeContent = "";
+          }
+        }
+        if (commit.status === "added" || commit.status === "modified") {
+          try {
+            afterContent = await getFileContent(
               newPrInfo.requireUserInfo.owner,
               repo,
               newPrInfo.requireUserInfo.branchName,
               commit.filename,
-            )
-            : "";
+            );
+          } catch (e: unknown) {
+            afterContent = "";
+          }
+        }
+        beforeContent =
+          typeof beforeContent === "object"
+            ? JSON.stringify(beforeContent, null, 2)
+            : beforeContent;
+
+        afterContent =
+          typeof afterContent === "object"
+            ? JSON.stringify(afterContent, null, 2)
+            : afterContent;
+
         return {
           filename: commit.filename,
           status: commit.status,
@@ -118,8 +149,8 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
           ),
           additions: commit.additions,
           deletions: commit.deletions,
-          afterContent,
-          beforeContent,
+          afterContent: afterContent || "",
+          beforeContent: beforeContent || "",
         };
       }),
     );
@@ -140,7 +171,3 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       },
     }),
 }));
-
-// /raw/jungle-6-3/code-sync-fe/feat/3/src/routers/index.tsx
-// https://code-sync.net/gh/raw/jungle-6-3/code-sync-fe/feat/3/src/routers/index.tsx
-// https://code-sync.net/gh/raw/jungle-6-3/code-sync-fe/feat/12/src/hooks/useQuery.tsx

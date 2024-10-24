@@ -81,7 +81,7 @@ export class ConversationSocket {
   }
 
   connect() {
-    this.socket.connect();
+    // this.socket.connect();
   }
 
   static getInstance(roomId = "") {
@@ -89,7 +89,7 @@ export class ConversationSocket {
       this.roomId = roomId;
     }
     if (!this.roomId) {
-      throw new Error("Room ID is not set");
+      // throw new Error("Room ID is not set");
     }
     if (!ConversationSocket.instance) {
       ConversationSocket.instance = new ConversationSocket();
