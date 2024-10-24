@@ -72,6 +72,7 @@ const ConversationPage = () => {
                         null,
                         "\t",
                       )}
+                      language={file.language}
                       key={_}
                     />
                   );
