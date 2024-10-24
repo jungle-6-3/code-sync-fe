@@ -45,6 +45,7 @@ const ConversationPage = () => {
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
                 {prChangedFileList.map((file, _) => {
+                  console.log(file.language);
                   return (
                     <CodeSplitEditor
                       originalValue={JSON.stringify(
@@ -57,6 +58,7 @@ const ConversationPage = () => {
                         null,
                         "\t",
                       )}
+                      language={file.language}
                       key={_}
                     />
                   );

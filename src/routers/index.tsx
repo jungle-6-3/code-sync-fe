@@ -1,6 +1,6 @@
 import LoginPage from "@/pages/LoginPage";
 import { createBrowserRouter } from "react-router-dom";
-import SignUp from "@/components/Users/SignUp";
+import SignUpPage from "@/pages/SignUpPage";
 import ConversationJunctionPage from "@/pages/conversation";
 import CreateRoomPage from "@/pages/CreateRoomPage";
 
@@ -10,15 +10,15 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/:conversationId",
-    element: <ConversationJunctionPage />,
-  },
-  {
     path: "/room/create",
     element: <CreateRoomPage />,
   },
   {
     path: "/signup",
-    element: <SignUp />,
+    element: <SignUpPage />,
+  },
+  {
+    path: "/:conversationId",
+    element: <ConversationJunctionPage />,
   },
 ]);

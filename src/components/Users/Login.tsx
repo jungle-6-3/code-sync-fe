@@ -1,114 +1,122 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import usePostData from "@/hooks/react-query/useQuery";
-import { ChangeEvent, useEffect, useState } from "react";
+import formLoginSchema from "@/components/Users/LoginSchema";
+import useLoginQuery from "@/hooks/Login/useLoginQuery";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Terminal } from "lucide-react";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { z } from "zod";
 
 export default function Login() {
-  const [userEmail, setUserEmail] = useState("");
-  const [userPw, setUserPw] = useState("");
+  const [loginValid, setLoginValid] = useState(true);
 
-  const [emailValid, setEmailValid] = useState(false);
-  const [pwValid, setPwValid] = useState(false);
+  const form = useForm<z.infer<typeof formLoginSchema>>({
+    resolver: zodResolver(formLoginSchema),
+    defaultValues: {
+      useremail: "",
+      userpassword: "",
+    },
+  });
+  const { signin } = useLoginQuery();
 
-  const [notAllow, setNotAllow] = useState(true);
-
-  const onEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setUserEmail(e.target.value);
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    setEmailValid(regex.test(userEmail));
-  };
-
-  const onPassword = (e: ChangeEvent<HTMLInputElement>) => {
-    setUserPw(e.target.value);
-    const regex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-])[A-Za-z\d!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~-]{8,}$/;
-    if (regex.test(userPw)) {
-      setPwValid(true);
-    } else {
-      setPwValid(false);
-    }
-  };
-
-  useEffect(() => {
-    if (emailValid && pwValid) {
-      setNotAllow(false);
-      return;
-    }
-    setNotAllow(true);
-  }, [emailValid, pwValid]);
-
-  const { signin } = usePostData();
-
-  const onSignIn = async (e) => {
-    e.preventDefault();
-    signin.mutate({
-      useremail: userEmail,
-      userpw: userPw,
-    });
-    console.log(signin.variables);
+  const onSignIn = async (data: z.infer<typeof formLoginSchema>) => {
+    signin.mutate(
+      {
+        email: data.useremail,
+        password: data.userpassword,
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+        },
+        onError: (error) => {
+          setLoginValid(false);
+          console.error("Login error:", error);
+        },
+      },
+    );
   };
 
   return (
-    <div className="flex h-full w-[300px] min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
-      <form className="max-w-[200px]">
-        <div>
-          <label htmlFor="useremail">
-            Email
-            <Input
-              id="useremail"
-              type="text"
-              value={userEmail}
-              onChange={onEmail}
-              placeholder="jungle@gmail.com"
-            />
-          </label>
-        </div>
-        <div className="text-xs text-rose-700">
-          {!emailValid && userEmail.length > 0 && (
-            <div>올바른 이메일을 입력해주세요.</div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="userpassword">
-            Password
-            <Input
-              id="userpassword"
-              value={userPw}
-              onChange={onPassword}
-              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-              type="password"
-            />
-          </label>
-        </div>
-        <div className="text-xs text-rose-700">
-          {!pwValid && userPw.length > 0 && (
-            <div>영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.</div>
-          )}
-        </div>
-        <div className="flex w-full gap-3 p-5 [&>*]:flex-1">
-          <Button
-            type="submit"
-            className="bg-blue-900 text-white hover:bg-blue-800"
-            variant={"destructive"}
-            disabled={notAllow}
-            onClick={onSignIn}
-          >
-            로그인
-          </Button>
-        </div>
-        <Link to="/signup">
-          <div className="flex w-full gap-3 px-5 [&>*]:flex-1">
+    <div className="absolute right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(onSignIn)} className="max-w-[200px]">
+          <FormField
+            control={form.control}
+            name="useremail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="jungle@gmail.com"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="userpassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-bold">Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="영문, 숫자, 특수문자 포함 8자 이상 입력해주세요."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="py-5">
+            {!loginValid && (
+              <Alert variant="destructive">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription className="text-">
+                  이메일 또는 비밀번호가 틀렸습니다.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+          <div className="flex w-full gap-3 px-5 py-3 [&>*]:flex-1">
             <Button
-              className="bg-blue-900 text-white hover:bg-blue-800"
+              type="submit"
+              className="bg-blue-900 font-bold text-white hover:bg-blue-800"
               variant={"destructive"}
             >
-              회원가입
+              로그인
             </Button>
           </div>
-        </Link>
-      </form>
+          <Link to="/signup">
+            <div className="flex w-full gap-3 px-5 [&>*]:flex-1">
+              <Button
+                className="bg-blue-900 font-bold text-white hover:bg-blue-800"
+                variant={"destructive"}
+              >
+                회원가입
+              </Button>
+            </div>
+          </Link>
+        </form>
+      </FormProvider>
     </div>
   );
 }

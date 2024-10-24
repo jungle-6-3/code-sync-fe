@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { getFileContent, getPrCommitsData, getPrData } from "@/api/pr/pr";
+import { getLanguageFromFileName } from "@/lib/file";
 
 interface PrInfoProps {
   userId: string;
@@ -15,6 +16,7 @@ interface PrUserInfo {
 interface PrChangedFileInfo {
   filename: string;
   status: "modified" | "added" | "removed" | "renamed";
+  language: string;
   additions: number;
   deletions: number;
   afterContent: string;
@@ -111,6 +113,9 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         return {
           filename: commit.filename,
           status: commit.status,
+          language: getLanguageFromFileName(
+            String(commit.filename.split(".").at(-1)),
+          ),
           additions: commit.additions,
           deletions: commit.deletions,
           afterContent,
