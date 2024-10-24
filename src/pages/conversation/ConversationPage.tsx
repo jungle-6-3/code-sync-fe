@@ -6,7 +6,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import socket from "@/lib/socket";
-import { prInfoStore } from "@/stores/github";
+import { prInfoStore } from "@/stores/github.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {

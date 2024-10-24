@@ -5,14 +5,13 @@ import ConversationJunctionPage from "@/pages/conversation";
 import CreateRoomPage from "@/pages/CreateRoomPage";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <></> },
-  {
-    path: "/:conversationId",
-    element: <ConversationJunctionPage />,
-  },
   {
     path: "/",
     element: <LoginPage />,
+  },
+  {
+    path: "/:conversationId",
+    element: <ConversationJunctionPage />,
   },
   {
     path: "/room/create",
