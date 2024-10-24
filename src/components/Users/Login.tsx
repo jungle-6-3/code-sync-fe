@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import formLoginSchema from "@/components/Users/LoginSchema";
-import useLoginQuery from "@/hooks/Login/useLoginQuery";
+import useLoginQuery from "@/hooks/useLoginQuery";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Terminal } from "lucide-react";
 import { useState } from "react";

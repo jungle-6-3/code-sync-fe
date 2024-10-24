@@ -1,4 +1,4 @@
-import { checkValidPullRequest } from "@/api/pr/pr";
+import { checkValidPullRequest } from "@/apis/pr/pr";
 import { Button } from "@/components/ui/button";
 import {
   Form,

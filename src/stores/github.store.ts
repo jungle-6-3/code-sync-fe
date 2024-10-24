@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getFileContent, getPrCommitsData, getPrData } from "@/api/pr/pr";
+import { getFileContent, getPrCommitsData, getPrData } from "@/apis/pr/pr";
 import { getLanguageFromFileName } from "@/lib/file";
 
 interface PrInfoProps {
