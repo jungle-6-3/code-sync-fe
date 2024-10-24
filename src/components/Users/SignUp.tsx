@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import usePostData from "@/hooks/SignUp/useSignUpQuery";
-import { AxiosResponse } from "axios";
 import { z } from "zod";
 import {
   FormControl,
@@ -14,6 +13,7 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import formSignUpSchema from "@/components/Users/SignUpSchema";
+import { SignUpResponseUserDto } from "@/apis/users/dtos";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -37,8 +37,8 @@ export default function SignUp() {
         password: data.userpassword,
       },
       {
-        onSuccess: (data: AxiosResponse) => {
-          console.log(data);
+        onSuccess: (response: SignUpResponseUserDto) => {
+          console.log(response);
           navigate("/");
         },
         onError: (error: Error) => {
@@ -51,7 +51,7 @@ export default function SignUp() {
   return (
     <div className="absolute right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
       <div className="">
-        Already a member ?{" "}
+        Already a member?
         <Link className="text-sky-700" to="/">
           Log In
         </Link>
@@ -108,7 +108,7 @@ export default function SignUp() {
           <div className="flex w-full gap-3 px-5 py-5 [&>*]:flex-1">
             <Button
               variant={"destructive"}
-              className="font-bold bg-blue-900 text-white hover:bg-blue-800"
+              className="bg-blue-900 font-bold text-white hover:bg-blue-800"
               type="submit"
             >
               Submit

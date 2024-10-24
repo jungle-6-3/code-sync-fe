@@ -1,10 +1,9 @@
-import signUpFetch from "@/hooks/SignUp/useSignUpAxios";
+import postSignUp from "@/apis/users/useSignUpAxios";
 import { useMutation } from "@tanstack/react-query";
-
 
 export default function usePostData() {
   const signup = useMutation({
-    mutationFn: signUpFetch,
+    mutationFn: postSignUp,
   });
 
   return {

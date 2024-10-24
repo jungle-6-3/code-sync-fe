@@ -18,9 +18,7 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 
 export default function Login() {
-
   const [loginValid, setLoginValid] = useState(true);
-
 
   const form = useForm<z.infer<typeof formLoginSchema>>({
     resolver: zodResolver(formLoginSchema),
@@ -60,7 +58,11 @@ export default function Login() {
               <FormItem>
                 <FormLabel className="font-bold">Email</FormLabel>
                 <FormControl>
-                  <Input type = "text" placeholder="홍길동" {...field} />
+                  <Input
+                    type="text"
+                    placeholder="jungle@gmail.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -73,7 +75,11 @@ export default function Login() {
               <FormItem>
                 <FormLabel className="font-bold">Password</FormLabel>
                 <FormControl>
-                  <Input type = "password" placeholder="홍길동" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="영문, 숫자, 특수문자 포함 8자 이상 입력해주세요."
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,7 +90,7 @@ export default function Login() {
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription className = "text-">
+                <AlertDescription className="text-">
                   이메일 또는 비밀번호가 틀렸습니다.
                 </AlertDescription>
               </Alert>
@@ -93,7 +99,7 @@ export default function Login() {
           <div className="flex w-full gap-3 px-5 py-3 [&>*]:flex-1">
             <Button
               type="submit"
-              className="font-bold bg-blue-900 text-white hover:bg-blue-800"
+              className="bg-blue-900 font-bold text-white hover:bg-blue-800"
               variant={"destructive"}
             >
               로그인
@@ -102,7 +108,7 @@ export default function Login() {
           <Link to="/signup">
             <div className="flex w-full gap-3 px-5 [&>*]:flex-1">
               <Button
-                className="font-bold bg-blue-900 text-white hover:bg-blue-800"
+                className="bg-blue-900 font-bold text-white hover:bg-blue-800"
                 variant={"destructive"}
               >
                 회원가입
