@@ -16,11 +16,7 @@ importers:
         version: 0.17.1(@tiptap/pm@2.8.0)(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@blocknote/react':
         specifier: ^0.17.0
-<<<<<<< HEAD
         version: 0.17.1(@tiptap/pm@2.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-=======
-        version: 0.17.0(@tiptap/pm@2.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
->>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -69,10 +65,14 @@ importers:
       react-hook-form:
         specifier: ^7.53.0
 <<<<<<< HEAD
+        version: 7.53.0(react@18.3.1)
+=======
+<<<<<<< HEAD
         version: 7.53.1(react@18.3.1)
 =======
         version: 7.53.0(react@18.3.1)
 >>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
+>>>>>>> 9710518f64691c4f4bb1f640866ec3639849d99a
       react-resizable-panels:
         specifier: ^2.1.4
         version: 2.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -83,11 +83,14 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 =======
 >>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
+>>>>>>> 9710518f64691c4f4bb1f640866ec3639849d99a
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.5.4
@@ -6418,8 +6421,11 @@ snapshots:
 <<<<<<< HEAD
   semver@7.6.3: {}
 
+<<<<<<< HEAD
+=======
 =======
 >>>>>>> c3343459edfa731fd95146b4dba84247e36b3c7a
+>>>>>>> 9710518f64691c4f4bb1f640866ec3639849d99a
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
