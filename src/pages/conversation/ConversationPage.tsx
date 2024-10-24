@@ -15,29 +15,13 @@ const ConversationPage = () => {
     selectedFile,
     prChangedFileList,
     setSelectedFile,
-    setPrChangedFileList,
   } = prInfoStore();
 
   useEffect(() => {
-    const InitializePrData = async () => {
-      try {
-        const prData = {
-          owner: "jungle-6-3",
-          repo: "code-sync-fe",
-          prNumber: 12,
-        };
-        await setPrChangedFileList(prData.owner, prData.repo, prData.prNumber);
-      } catch (e) {
-        alert(e);
-      }
-    };
-
-    InitializePrData();
-
     return () => {
       socket.disconnect();
     };
-  }, [setPrChangedFileList]);
+  }, []);
 
   const fileOnclick = (selectedFile: PrChangedFileInfo) => {
     setSelectedFile(selectedFile);

@@ -23,7 +23,7 @@ export interface PrChangedFileInfo {
   beforeContent: string;
 }
 
-interface PrMetaDataInfo {
+export interface PrMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
@@ -72,11 +72,15 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   setSelectedFile: (newFile) => set({ selectedFile: newFile }),
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
-  setPrChangedFileList: async (
+  setPrChangedFileList: async ({
+    owner,
+    repo,
+    prNumber,
+  }: {
     owner: string,
     repo: string,
     prNumber: number,
-  ) => {
+  }) => {
     const response = await getPrData({
       owner,
       repo,
@@ -102,20 +106,20 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         let beforeContent =
           commit.status === "modified"
             ? await getFileContent(
-                newPrInfo.requestUserInfo.owner,
-                repo,
-                newPrInfo.requestUserInfo.branchName,
-                commit.filename,
-              )
+              newPrInfo.requestUserInfo.owner,
+              repo,
+              newPrInfo.requestUserInfo.branchName,
+              commit.filename,
+            )
             : "";
         let afterContent =
           commit.status === "added" || commit.status === "modified"
             ? await getFileContent(
-                newPrInfo.requireUserInfo.owner,
-                repo,
-                newPrInfo.requireUserInfo.branchName,
-                commit.filename,
-              )
+              newPrInfo.requireUserInfo.owner,
+              repo,
+              newPrInfo.requireUserInfo.branchName,
+              commit.filename,
+            )
             : "";
 
         beforeContent =
