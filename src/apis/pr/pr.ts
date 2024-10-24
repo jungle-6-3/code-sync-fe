@@ -54,3 +54,20 @@ export const getFileContent = async (
   });
   return response;
 };
+
+interface CheckValidPullRequest {
+  owner: string;
+  repo: string;
+  prNumber: string;
+}
+
+export const checkValidPullRequest = async ({ owner, prNumber, repo }: CheckValidPullRequest) => {
+  if (!owner || !repo || !prNumber) {
+    throw new Error("Invalid URL");
+  }
+
+  const response = await githubHttps.get(
+    `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`,
+  );
+  return response;
+};

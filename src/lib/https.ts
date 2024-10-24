@@ -3,6 +3,7 @@ import VITE_BASE_URL from "../env.ts";
 
 const https = axios.create({
   baseURL: VITE_BASE_URL,
+  withCredentials: true,
   timeout: 10000,
 });
 
