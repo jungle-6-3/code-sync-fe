@@ -53,8 +53,16 @@ const ConversationPage = () => {
                 {prChangedFileList.map((file, _) => {
                   return (
                     <CodeSplitEditor
-                      originalValue={file.beforeContent}
-                      modifiedValue={file.afterContent}
+                      originalValue={JSON.stringify(
+                        file.beforeContent,
+                        null,
+                        "\t",
+                      )}
+                      modifiedValue={JSON.stringify(
+                        file.afterContent,
+                        null,
+                        "\t",
+                      )}
                       key={_}
                     />
                   );
