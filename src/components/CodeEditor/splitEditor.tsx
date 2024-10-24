@@ -12,7 +12,7 @@ const CodeSplitEditor = ({
   return (
     <>
       <DiffEditor
-        height="1000px"
+        height="150px"
         original={originalValue}
         modified={modifiedValue}
         originalLanguage="typescript"
