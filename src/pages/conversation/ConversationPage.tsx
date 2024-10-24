@@ -8,10 +8,10 @@ import {
 import socket from "@/lib/socket";
 import { prInfoStore } from "@/stores/github";
 import { useEffect } from "react";
-
-const owner = "JNU-econovation";
-const repo = "econo-homepage";
-const prNumber = 126;
+// https://github.com/jungle-6-3/code-sync-fe/pull/12
+const owner = "jungle-6-3";
+const repo = "code-sync-fe";
+const prNumber = 12;
 
 const ConversationPage = () => {
   const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
