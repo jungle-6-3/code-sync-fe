@@ -33,7 +33,8 @@ interface PrInfoPropsStore {
   prChangedFileList: PrChangedFileInfo[];
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
-  setPrChangedFileList: (owner: string, repo: string, prNumber: number) => void;
+  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => void;
+  resetPrMeTaData: () => void;
 }
 
 export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
@@ -58,11 +59,15 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
-  setPrChangedFileList: async (
+  setPrChangedFileList: async ({
+    owner,
+    repo,
+    prNumber,
+  }: {
     owner: string,
     repo: string,
     prNumber: number,
-  ) => {
+  }) => {
     const response = await getPrData({
       owner,
       repo,
@@ -88,20 +93,20 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         const beforeContent =
           commit.status === "modified"
             ? await getFileContent(
-                newPrInfo.requestUserInfo.owner,
-                repo,
-                newPrInfo.requestUserInfo.branchName,
-                commit.filename,
-              )
+              newPrInfo.requestUserInfo.owner,
+              repo,
+              newPrInfo.requestUserInfo.branchName,
+              commit.filename,
+            )
             : "";
         const afterContent =
           commit.status === "added" || commit.status === "modified"
             ? await getFileContent(
-                newPrInfo.requireUserInfo.owner,
-                repo,
-                newPrInfo.requireUserInfo.branchName,
-                commit.filename,
-              )
+              newPrInfo.requireUserInfo.owner,
+              repo,
+              newPrInfo.requireUserInfo.branchName,
+              commit.filename,
+            )
             : "";
         return {
           filename: commit.filename,

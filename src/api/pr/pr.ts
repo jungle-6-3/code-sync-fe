@@ -55,12 +55,13 @@ export const getFileContent = async (
   return response;
 };
 
-export const checkValidPullRequest = async (url: string) => {
-  const splitedUrl = url.split("/").filter((item) => item !== "");
-  const owner = splitedUrl[2];
-  const repo = splitedUrl[3];
-  const prNumber = splitedUrl[5];
+interface CheckValidPullRequest {
+  owner: string;
+  repo: string;
+  prNumber: string;
+}
 
+export const checkValidPullRequest = async ({ owner, prNumber, repo }: CheckValidPullRequest) => {
   if (!owner || !repo || !prNumber) {
     throw new Error("Invalid URL");
   }

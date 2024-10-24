@@ -10,28 +10,13 @@ import { prInfoStore } from "@/stores/github.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
-  const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
+  const { prInfo, prChangedFileList } = prInfoStore();
 
   useEffect(() => {
-    const InitializePrData = async () => {
-      try {
-        const prData = {
-          owner: "jungle-6-3",
-          repo: "code-sync-fe",
-          prNumber: 12,
-        };
-        await setPrChangedFileList(prData.owner, prData.repo, prData.prNumber);
-      } catch (e) {
-        alert(e);
-      }
-    };
-
-    InitializePrData();
-
     return () => {
       socket.disconnect();
     };
-  }, [setPrChangedFileList]);
+  }, []);
 
   return (
     <div className="flex h-screen flex-col">

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { prInfoStore } from "@/stores/github.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -21,6 +22,7 @@ const createRoomSchema = z.object({
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
+  const { setPrChangedFileList } = prInfoStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
@@ -30,13 +32,40 @@ const CreateRoomPage = () => {
   });
 
   const onSubmit = (value: z.infer<typeof createRoomSchema>) => {
-    checkValidPullRequest(value["gh-pr-link"])
+    const splitedUrl = value["gh-pr-link"]
+      .split("/")
+      .filter((item) => item !== "");
+    const owner = splitedUrl[2];
+    const repo = splitedUrl[3];
+    const prNumber = splitedUrl[5];
+
+    checkValidPullRequest({ owner, repo, prNumber })
       .then((response) => {
-        if (response.status === 200) navigate("/1");
+        if (response.status === 200) {
+          setIsError(false);
+          InitializePrData({ owner, prNumber: +prNumber, repo });
+          navigate("/conversation");
+        }
       })
       .catch(() => {
         setIsError(true);
       });
+  };
+
+  const InitializePrData = async ({
+    owner,
+    repo,
+    prNumber,
+  }: {
+    owner: string;
+    repo: string;
+    prNumber: number;
+  }) => {
+    try {
+      setPrChangedFileList({ owner, prNumber, repo });
+    } catch (e) {
+      alert(e);
+    }
   };
 
   return (
