@@ -108,7 +108,9 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         return {
           filename: commit.filename,
           status: commit.status,
-          language: getLanguageFromFileName(commit.filename.split(".")[1]),
+          language: getLanguageFromFileName(
+            String(commit.filename.split(".").at(-1)),
+          ),
           additions: commit.additions,
           deletions: commit.deletions,
           afterContent,
