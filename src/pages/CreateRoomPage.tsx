@@ -23,6 +23,7 @@ const createRoomSchema = z.object({
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { setPrChangedFileList } = prInfoStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
@@ -32,20 +33,27 @@ const CreateRoomPage = () => {
     },
   });
 
-  const onSubmit = (value: z.infer<typeof createRoomSchema>) => {
+  const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
     const { owner, repo, prNumber } = extractGitHubPrDetails(value);
+    setIsLoading(true);
 
-    checkValidPullRequest({ owner, repo, prNumber })
+    const result = await checkValidPullRequest({ owner, repo, prNumber })
       .then((response) => {
         if (response.status === 200) {
           setIsError(false);
           InitializePrData({ owner, prNumber: +prNumber, repo });
-          navigate("/conversation");
         }
+        return false;
       })
       .catch(() => {
         setIsError(true);
+        return false;
       });
+    if (result) {
+      navigate("/conversation");
+    }
+
+    setIsLoading(false);
   };
 
   const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
