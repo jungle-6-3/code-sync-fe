@@ -23,7 +23,8 @@ const createRoomSchema = z.object({
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [
+    , setIsLoading] = useState(false);
   const { setPrChangedFileList } = prInfoStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
@@ -43,7 +44,7 @@ const CreateRoomPage = () => {
           setIsError(false);
           InitializePrData({ owner, prNumber: +prNumber, repo });
         }
-        return false;
+        return true;
       })
       .catch(() => {
         setIsError(true);

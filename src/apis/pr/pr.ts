@@ -61,7 +61,11 @@ interface CheckValidPullRequest {
   prNumber: string;
 }
 
-export const checkValidPullRequest = async ({ owner, prNumber, repo }: CheckValidPullRequest) => {
+export const checkValidPullRequest = async ({
+  owner,
+  prNumber,
+  repo,
+}: CheckValidPullRequest) => {
   if (!owner || !repo || !prNumber) {
     throw new Error("Invalid URL");
   }
