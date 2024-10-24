@@ -9,24 +9,29 @@ import socket from "@/lib/socket";
 import { prInfoStore } from "@/stores/github";
 import { useEffect } from "react";
 
-// https://github.com/JNU-econovation/econo-homepage/pull/133
-
-const owner = "JNU-econovation";
-const repo = "econo-homepage";
-const prNumber = 126;
-
 const ConversationPage = () => {
   const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
 
   useEffect(() => {
-    setPrChangedFileList(owner, repo, prNumber);
+    const InitializePrData = async () => {
+      try {
+        const prData = {
+          owner: "jungle-6-3",
+          repo: "code-sync-fe",
+          prNumber: 12,
+        };
+        await setPrChangedFileList(prData.owner, prData.repo, prData.prNumber);
+      } catch (e) {
+        alert(e);
+      }
+    };
+
+    InitializePrData();
+
     return () => {
-      // cjonnecting when conversation page is mounted
       socket.disconnect();
     };
   }, [setPrChangedFileList]);
-
-  if (!prChangedFileList) return <div>loading</div>;
 
   return (
     <div className="flex h-screen flex-col">
@@ -57,8 +62,16 @@ const ConversationPage = () => {
                 {prChangedFileList.map((file, _) => {
                   return (
                     <CodeSplitEditor
-                      originalValue={file.beforeContent}
-                      modifiedValue={file.afterContent}
+                      originalValue={JSON.stringify(
+                        file.beforeContent,
+                        null,
+                        "\t",
+                      )}
+                      modifiedValue={JSON.stringify(
+                        file.afterContent,
+                        null,
+                        "\t",
+                      )}
                       key={_}
                     />
                   );
