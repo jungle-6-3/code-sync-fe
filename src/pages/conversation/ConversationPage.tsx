@@ -8,18 +8,27 @@ import {
 import socket from "@/lib/socket";
 import { prInfoStore } from "@/stores/github";
 import { useEffect } from "react";
-// https://github.com/jungle-6-3/code-sync-fe/pull/12
-const owner = "jungle-6-3";
-const repo = "code-sync-fe";
-const prNumber = 12;
 
 const ConversationPage = () => {
   const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
 
   useEffect(() => {
-    setPrChangedFileList(owner, repo, prNumber);
+    const InitializePrData = async () => {
+      try {
+        const prData = {
+          owner: "jungle-6-3",
+          repo: "code-sync-fe",
+          prNumber: 12,
+        };
+        await setPrChangedFileList(prData.owner, prData.repo, prData.prNumber);
+      } catch (e) {
+        alert(e);
+      }
+    };
+
+    InitializePrData();
+
     return () => {
-      // cjonnecting when conversation page is mounted
       socket.disconnect();
     };
   }, [setPrChangedFileList]);

@@ -21,14 +21,27 @@ interface PrChangedFileInfo {
   beforeContent: string;
 }
 
+interface PrMetaDataInfo {
+  owner: string;
+  repo: string;
+  prNumber: number;
+}
+
 interface PrInfoPropsStore {
+  prMetaData: PrMetaDataInfo;
   prInfo: PrInfoProps;
   prChangedFileList: PrChangedFileInfo[];
+  setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
   setPrChangedFileList: (owner: string, repo: string, prNumber: number) => void;
 }
 
 export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
+  prMetaData: {
+    owner: "",
+    repo: "",
+    prNumber: 0,
+  },
   prInfo: {
     userId: "",
     requireUserInfo: {
@@ -41,7 +54,10 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     },
   },
   prChangedFileList: [],
+  setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
   setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
+  resetPrMeTaData: () =>
+    set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
   setPrChangedFileList: async (
     owner: string,
     repo: string,
@@ -99,6 +115,20 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     );
     set({ prChangedFileList: processedFiles });
   },
+  resetPrInfo: () =>
+    set({
+      prInfo: {
+        userId: "",
+        requireUserInfo: {
+          owner: "",
+          branchName: "",
+        },
+        requestUserInfo: {
+          owner: "",
+          branchName: "",
+        },
+      },
+    }),
 }));
 
 // /raw/jungle-6-3/code-sync-fe/feat/3/src/routers/index.tsx
