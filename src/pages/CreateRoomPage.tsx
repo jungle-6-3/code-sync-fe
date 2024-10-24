@@ -1,4 +1,5 @@
 import { checkValidPullRequest } from "@/apis/pr/pr";
+import { SpinIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,6 +9,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useConversationMutation } from "@/hooks/useConversationMutation";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
 import { prInfoStore, PrMetaDataInfo } from "@/stores/github.store";
@@ -23,7 +25,9 @@ const createRoomSchema = z.object({
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { mutate: createRoom } = useConversationMutation();
+
   const { setPrChangedFileList } = prInfoStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
@@ -49,8 +53,23 @@ const CreateRoomPage = () => {
         setIsError(true);
         return false;
       });
+
     if (result) {
-      navigate("/conversation");
+      createRoom(
+        { githubPrUrl: value.ghPrLink },
+        {
+          onSuccess: ({ data }) => {
+            navigate(`/${data.redirectUrl}`);
+          },
+          onError: ({ message }) => {
+            alert(message);
+          },
+          onSettled: () => {
+            setIsLoading(false);
+          },
+        },
+      );
+      return;
     }
 
     setIsLoading(false);
@@ -106,7 +125,7 @@ const CreateRoomPage = () => {
               )}
             />
             <Button type="submit" className="bg-gray-400" size="lg">
-              새 회의 생성하기
+              {isLoading ? <SpinIcon /> : "새 회의 생성하기"}
             </Button>
           </form>
         </Form>

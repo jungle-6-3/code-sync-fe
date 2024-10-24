@@ -37,8 +37,7 @@ export default function SignUp() {
         password: data.userpassword,
       },
       {
-        onSuccess: (response: SignUpResponseUserDto) => {
-          console.log(response);
+        onSuccess: () => {
           navigate("/");
         },
         onError: (error: Error) => {
