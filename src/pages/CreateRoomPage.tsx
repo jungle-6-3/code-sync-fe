@@ -28,13 +28,14 @@ const CreateRoomPage = () => {
     },
   });
 
-  const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
-    try {
-      const response = await checkValidPullRequest(value["gh-pr-link"]);
-      if (response.status === 200) navigate("/1");
-    } catch (e: unknown) {
-      setIsError(true);
-    }
+  const onSubmit = (value: z.infer<typeof createRoomSchema>) => {
+    checkValidPullRequest(value["gh-pr-link"])
+      .then((response) => {
+        if (response.status === 200) navigate("/1");
+      })
+      .catch(() => {
+        setIsError(true);
+      });
   };
 
   return (
