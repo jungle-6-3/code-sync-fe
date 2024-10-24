@@ -13,9 +13,9 @@ interface PrUserInfo {
   branchName: string;
 }
 
-interface PrChangedFileInfo {
+export interface PrChangedFileInfo {
   filename: string;
-  status: "modified" | "added" | "removed" | "renamed";
+  status: "init" | "modified" | "added" | "removed" | "renamed";
   language: string;
   additions: number;
   deletions: number;
@@ -32,9 +32,11 @@ interface PrMetaDataInfo {
 interface PrInfoPropsStore {
   prMetaData: PrMetaDataInfo;
   prInfo: PrInfoProps;
+  selectedFile: PrChangedFileInfo;
   prChangedFileList: PrChangedFileInfo[];
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
+  setSelectedFile: (newFile: PrChangedFileInfo) => void;
   setPrChangedFileList: (owner: string, repo: string, prNumber: number) => void;
 }
 
@@ -55,9 +57,19 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       branchName: "",
     },
   },
+  selectedFile: {
+    filename: "",
+    status: "init",
+    language: "",
+    additions: 0,
+    deletions: 0,
+    afterContent: "",
+    beforeContent: ",",
+  },
   prChangedFileList: [],
   setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
   setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
+  setSelectedFile: (newFile) => set({ selectedFile: newFile }),
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
   setPrChangedFileList: async (

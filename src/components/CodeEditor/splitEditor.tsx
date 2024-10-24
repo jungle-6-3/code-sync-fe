@@ -13,7 +13,6 @@ const CodeSplitEditor = ({
 }: CodeSplitEditorProps) => {
   return (
     <DiffEditor
-      height="100px"
       language={language}
       original={originalValue}
       modified={modifiedValue}

@@ -6,11 +6,17 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import socket from "@/lib/socket";
-import { prInfoStore } from "@/stores/github";
-import { useEffect } from "react";
+import { PrChangedFileInfo, prInfoStore } from "@/stores/github";
+import { useEffect, useState } from "react";
 
 const ConversationPage = () => {
-  const { prInfo, prChangedFileList, setPrChangedFileList } = prInfoStore();
+  const {
+    prInfo,
+    selectedFile,
+    prChangedFileList,
+    setSelectedFile,
+    setPrChangedFileList,
+  } = prInfoStore();
 
   useEffect(() => {
     const InitializePrData = async () => {
@@ -33,6 +39,10 @@ const ConversationPage = () => {
     };
   }, [setPrChangedFileList]);
 
+  const fileOnclick = (selectedFile: PrChangedFileInfo) => {
+    setSelectedFile(selectedFile);
+  };
+
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
@@ -48,7 +58,13 @@ const ConversationPage = () => {
               <h2 className="text-lg font-semibold">Changed Files</h2>
               <ul className="mt-2">
                 {prChangedFileList.map((file, index) => (
-                  <li key={index} className="py-1 text-sm">
+                  <li
+                    key={index}
+                    className="py-1 text-sm"
+                    onClick={() => {
+                      fileOnclick(file);
+                    }}
+                  >
                     {file.filename}
                   </li>
                 ))}
@@ -59,17 +75,20 @@ const ConversationPage = () => {
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                {prChangedFileList.map((file, _) => {
-                  console.log(file.language);
-                  return (
-                    <CodeSplitEditor
-                      originalValue={file.beforeContent}
-                      modifiedValue={file.afterContent}
-                      language={file.language}
-                      key={_}
-                    />
-                  );
-                })}
+                {selectedFile && (
+                  <CodeSplitEditor
+                    originalValue={selectedFile.beforeContent}
+                    modifiedValue={selectedFile.afterContent}
+                    language={selectedFile.language}
+                  />
+                )}
+                {/* {prChangedFileList[selectFile] && (
+                  <CodeSplitEditor
+                    originalValue={prChangedFileList[selectFile].beforeContent}
+                    modifiedValue={prChangedFileList[selectFile].afterContent}
+                    language={prChangedFileList[selectFile].language}
+                  />
+                )} */}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
