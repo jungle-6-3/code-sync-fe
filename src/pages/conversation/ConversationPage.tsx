@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/resizable";
 import socket from "@/lib/socket";
 import { PrChangedFileInfo, prInfoStore } from "@/stores/github";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const ConversationPage = () => {
   const {
@@ -82,13 +82,6 @@ const ConversationPage = () => {
                     language={selectedFile.language}
                   />
                 )}
-                {/* {prChangedFileList[selectFile] && (
-                  <CodeSplitEditor
-                    originalValue={prChangedFileList[selectFile].beforeContent}
-                    modifiedValue={prChangedFileList[selectFile].afterContent}
-                    language={prChangedFileList[selectFile].language}
-                  />
-                )} */}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
