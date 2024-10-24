@@ -60,6 +60,11 @@ export const checkValidPullRequest = async (url: string) => {
   const owner = splitedUrl[2];
   const repo = splitedUrl[3];
   const prNumber = splitedUrl[5];
+
+  if (!owner || !repo || !prNumber) {
+    throw new Error("Invalid URL");
+  }
+
   const response = await githubHttps.get(
     `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`,
   );
