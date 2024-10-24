@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getFileContent, getPrCommitsData, getPrData } from "@/api/pr/pr";
+import { getFileContent, getPrCommitsData, getPrData } from "@/apis/pr/pr";
 import { getLanguageFromFileName } from "@/lib/file";
 
 interface PrInfoProps {
@@ -87,7 +87,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
     const processedFiles = await Promise.all(
       fetchCommitsData.map(async (commit) => {
-        const beforeContent =
+        let beforeContent =
           commit.status === "modified"
             ? await getFileContent(
                 newPrInfo.requestUserInfo.owner,
@@ -96,7 +96,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
                 commit.filename,
               )
             : "";
-        const afterContent =
+        let afterContent =
           commit.status === "added" || commit.status === "modified"
             ? await getFileContent(
                 newPrInfo.requireUserInfo.owner,
@@ -105,6 +105,17 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
                 commit.filename,
               )
             : "";
+
+        beforeContent =
+          typeof beforeContent === "object"
+            ? JSON.stringify(beforeContent, null, 2)
+            : beforeContent;
+
+        afterContent =
+          typeof afterContent === "object"
+            ? JSON.stringify(afterContent, null, 2)
+            : afterContent;
+
         return {
           filename: commit.filename,
           status: commit.status,
@@ -113,8 +124,8 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
           ),
           additions: commit.additions,
           deletions: commit.deletions,
-          afterContent,
-          beforeContent,
+          afterContent: afterContent || "",
+          beforeContent: beforeContent || "",
         };
       }),
     );

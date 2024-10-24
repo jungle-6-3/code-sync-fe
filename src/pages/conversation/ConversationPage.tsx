@@ -63,16 +63,8 @@ const ConversationPage = () => {
                   console.log(file.language);
                   return (
                     <CodeSplitEditor
-                      originalValue={JSON.stringify(
-                        file.beforeContent,
-                        null,
-                        "\t",
-                      )}
-                      modifiedValue={JSON.stringify(
-                        file.afterContent,
-                        null,
-                        "\t",
-                      )}
+                      originalValue={file.beforeContent}
+                      modifiedValue={file.afterContent}
                       language={file.language}
                       key={_}
                     />
