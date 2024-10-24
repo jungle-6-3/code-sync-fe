@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { socketInviteUser, SocketJoinRequestBy } from "@/lib/socket";
+import { ConversationSocket, SocketJoinRequestBy } from "@/lib/socket";
 import { toast } from "sonner";
 
 const JoinRequestByToast = ({ data, message }: SocketJoinRequestBy) => {
+  const socket = ConversationSocket.getInstance();
   toast.custom(
     (t) => (
       <div className="flex w-80 items-center justify-between rounded-lg border bg-white px-4 py-2">
@@ -18,7 +19,7 @@ const JoinRequestByToast = ({ data, message }: SocketJoinRequestBy) => {
           </Button>
           <Button
             onClick={() => {
-              socketInviteUser({ email: data.participant.email });
+              socket.socketInviteUser({ email: data.participant.email });
               toast.dismiss(t);
             }}
           >

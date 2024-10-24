@@ -5,18 +5,19 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import socket from "@/lib/socket";
+import { ConversationSocket } from "@/lib/socket";
 import { prInfoStore } from "@/stores/github.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
   const { prInfo, prChangedFileList } = prInfoStore();
+  const socket = ConversationSocket.getInstance();
 
   useEffect(() => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [socket]);
 
   return (
     <div className="flex h-screen flex-col">
@@ -45,7 +46,6 @@ const ConversationPage = () => {
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
                 {prChangedFileList.map((file, _) => {
-                  console.log(file.language);
                   return (
                     <CodeSplitEditor
                       originalValue={JSON.stringify(
