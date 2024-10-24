@@ -23,7 +23,7 @@ interface PrChangedFileInfo {
   beforeContent: string;
 }
 
-interface PrMetaDataInfo {
+export interface PrMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
@@ -35,7 +35,7 @@ interface PrInfoPropsStore {
   prChangedFileList: PrChangedFileInfo[];
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
-  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => void;
+  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
   resetPrMeTaData: () => void;
 }
 

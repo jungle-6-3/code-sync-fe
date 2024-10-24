@@ -8,8 +8,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
-import { prInfoStore } from "@/stores/github.store";
+import { prInfoStore, PrMetaDataInfo } from "@/stores/github.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const createRoomSchema = z.object({
-  "gh-pr-link": z.string().url(),
+  ghPrLink: z.string().url(),
 });
 
 const CreateRoomPage = () => {
@@ -27,17 +28,12 @@ const CreateRoomPage = () => {
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
     defaultValues: {
-      "gh-pr-link": "",
+      ghPrLink: "",
     },
   });
 
   const onSubmit = (value: z.infer<typeof createRoomSchema>) => {
-    const splitedUrl = value["gh-pr-link"]
-      .split("/")
-      .filter((item) => item !== "");
-    const owner = splitedUrl[2];
-    const repo = splitedUrl[3];
-    const prNumber = splitedUrl[5];
+    const { owner, repo, prNumber } = extractGitHubPrDetails(value);
 
     checkValidPullRequest({ owner, repo, prNumber })
       .then((response) => {
@@ -52,21 +48,8 @@ const CreateRoomPage = () => {
       });
   };
 
-  const InitializePrData = async ({
-    owner,
-    repo,
-    prNumber,
-  }: {
-    owner: string;
-    repo: string;
-    prNumber: number;
-  }) => {
-    try {
-      setPrChangedFileList({ owner, prNumber, repo });
-    } catch (e) {
-      alert(e);
-    }
-  };
+  const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
+    setPrChangedFileList({ owner, prNumber, repo }).catch((e) => alert(e));
 
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">
@@ -86,7 +69,7 @@ const CreateRoomPage = () => {
           >
             <FormField
               control={form.control}
-              name="gh-pr-link"
+              name="ghPrLink"
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormLabel className="relative flex flex-col gap-2">
