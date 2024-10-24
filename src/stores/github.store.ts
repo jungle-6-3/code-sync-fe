@@ -23,7 +23,7 @@ export interface PrChangedFileInfo {
   beforeContent: string;
 }
 
-interface PrMetaDataInfo {
+export interface PrMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
@@ -36,8 +36,9 @@ interface PrInfoPropsStore {
   prChangedFileList: PrChangedFileInfo[];
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   setPrInfo: (prInfo: PrInfoProps) => void;
-  setselectedFile: (newFile: PrChangedFileInfo) => void;
-  setPrChangedFileList: (owner: string, repo: string, prNumber: number) => void;
+  setSelectedFile: (newFile: PrChangedFileInfo) => void;
+  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  resetPrMeTaData: () => void;
 }
 
 export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
@@ -69,19 +70,24 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   prChangedFileList: [],
   setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
   setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
-  setselectedFile: (newFile) => set({ selectedFile: newFile }),
+  setSelectedFile: (newFile) => set({ selectedFile: newFile }),
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
-  setPrChangedFileList: async (
-    owner: string,
-    repo: string,
-    prNumber: number,
-  ) => {
+  setPrChangedFileList: async ({
+    owner,
+    repo,
+    prNumber,
+  }: {
+    owner: string;
+    repo: string;
+    prNumber: number;
+  }) => {
     const response = await getPrData({
       owner,
       repo,
       prNumber,
     });
+    console.log(response);
     const [requireUser, requireBranchName] = response.head.label.split(":");
     const [requestOner, requestBranchName] = response.base.label.split(":");
     const newPrInfo = {
@@ -99,25 +105,32 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
     const processedFiles = await Promise.all(
       fetchCommitsData.map(async (commit) => {
-        let beforeContent =
-          commit.status === "modified"
-            ? await getFileContent(
-                newPrInfo.requestUserInfo.owner,
-                repo,
-                newPrInfo.requestUserInfo.branchName,
-                commit.filename,
-              )
-            : "";
-        let afterContent =
-          commit.status === "added" || commit.status === "modified"
-            ? await getFileContent(
-                newPrInfo.requireUserInfo.owner,
-                repo,
-                newPrInfo.requireUserInfo.branchName,
-                commit.filename,
-              )
-            : "";
-
+        let beforeContent;
+        let afterContent;
+        if (commit.status === "modified") {
+          try {
+            beforeContent = await getFileContent(
+              newPrInfo.requestUserInfo.owner,
+              repo,
+              newPrInfo.requestUserInfo.branchName,
+              commit.filename,
+            );
+          } catch (e) {
+            beforeContent = "";
+          }
+        }
+        if (commit.status === "added" || commit.status === "modified") {
+          try {
+            afterContent = await getFileContent(
+              newPrInfo.requireUserInfo.owner,
+              repo,
+              newPrInfo.requireUserInfo.branchName,
+              commit.filename,
+            );
+          } catch (e) {
+            afterContent = "";
+          }
+        }
         beforeContent =
           typeof beforeContent === "object"
             ? JSON.stringify(beforeContent, null, 2)
@@ -158,7 +171,3 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       },
     }),
 }));
-
-// /raw/jungle-6-3/code-sync-fe/feat/3/src/routers/index.tsx
-// https://code-sync.net/gh/raw/jungle-6-3/code-sync-fe/feat/3/src/routers/index.tsx
-// https://code-sync.net/gh/raw/jungle-6-3/code-sync-fe/feat/12/src/hooks/useQuery.tsx

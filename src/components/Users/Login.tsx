@@ -9,16 +9,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import formLoginSchema from "@/components/Users/LoginSchema";
-import useLoginQuery from "@/hooks/Login/useLoginQuery";
+import useLoginQuery from "@/hooks/useLoginQuery";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Terminal } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 export default function Login() {
   const [loginValid, setLoginValid] = useState(true);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formLoginSchema>>({
     resolver: zodResolver(formLoginSchema),
@@ -36,8 +37,8 @@ export default function Login() {
         password: data.userpassword,
       },
       {
-        onSuccess: (data) => {
-          console.log(data);
+        onSuccess: () => {
+          navigate("/room/create");
         },
         onError: (error) => {
           setLoginValid(false);
