@@ -30,23 +30,35 @@ export interface PrMetaDataInfo {
 }
 
 interface PrInfoPropsStore {
-  prMetaData: PrMetaDataInfo;
   prInfo: PrInfoProps;
+  setPrInfo: (prInfo: PrInfoProps) => void;
+  resetPrInfo: () => void; // 누락된 타입 추가
+}
+interface fileSysyemPropsStore {
   selectedFile: PrChangedFileInfo;
   prChangedFileList: PrChangedFileInfo[];
-  setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
-  setPrInfo: (prInfo: PrInfoProps) => void;
   setSelectedFile: (newFile: PrChangedFileInfo) => void;
   setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+}
+
+interface prMetaDataPropsStore {
+  prMetaData: PrMetaDataInfo;
+  setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
   resetPrMeTaData: () => void;
 }
 
-export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
+export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
   prMetaData: {
     owner: "",
     repo: "",
     prNumber: 0,
   },
+  setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
+  resetPrMeTaData: () =>
+    set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
+}));
+
+export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   prInfo: {
     userId: "",
     requireUserInfo: {
@@ -58,6 +70,24 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       branchName: "",
     },
   },
+  setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
+  resetPrInfo: () =>
+    set({
+      prInfo: {
+        userId: "",
+        requireUserInfo: {
+          owner: "",
+          branchName: "",
+        },
+        requestUserInfo: {
+          owner: "",
+          branchName: "",
+        },
+      },
+    }),
+}));
+
+export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
   selectedFile: {
     filename: "",
     status: "init",
@@ -68,11 +98,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     beforeContent: ",",
   },
   prChangedFileList: [],
-  setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
-  setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
   setSelectedFile: (newFile) => set({ selectedFile: newFile }),
-  resetPrMeTaData: () =>
-    set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
   setPrChangedFileList: async ({
     owner,
     repo,
@@ -100,7 +126,9 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         branchName: requestBranchName,
       },
     };
-    set({ prInfo: newPrInfo });
+
+    prInfoStore.getState().setPrInfo(newPrInfo);
+
     const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
     const processedFiles = await Promise.all(
       fetchCommitsData.map(async (commit) => {
@@ -155,18 +183,4 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     );
     set({ prChangedFileList: processedFiles });
   },
-  resetPrInfo: () =>
-    set({
-      prInfo: {
-        userId: "",
-        requireUserInfo: {
-          owner: "",
-          branchName: "",
-        },
-        requestUserInfo: {
-          owner: "",
-          branchName: "",
-        },
-      },
-    }),
 }));
