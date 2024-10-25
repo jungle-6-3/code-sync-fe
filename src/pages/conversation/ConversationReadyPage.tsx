@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
-import { ConversationSocket } from "@/lib/socket";
+import { socketStore } from "@/stores/socket.store";
 
 interface ConversationReadyPageProps {
   setJoin: (online: boolean) => void;
@@ -11,25 +11,35 @@ interface ConversationReadyPageProps {
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
+  const roomId = window.location.pathname.split("/")[1];
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
-  const socket = ConversationSocket.getInstance();
+  const socket = socketStore((state) => state.socket);
+  const setSocket = socketStore((state) => state.setSocket);
+  const setRoomUUid = socketStore((state) => state.setRoomUuid);
 
   const onStartConversation = () => {
-    // if (socket.connected && isUserMediaOn.audio) setJoin(true);
-    setJoin(true);
+    if (socket?.connected && isUserMediaOn.audio) setJoin(true);
   };
+
+  useEffect(() => {
+    setRoomUUid(roomId);
+    setSocket();
+  }, [roomId, setRoomUUid, setSocket]);
+
+  useEffect(() => {
+    if (!!socket && !socket.connected) socket.connect();
+  }, [socket]);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = mediaStream;
     }
-  });
+  }, [mediaStream]);
 
   useEffect(() => {
-    socket.connect();
     startWebcam({ audio: true, video: true });
-  }, [startWebcam, socket]);
+  }, [startWebcam]);
 
   return (
     <div className="flex min-h-screen items-center justify-center gap-8 max-lg:flex-col">

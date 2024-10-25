@@ -45,7 +45,6 @@ const CreateRoomPage = () => {
       .then((response) => {
         if (response.status === 200) {
           setIsError(false);
-          InitializePrData({ owner, prNumber: +prNumber, repo });
         }
         return true;
       })
@@ -60,11 +59,12 @@ const CreateRoomPage = () => {
         {
           onSuccess: ({ data }) => {
             navigate(`/${data.redirectUrl}`);
+            InitializePrData({ owner, prNumber: +prNumber, repo }).then(() => {
+              setIsLoading(false);
+            });
           },
           onError: ({ message }) => {
             alert(message);
-          },
-          onSettled: () => {
             setIsLoading(false);
           },
         },

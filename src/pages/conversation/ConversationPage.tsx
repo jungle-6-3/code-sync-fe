@@ -1,22 +1,36 @@
 import { CodeSplitEditor } from "@/components/CodeEditor";
 import { LeftGNB, TopGNB } from "@/components/GNB";
+import { JoinRequestByToast, UserDisconnectedToast } from "@/components/Toast";
+import { SocketJoinRequestBy } from "@/components/Toast/JoinReqeustBy";
+import { SocketUserDisconnected } from "@/components/Toast/UserDisconnected";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ConversationSocket } from "@/lib/socket";
 import { PrChangedFileInfo, prInfoStore } from "@/stores/github.store";
+import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
   const { prInfo, selectedFile, prChangedFileList, setSelectedFile } =
     prInfoStore();
-  const socket = ConversationSocket.getInstance();
+  const socket = socketStore((state) => state.socket);
 
   useEffect(() => {
+    if (!socket) return;
+
+    socket.on("join-request-by", ({ data, message }: SocketJoinRequestBy) => {
+      JoinRequestByToast({ data, message });
+    });
+    socket.on("user-disconnected", (data: SocketUserDisconnected) => {
+      UserDisconnectedToast(data);
+    });
+
     return () => {
       socket.disconnect();
+      socket.off("join-request-by");
+      socket.off("user-disconnected");
     };
   }, [socket]);
 
