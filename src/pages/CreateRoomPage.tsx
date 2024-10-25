@@ -104,10 +104,8 @@ const CreateRoomPage = () => {
               name="ghPrLink"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel className="relative flex flex-col gap-2">
-                    <FormLabel className="font-normal text-gray-400">
-                      Github PR 주소
-                    </FormLabel>
+                  <FormLabel className="relative flex flex-col gap-2 font-normal text-gray-400">
+                    Github PR 주소
                     <FormControl>
                       <Input
                         {...field}
