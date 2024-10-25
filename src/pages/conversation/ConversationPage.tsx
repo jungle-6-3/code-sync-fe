@@ -8,13 +8,18 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { PrChangedFileInfo, prInfoStore } from "@/stores/github.store";
+import {
+  fileSysyemStore,
+  PrChangedFileInfo,
+  prInfoStore,
+} from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
-  const { prInfo, selectedFile, prChangedFileList, setSelectedFile } =
-    prInfoStore();
+  const { prInfo } = prInfoStore();
+  const { selectedFile, prChangedFileList, setSelectedFile } =
+    fileSysyemStore();
   const socket = socketStore((state) => state.socket);
 
   useEffect(() => {
