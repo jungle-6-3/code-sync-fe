@@ -1,4 +1,5 @@
 import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
+import FileTreeComponent from "@/components/File/filetree";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
@@ -59,7 +60,7 @@ const ConversationPage = () => {
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
-            <div className="p-4">
+            {/* <div className="p-4">
               <h2 className="text-lg font-semibold">Changed Files</h2>
               <ul className="mt-2">
                 {prChangedFileList.map((file, index) => (
@@ -74,7 +75,8 @@ const ConversationPage = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
+            <FileTreeComponent />
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>

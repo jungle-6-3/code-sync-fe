@@ -8,37 +8,20 @@ interface PrInfoProps {
   requestUserInfo: PrUserInfo;
 }
 
-interface PrUserInfo {
-  owner: string;
-  branchName: string;
-}
-
-export interface PrChangedFileInfo {
-  filename: string;
-  status: "init" | "modified" | "added" | "removed" | "renamed";
-  language: string;
-  additions: number;
-  deletions: number;
-  afterContent: string;
-  beforeContent: string;
-}
-
 export interface PrMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
 }
 
+interface PrUserInfo {
+  owner: string;
+  branchName: string;
+}
 interface PrInfoPropsStore {
   prInfo: PrInfoProps;
   setPrInfo: (prInfo: PrInfoProps) => void;
   resetPrInfo: () => void; // 누락된 타입 추가
-}
-interface fileSysyemPropsStore {
-  selectedFile: PrChangedFileInfo;
-  prChangedFileList: PrChangedFileInfo[];
-  setSelectedFile: (newFile: PrChangedFileInfo) => void;
-  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
 }
 
 interface prMetaDataPropsStore {
@@ -86,6 +69,22 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       },
     }),
 }));
+
+export interface PrChangedFileInfo {
+  filename: string;
+  status: "init" | "modified" | "added" | "removed" | "renamed";
+  language: string;
+  additions: number;
+  deletions: number;
+  afterContent: string;
+  beforeContent: string;
+}
+interface fileSysyemPropsStore {
+  selectedFile: PrChangedFileInfo;
+  prChangedFileList: PrChangedFileInfo[];
+  setSelectedFile: (newFile: PrChangedFileInfo) => void;
+  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+}
 
 export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
   selectedFile: {
