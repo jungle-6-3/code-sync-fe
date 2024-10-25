@@ -10,6 +10,9 @@ interface UserMediaStore {
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
+  opponentsMediaStream: MediaStream[];
+  addOpponentMediaStream: (mediaStream: MediaStream) => void;
+  removeOpponentMediaStream: (mediaStream: MediaStream) => void;
 }
 
 // Create a store for user media (singleton)
@@ -44,5 +47,18 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
       }
       );
     }
-  }
+  },
+  opponentsMediaStream: [],
+  addOpponentMediaStream: (mediaStream) => {
+    set((state) => ({
+      opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
+    }));
+  },
+  removeOpponentMediaStream: (mediaStream) => {
+    set((state) => ({
+      opponentsMediaStream: state.opponentsMediaStream.filter(
+        (stream) => stream.id !== mediaStream.id
+      ),
+    }));
+  },
 }));

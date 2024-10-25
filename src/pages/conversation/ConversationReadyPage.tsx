@@ -4,9 +4,18 @@ import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { socketStore } from "@/stores/socket.store";
 import { SpinIcon } from "@/components/icons";
+import { peerStore } from "@/stores/peer.store";
 
 interface ConversationReadyPageProps {
   setJoin: (online: boolean) => void;
+}
+
+interface SocketJoinRequestBy {
+  message: string;
+  data: {
+    email: string;
+    peerId: string;
+  };
 }
 
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
@@ -17,10 +26,17 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const socket = socketStore((state) => state.socket);
+  const peer = peerStore((state) => state.peer);
+  const peers = peerStore((state) => state.peers);
   const isCreator = socketStore((state) => state.isCreator);
+  const addOpponentMediaStream = userMediaStore(
+    (state) => state.addOpponentMediaStream,
+  );
+  const removeOpponentMediaStream = userMediaStore(
+    (state) => state.removeOpponentMediaStream,
+  );
 
   const onStartConversation = () => {
-    console.log("conversation", socket?.connected, isUserMediaOn.audio);
     if (socket?.connected && isUserMediaOn.audio) {
       setIsRejected(false);
       if (isCreator) return setJoin(true);
@@ -35,6 +51,36 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (!socket || !peer) return;
+    socket.on("new-peer-id", ({ data: { peerId } }: SocketJoinRequestBy) => {
+      if (peers[peerId] || !mediaStream) return;
+      const call = peer?.call(peerId, mediaStream);
+      if (!call) return;
+
+      call.on("stream", (remoteStream) => {
+        addOpponentMediaStream(remoteStream);
+      });
+
+      call.on("close", () => {
+        removeOpponentMediaStream(call.remoteStream);
+      });
+
+      peers[peerId] = call;
+    });
+
+    return () => {
+      socket.off("new-peer-id");
+    };
+  }, [
+    socket,
+    mediaStream,
+    peers,
+    peer,
+    addOpponentMediaStream,
+    removeOpponentMediaStream,
+  ]);
 
   useEffect(() => {
     if (!!socket && !socket.connected) socket.connect();
