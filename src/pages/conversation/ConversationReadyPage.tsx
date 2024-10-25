@@ -1,33 +1,58 @@
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { socketStore } from "@/stores/socket.store";
+import { SpinIcon } from "@/components/icons";
 
 interface ConversationReadyPageProps {
   setJoin: (online: boolean) => void;
 }
 
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const socket = socketStore((state) => state.socket);
+  const isCreator = socketStore((state) => state.isCreator);
 
   const onStartConversation = () => {
-    if (socket?.connected && isUserMediaOn.audio) setJoin(true);
+    console.log("conversation", socket?.connected, isUserMediaOn.audio);
+    if (socket?.connected && isUserMediaOn.audio) {
+      setIsRejected(false);
+      if (isCreator) return setJoin(true);
+      setIsLoaded(true);
+
+      socket.on("invite-accepted", () => {
+        setJoin(true);
+      });
+      socket.on("invite-rejected", () => {
+        setIsLoaded(false);
+        setIsRejected(true);
+      });
+    }
   };
 
   useEffect(() => {
     if (!!socket && !socket.connected) socket.connect();
-  }, [socket]);
+  }, [socket, isCreator]);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = mediaStream;
     }
   }, [mediaStream]);
+
+  // for remove side effect
+  useEffect(() => {
+    return () => {
+      socket?.off("invite-accepted");
+      socket?.off("invite-rejected");
+    };
+  }, [socket]);
 
   useEffect(() => {
     startWebcam({ audio: true, video: true });
@@ -49,7 +74,10 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
       </div>
       <div className="flex flex-col gap-4 text-center">
         <h1>Conversation Ready Page</h1>
-        <Button onClick={onStartConversation}>Start Conversation</Button>
+        <Button onClick={onStartConversation}>
+          {isLoaded ? <SpinIcon /> : "Start Conversation"}
+        </Button>
+        {isRejected && <p>Conversation rejected</p>}
       </div>
     </div>
   );

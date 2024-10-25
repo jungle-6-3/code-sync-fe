@@ -15,6 +15,8 @@ interface SocketErrorResponse {
 interface SocketStore {
   socket?: Socket;
   roomUuid: string;
+  isCreator: boolean;
+  setIsCreator: (isCreator: boolean) => void;
   setRoomUuid: (uuid: string) => void;
   setSocket: () => void;
 }
@@ -22,6 +24,8 @@ interface SocketStore {
 export const socketStore = create<SocketStore>()((set) => ({
   socket: undefined,
   roomUuid: "",
+  isCreator: false,
+  setIsCreator: (isCreator) => set({ isCreator }),
   setRoomUuid: (uuid) => set({ roomUuid: uuid }),
   setSocket: () => {
     set((state) => {

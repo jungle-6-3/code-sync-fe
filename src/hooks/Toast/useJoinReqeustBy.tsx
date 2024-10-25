@@ -20,6 +20,11 @@ const useJoinRequestByToast = () => {
     toast.dismiss(t);
   };
 
+  const onReject = (t: string | number, { data }: SocketJoinRequestBy) => {
+    socket?.emit("reject-user", { email: data.participant.email });
+    toast.dismiss(t);
+  };
+
   const onToast = ({ data, message }: SocketJoinRequestBy) =>
     toast.custom(
       (t) => (
@@ -28,9 +33,7 @@ const useJoinRequestByToast = () => {
           <div className="flex gap-2">
             <Button
               variant="secondary"
-              onClick={() => {
-                toast.dismiss(t);
-              }}
+              onClick={() => onReject(t, { data, message })}
             >
               거절
             </Button>

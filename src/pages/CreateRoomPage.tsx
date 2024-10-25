@@ -13,6 +13,7 @@ import { useConversationMutation } from "@/hooks/useConversationMutation";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
 import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
+import { socketStore } from "@/stores/socket.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,6 +27,7 @@ const createRoomSchema = z.object({
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const setIsCreator = socketStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
   const { setPrChangedFileList } = fileSysyemStore();
@@ -62,6 +64,7 @@ const CreateRoomPage = () => {
             InitializePrData({ owner, prNumber: +prNumber, repo })
               .then(() => {
                 setIsLoading(false);
+                setIsCreator(true);
               })
               .catch((e) => {
                 alert(e);
