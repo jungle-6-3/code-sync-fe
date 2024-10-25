@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
 import { fileSysyemStore } from "@/stores/github.store";
 
-const FileTreeComponent = () => {
+const PrFileExplorer = () => {
   const { prChangedFileList, selectedFile, setSelectedFile } =
     fileSysyemStore();
   const [expandedPaths, setExpandedPaths] = useState<string[]>(["src"]);
@@ -139,4 +139,4 @@ const FileTreeComponent = () => {
   );
 };
 
-export default FileTreeComponent;
+export default PrFileExplorer;

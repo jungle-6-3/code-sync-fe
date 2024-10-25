@@ -1,5 +1,5 @@
 import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
-import FileTreeComponent from "@/components/File/filetree";
+import FileTreeComponent from "@/components/File/PrFileExplorer";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
