@@ -20,7 +20,6 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const isCreator = socketStore((state) => state.isCreator);
 
   const onStartConversation = () => {
-    console.log("conversation", socket?.connected, isUserMediaOn.audio);
     if (socket?.connected && isUserMediaOn.audio) {
       setIsRejected(false);
       if (isCreator) return setJoin(true);
