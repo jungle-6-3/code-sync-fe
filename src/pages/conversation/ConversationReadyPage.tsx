@@ -11,21 +11,13 @@ interface ConversationReadyPageProps {
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
-  const roomId = window.location.pathname.split("/")[1];
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const socket = socketStore((state) => state.socket);
-  const setSocket = socketStore((state) => state.setSocket);
-  const setRoomUUid = socketStore((state) => state.setRoomUuid);
 
   const onStartConversation = () => {
     if (socket?.connected && isUserMediaOn.audio) setJoin(true);
   };
-
-  useEffect(() => {
-    setRoomUUid(roomId);
-    setSocket();
-  }, [roomId, setRoomUUid, setSocket]);
 
   useEffect(() => {
     if (!!socket && !socket.connected) socket.connect();
