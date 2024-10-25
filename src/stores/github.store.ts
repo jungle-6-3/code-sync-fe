@@ -24,6 +24,7 @@ interface PrInfoPropsStore {
   resetPrInfo: () => void; // 누락된 타입 추가
 }
 
+
 interface prMetaDataPropsStore {
   prMetaData: PrMetaDataInfo;
   setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
@@ -68,37 +69,37 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         },
       },
     }),
-}));
-
-export interface PrChangedFileInfo {
-  filename: string;
-  status: "init" | "modified" | "added" | "removed" | "renamed";
-  language: string;
-  additions: number;
-  deletions: number;
-  afterContent: string;
-  beforeContent: string;
-}
-interface fileSysyemPropsStore {
-  selectedFile: PrChangedFileInfo;
-  prChangedFileList: PrChangedFileInfo[];
-  setSelectedFile: (newFile: PrChangedFileInfo) => void;
-  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
-}
-
-export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
-  selectedFile: {
-    filename: "",
-    status: "init",
-    language: "",
-    additions: 0,
-    deletions: 0,
-    afterContent: "",
-    beforeContent: ",",
-  },
-  prChangedFileList: [],
-  setSelectedFile: (newFile) => set({ selectedFile: newFile }),
-  setPrChangedFileList: async ({
+  }));
+  
+  export interface PrChangedFileInfo {
+    filename: string;
+    status: "init" | "modified" | "added" | "removed" | "renamed";
+    language: string;
+    additions: number;
+    deletions: number;
+    afterContent: string;
+    beforeContent: string;
+  }
+  interface fileSysyemPropsStore {
+    selectedCommitFile: PrChangedFileInfo;
+    commitFileList: PrChangedFileInfo[];
+    setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
+    setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  }
+  
+  export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
+    selectedCommitFile: {
+      filename: "",
+      status: "init",
+      language: "",
+      additions: 0,
+      deletions: 0,
+      afterContent: "",
+      beforeContent: "",
+    },
+    commitFileList: [],
+  setSelectedCommitFile: (newFile) => set({ selectedCommitFile: newFile }),
+  setCommitFileList: async ({
     owner,
     repo,
     prNumber,
@@ -180,6 +181,6 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
         };
       }),
     );
-    set({ prChangedFileList: processedFiles });
+    set({ commitFileList: processedFiles });
   },
 }));

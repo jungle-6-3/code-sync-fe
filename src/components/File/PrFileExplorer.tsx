@@ -3,14 +3,14 @@ import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
 import { fileSysyemStore } from "@/stores/github.store";
 
 const PrFileExplorer = () => {
-  const { prChangedFileList, selectedFile, setSelectedFile } =
+  const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
     fileSysyemStore();
   const [expandedPaths, setExpandedPaths] = useState<string[]>(["src"]);
 
   const getAllDirectoryPaths = () => {
     const directoryPaths = new Set<string>();
 
-    prChangedFileList.forEach((file) => {
+    commitFileList.forEach((file) => {
       const pathSegments = file.filename.split("/");
       let currentPath = "";
 
@@ -25,7 +25,7 @@ const PrFileExplorer = () => {
 
   const getDirectoryContents = (currentPath: string) => {
     const allPaths = [
-      ...prChangedFileList.map((file) => file.filename),
+      ...commitFileList.map((file) => file.filename),
       ...getAllDirectoryPaths(),
     ];
 
@@ -48,18 +48,14 @@ const PrFileExplorer = () => {
   };
 
   const handleFileSelection = (filePath: string) => {
-    const fileInfo = prChangedFileList.find(
-      (file) => file.filename === filePath,
-    );
+    const fileInfo = commitFileList.find((file) => file.filename === filePath);
     if (fileInfo) {
-      setSelectedFile(fileInfo);
+      setSelectedCommitFile(fileInfo);
     }
   };
 
   const getFileStatusStyle = (filePath: string) => {
-    const fileInfo = prChangedFileList.find(
-      (file) => file.filename === filePath,
-    );
+    const fileInfo = commitFileList.find((file) => file.filename === filePath);
     switch (fileInfo?.status) {
       case "added":
         return "bg-green-100";
@@ -96,7 +92,7 @@ const PrFileExplorer = () => {
 
         {isExpanded &&
           childItems.map((itemPath) => {
-            const isFile = prChangedFileList.some(
+            const isFile = commitFileList.some(
               (file) => file.filename === itemPath,
             );
 
@@ -105,7 +101,7 @@ const PrFileExplorer = () => {
                 <div
                   key={itemPath}
                   className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
-                    selectedFile.filename === itemPath ? "bg-blue-50" : ""
+                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
                   } ${getFileStatusStyle(itemPath)}`}
                   style={{ paddingLeft: indentation + 24 + "px" }}
                   onClick={() => handleFileSelection(itemPath)}
@@ -114,9 +110,8 @@ const PrFileExplorer = () => {
                   <span>{itemPath.split("/").pop()}</span>
                   <span className="ml-2 text-xs text-gray-500">
                     {
-                      prChangedFileList.find(
-                        (file) => file.filename === itemPath,
-                      )?.status
+                      commitFileList.find((file) => file.filename === itemPath)
+                        ?.status
                     }
                   </span>
                 </div>

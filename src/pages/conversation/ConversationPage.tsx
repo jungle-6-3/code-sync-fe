@@ -18,7 +18,7 @@ import { useEffect } from "react";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
-  const { selectedFile } = fileSysyemStore();
+  const { selectedCommitFile } = fileSysyemStore();
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
@@ -57,19 +57,19 @@ const ConversationPage = () => {
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                {selectedFile &&
-                  (selectedFile.status === "removed" ? (
+                {selectedCommitFile &&
+                  (selectedCommitFile.status === "removed" ? (
                     <div>diff load</div>
-                  ) : selectedFile.status === "added" ? (
+                  ) : selectedCommitFile.status === "added" ? (
                     <CodeEditor
-                      language={selectedFile.language}
-                      initialValue={selectedFile.afterContent}
+                      language={selectedCommitFile.language}
+                      initialValue={selectedCommitFile.afterContent}
                     />
                   ) : (
                     <CodeSplitEditor
-                      language={selectedFile.language}
-                      originalValue={selectedFile.beforeContent}
-                      modifiedValue={selectedFile.afterContent}
+                      language={selectedCommitFile.language}
+                      originalValue={selectedCommitFile.beforeContent}
+                      modifiedValue={selectedCommitFile.afterContent}
                     />
                   ))}
               </ResizablePanel>
