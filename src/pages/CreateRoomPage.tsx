@@ -60,7 +60,7 @@ const CreateRoomPage = () => {
         { githubPrUrl: value.ghPrLink },
         {
           onSuccess: ({ data }) => {
-            navigate(`/${data.redirectUrl}`);
+            navigate(`/${data.roomUuid}`);
             InitializePrData({ owner, prNumber: +prNumber, repo })
               .then(() => {
                 setIsLoading(false);

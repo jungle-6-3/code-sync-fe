@@ -6,7 +6,7 @@ export interface PostCreateRoomResponse {
   success: boolean,
   message: string,
   data: {
-    redirectUrl: string,
+    roomUuid: string,
   }
 }
 
