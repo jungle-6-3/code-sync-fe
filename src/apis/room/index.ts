@@ -3,7 +3,7 @@ import https from "@/lib/https";
 
 
 export const postCreateRoom = async ({ githubPrUrl }: PostCreateRoomRequest) => {
-  const response = await https.post<PostCreateRoomResponse>(`/room${githubPrUrl}`);
+  const response = await https.post<PostCreateRoomResponse>(`/room/create/${encodeURIComponent(githubPrUrl)}`);
   return response.data;
 }
 
