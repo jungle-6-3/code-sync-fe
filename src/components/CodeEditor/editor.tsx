@@ -1,14 +1,15 @@
 import Editor from "@monaco-editor/react";
 
 interface CodeEditorProps {
+  language: string;
   initialValue: string;
 }
 
-const CodeEditor = ({ initialValue }: CodeEditorProps) => {
+const CodeEditor = ({ language, initialValue }: CodeEditorProps) => {
   return (
     <Editor
       height="100%"
-      defaultLanguage="javascript"
+      defaultLanguage={language}
       defaultValue={initialValue}
       onMount={(_, monaco) => {
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({

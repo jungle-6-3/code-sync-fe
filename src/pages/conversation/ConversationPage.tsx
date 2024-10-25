@@ -60,12 +60,15 @@ const ConversationPage = () => {
                   (selectedFile.status === "removed" ? (
                     <div>diff load</div>
                   ) : selectedFile.status === "added" ? (
-                    <CodeEditor initialValue={selectedFile.afterContent} />
+                    <CodeEditor
+                      language={selectedFile.language}
+                      initialValue={selectedFile.afterContent}
+                    />
                   ) : (
                     <CodeSplitEditor
+                      language={selectedFile.language}
                       originalValue={selectedFile.beforeContent}
                       modifiedValue={selectedFile.afterContent}
-                      language={selectedFile.language}
                     />
                   ))}
               </ResizablePanel>
