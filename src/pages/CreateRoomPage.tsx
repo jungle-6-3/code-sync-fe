@@ -59,9 +59,14 @@ const CreateRoomPage = () => {
         {
           onSuccess: ({ data }) => {
             navigate(`/${data.redirectUrl}`);
-            InitializePrData({ owner, prNumber: +prNumber, repo }).then(() => {
-              setIsLoading(false);
-            });
+            InitializePrData({ owner, prNumber: +prNumber, repo })
+              .then(() => {
+                setIsLoading(false);
+              })
+              .catch((e) => {
+                alert(e);
+                setIsLoading(false);
+              });
           },
           onError: ({ message }) => {
             alert(message);
