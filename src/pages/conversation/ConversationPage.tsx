@@ -11,13 +11,18 @@ import useJoinRequestByToast, {
 import useUserDisconnectedToast, {
   SocketUserDisconnected,
 } from "@/hooks/Toast/useUserDisconnected";
-import { PrChangedFileInfo, prInfoStore } from "@/stores/github.store";
+import {
+  fileSysyemStore,
+  PrChangedFileInfo,
+  prInfoStore,
+} from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
-  const { prInfo, selectedFile, prChangedFileList, setSelectedFile } =
-    prInfoStore();
+  const { prInfo } = prInfoStore();
+  const { selectedFile, prChangedFileList, setSelectedFile } =
+    fileSysyemStore();
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();

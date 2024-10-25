@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useConversationMutation } from "@/hooks/useConversationMutation";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
-import { prInfoStore, PrMetaDataInfo } from "@/stores/github.store";
+import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -30,7 +30,7 @@ const CreateRoomPage = () => {
   const setIsCreator = socketStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
-  const { setPrChangedFileList } = prInfoStore();
+  const { setPrChangedFileList } = fileSysyemStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
