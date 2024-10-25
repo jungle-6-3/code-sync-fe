@@ -87,7 +87,6 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       repo,
       prNumber,
     });
-    console.log(response);
     const [requireUser, requireBranchName] = response.head.label.split(":");
     const [requestOner, requestBranchName] = response.base.label.split(":");
     const newPrInfo = {

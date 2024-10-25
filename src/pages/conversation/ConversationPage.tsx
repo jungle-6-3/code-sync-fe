@@ -1,4 +1,4 @@
-import { CodeSplitEditor } from "@/components/CodeEditor";
+import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
@@ -56,13 +56,21 @@ const ConversationPage = () => {
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                {selectedFile && (
-                  <CodeSplitEditor
-                    originalValue={selectedFile.beforeContent}
-                    modifiedValue={selectedFile.afterContent}
-                    language={selectedFile.language}
-                  />
-                )}
+                {selectedFile &&
+                  (selectedFile.status === "removed" ? (
+                    <div>diff load</div>
+                  ) : selectedFile.status === "added" ? (
+                    <CodeEditor
+                      language={selectedFile.language}
+                      initialValue={selectedFile.afterContent}
+                    />
+                  ) : (
+                    <CodeSplitEditor
+                      language={selectedFile.language}
+                      originalValue={selectedFile.beforeContent}
+                      modifiedValue={selectedFile.afterContent}
+                    />
+                  ))}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>

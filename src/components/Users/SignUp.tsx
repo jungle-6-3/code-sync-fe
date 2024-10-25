@@ -13,7 +13,6 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import formSignUpSchema from "@/components/Users/SignUpSchema";
-import { SignUpResponseUserDto } from "@/apis/users/dtos";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -37,8 +36,7 @@ export default function SignUp() {
         password: data.userpassword,
       },
       {
-        onSuccess: (response: SignUpResponseUserDto) => {
-          console.log(response);
+        onSuccess: () => {
           navigate("/");
         },
         onError: (error: Error) => {
