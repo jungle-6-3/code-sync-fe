@@ -21,7 +21,7 @@ interface PrUserInfo {
 interface PrInfoPropsStore {
   prInfo: PrInfoProps;
   setPrInfo: (prInfo: PrInfoProps) => void;
-  resetPrInfo: () => void; // 누락된 타입 추가
+  resetPrInfo: () => void;
 }
 
 
