@@ -12,6 +12,14 @@ interface SocketUserDisconnected {
   };
 }
 
+interface SocketJoinRequestBy {
+  message: string;
+  data: {
+    email: string;
+    peerId: string;
+  };
+}
+
 export const usePeer = () => {
   const createPeer = peerStore((state) => state.createPeer);
   const peers = peerStore((state) => state.peers);
@@ -19,12 +27,19 @@ export const usePeer = () => {
   const peer = peerStore((state) => state.peer);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const socket = socketStore((state) => state.socket);
+  const peerId = peerStore((state) => state.peerId);
+  const addOpponentMediaStream = userMediaStore(
+    (state) => state.addOpponentMediaStream,
+  );
+  const removeOpponentMediaStream = userMediaStore(
+    (state) => state.removeOpponentMediaStream,
+  );
 
-  useEffect(() => {
+  const onCreatePeer = () => {
     if (!isConnected) {
       createPeer();
     }
-  }, [createPeer, isConnected]);
+  };
 
   useEffect(() => {
     if (!peer) return;
@@ -53,4 +68,33 @@ export const usePeer = () => {
       socket.off("new-peer-id");
     };
   }, [socket, peers, peer]);
+
+  useEffect(() => {
+    if (!socket || !peer) return;
+    socket.emit("share-peer-id", { peerId });
+    socket.on(
+      "new-peer-id",
+      ({ data: { peerId: remotePeerId } }: SocketJoinRequestBy) => {
+        if (peerId == remotePeerId || !mediaStream) return;
+        const call = peer?.call(remotePeerId, mediaStream);
+        if (!call) return;
+
+        call.on("stream", (remoteStream) => {
+          addOpponentMediaStream(remoteStream);
+        });
+
+        call.on("close", () => {
+          removeOpponentMediaStream(call.remoteStream);
+        });
+
+        peers[remotePeerId] = call;
+      },
+    );
+
+    return () => {
+      socket.off("new-peer-id");
+    };
+  }, [peer]);
+
+  return { onCreatePeer };
 };

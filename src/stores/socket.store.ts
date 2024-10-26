@@ -14,24 +14,19 @@ interface SocketErrorResponse {
 
 interface SocketStore {
   socket?: Socket;
-  roomUuid: string;
   isCreator: boolean;
   setIsCreator: (isCreator: boolean) => void;
-  setRoomUuid: (uuid: string) => void;
-  setSocket: () => void;
+  setSocket: (roomUuid: string) => void;
 }
 
 export const socketStore = create<SocketStore>()((set) => ({
   socket: undefined,
-  roomUuid: "",
   isCreator: false,
   setIsCreator: (isCreator) => set({ isCreator }),
-  setRoomUuid: (uuid) => set({ roomUuid: uuid }),
-  setSocket: () => {
+  setSocket: (roomUuid: string) => {
     set((state) => {
       // for singleton pattern
       if (state.socket) return { socket: state.socket };
-      const roomUuid = state.roomUuid;
       if (!roomUuid) throw new Error("잘못된 접근입니다.");
       const socket = io(URL, {
         autoConnect: false,

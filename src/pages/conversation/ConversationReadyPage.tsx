@@ -5,11 +5,9 @@ import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { socketStore } from "@/stores/socket.store";
 import { SpinIcon } from "@/components/icons";
 
-
 interface ConversationReadyPageProps {
   setJoin: (online: boolean) => void;
 }
-
 
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -21,40 +19,30 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const socket = socketStore((state) => state.socket);
   const isCreator = socketStore((state) => state.isCreator);
 
-
   const onStartConversation = () => {
-    if (socket?.connected && isUserMediaOn.audio) {
+    if (isUserMediaOn.audio && !!socket) {
       setIsRejected(false);
+      if (!socket.connected) socket.connect();
       if (isCreator) return setJoin(true);
-      setIsLoaded(true);
-
-      socket.on("invite-accepted", () => {
-        setJoin(true);
-      });
-      socket.on("invite-rejected", () => {
-        setIsLoaded(false);
-        setIsRejected(true);
-      });
     }
   };
 
   useEffect(() => {
-    if (!!socket && !socket.connected) socket.connect();
-  }, [socket, isCreator]);
+    if (!socket) return;
+    socket.on("invite-accepted", () => {
+      setJoin(true);
+    });
+    socket.on("invite-rejected", () => {
+      setIsLoaded(false);
+      setIsRejected(true);
+    });
+  }, [socket, setJoin]);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = mediaStream;
     }
   }, [mediaStream]);
-
-  // for remove side effect
-  useEffect(() => {
-    return () => {
-      socket?.off("invite-accepted");
-      socket?.off("invite-rejected");
-    };
-  }, [socket]);
 
   useEffect(() => {
     startWebcam({ audio: true, video: true });

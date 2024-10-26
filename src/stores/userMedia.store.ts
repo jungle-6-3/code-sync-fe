@@ -58,11 +58,13 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   },
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {
+    console.log("addOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
     }));
   },
   removeOpponentMediaStream: (mediaStream) => {
+    console.log("removeOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: state.opponentsMediaStream.filter(
         (stream) => stream.id !== mediaStream.id,
