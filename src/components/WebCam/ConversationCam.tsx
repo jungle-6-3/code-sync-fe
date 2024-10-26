@@ -1,7 +1,12 @@
 import { userMediaStore } from "@/stores/userMedia.store";
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
-const ConversationCam = () => {
+interface ConversationCamProps {
+  containerRef: RefObject<HTMLDivElement>;
+}
+
+const ConversationCam = ({ containerRef }: ConversationCamProps) => {
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const peerVideoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
@@ -20,7 +25,13 @@ const ConversationCam = () => {
   }, [peerMediaStream]);
 
   return (
-    <div className="absolute z-[999999] m-8 max-w-[18rem] cursor-grab rounded-md border">
+    <motion.div
+      className="absolute z-[999999] max-w-[18rem] cursor-grab rounded-md border border-slate-200"
+      drag
+      dragElastic={0.65}
+      dragConstraints={containerRef}
+      whileTap={{ scale: 0.95 }}
+    >
       <video
         ref={myVideoRef}
         autoPlay
@@ -33,7 +44,7 @@ const ConversationCam = () => {
         muted
         className="aspect-[16/10] w-full rounded-b-md bg-slate-200 object-cover"
       />
-    </div>
+    </motion.div>
   );
 };
 

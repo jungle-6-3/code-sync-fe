@@ -1,7 +1,7 @@
 import ConversationPage from "@/pages/conversation/ConversationPage";
 import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 import { socketStore } from "@/stores/socket.store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePeer } from "@/hooks/usePeer";
 import { ConversationCam } from "@/components/WebCam";
 
@@ -11,6 +11,7 @@ const ConversationJunctionPage = () => {
   const roomId = window.location.pathname.split("/")[1];
   const setSocket = socketStore((state) => state.setSocket);
   const { onCreatePeer } = usePeer();
+  const constraintsRef = useRef(null);
 
   const onSetJoin = () => {
     setIsJoin(true);
@@ -30,14 +31,14 @@ const ConversationJunctionPage = () => {
   }, [socket]);
 
   return (
-    <>
-      <ConversationCam />
+    <div ref={constraintsRef}>
+      <ConversationCam containerRef={constraintsRef} />
       {isJoin ? (
         <ConversationPage />
       ) : (
         <ConversationReadyPage setJoin={onSetJoin} />
       )}
-    </>
+    </div>
   );
 };
 
