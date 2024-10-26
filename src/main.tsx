@@ -5,8 +5,12 @@ import "./index.css";
 import { Toaster } from "@/components/ui/sonner.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
+  //   <App />
+  //   <Toaster />
+  // </StrictMode>,
+  <>
     <App />
     <Toaster />
-  </StrictMode>,
+  </>,
 );

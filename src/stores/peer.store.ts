@@ -1,6 +1,6 @@
 
 import { create } from "zustand";
-import Peer, { PeerConnectOption } from "peerjs";
+import Peer, { MediaConnection, PeerConnectOption } from "peerjs";
 
 interface peerStore {
   createPeer: () => void;
@@ -8,10 +8,12 @@ interface peerStore {
   disconnect: () => void;
   isConnected: boolean;
   peer?: Peer;
+  peers: Record<string, MediaConnection>;
   peerId?: string;
 }
 
 export const peerStore = create<peerStore>((set) => ({
+  peers: {},
   createPeer: () => {
     const peer = new Peer();
     peer.on("open", (id) => {

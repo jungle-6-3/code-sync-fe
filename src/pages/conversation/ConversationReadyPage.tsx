@@ -5,9 +5,11 @@ import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { socketStore } from "@/stores/socket.store";
 import { SpinIcon } from "@/components/icons";
 
+
 interface ConversationReadyPageProps {
   setJoin: (online: boolean) => void;
 }
+
 
 const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -18,6 +20,7 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const socket = socketStore((state) => state.socket);
   const isCreator = socketStore((state) => state.isCreator);
+
 
   const onStartConversation = () => {
     if (socket?.connected && isUserMediaOn.audio) {
