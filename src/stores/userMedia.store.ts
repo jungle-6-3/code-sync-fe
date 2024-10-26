@@ -6,7 +6,7 @@ interface UserMediaState {
 }
 
 interface UserMediaStore {
-  isUserMediaOn: UserMediaState
+  isUserMediaOn: UserMediaState;
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
@@ -24,10 +24,13 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   mediaStream: null,
   startWebcam: async ({ audio, video }: UserMediaState) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio, video });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio,
+        video,
+      });
       set({
         mediaStream: stream,
-        isUserMediaOn: { video, audio }
+        isUserMediaOn: { video, audio },
       });
     } catch (error) {
       alert("Error accessing webcam");
@@ -36,28 +39,35 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   },
   stopWebcam: ({ audio, video }: UserMediaState) => {
     if (userMediaStore.getState().mediaStream) {
-      userMediaStore.getState().mediaStream?.getTracks().forEach((track) => {
-        if ((track.kind === "audio" && !audio) || (track.kind === "video" && !video)) {
-          track.stop();
-        }
-      });
+      userMediaStore
+        .getState()
+        .mediaStream?.getTracks()
+        .forEach((track) => {
+          if (
+            (track.kind === "audio" && !audio) ||
+            (track.kind === "video" && !video)
+          ) {
+            track.stop();
+          }
+        });
       set({
         mediaStream: !video ? null : userMediaStore.getState().mediaStream,
-        isUserMediaOn: { video, audio }
-      }
-      );
+        isUserMediaOn: { video, audio },
+      });
     }
   },
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {
+    console.log("addOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
     }));
   },
   removeOpponentMediaStream: (mediaStream) => {
+    console.log("removeOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: state.opponentsMediaStream.filter(
-        (stream) => stream.id !== mediaStream.id
+        (stream) => stream.id !== mediaStream.id,
       ),
     }));
   },

@@ -49,10 +49,6 @@ export const usePeer = () => {
       },
     );
 
-    peer.on("open", (id) => {
-      socket?.emit("share-peer-id", { peerId: id });
-    });
-
     return () => {
       socket.off("new-peer-id");
     };
