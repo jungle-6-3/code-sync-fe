@@ -8,9 +8,27 @@ interface PrInfoProps {
   requestUserInfo: PrUserInfo;
 }
 
+export interface PrMetaDataInfo {
+  owner: string;
+  repo: string;
+  prNumber: number;
+}
+
 interface PrUserInfo {
   owner: string;
   branchName: string;
+}
+
+interface PrInfoPropsStore {
+  prInfo: PrInfoProps;
+  setPrInfo: (prInfo: PrInfoProps) => void;
+  resetPrInfo: () => void;
+}
+
+interface prMetaDataPropsStore {
+  prMetaData: PrMetaDataInfo;
+  setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
+  resetPrMeTaData: () => void;
 }
 
 export interface PrChangedFileInfo {
@@ -23,28 +41,11 @@ export interface PrChangedFileInfo {
   beforeContent: string;
 }
 
-export interface PrMetaDataInfo {
-  owner: string;
-  repo: string;
-  prNumber: number;
-}
-
-interface PrInfoPropsStore {
-  prInfo: PrInfoProps;
-  setPrInfo: (prInfo: PrInfoProps) => void;
-  resetPrInfo: () => void; // 누락된 타입 추가
-}
 interface fileSysyemPropsStore {
-  selectedFile: PrChangedFileInfo;
-  prChangedFileList: PrChangedFileInfo[];
-  setSelectedFile: (newFile: PrChangedFileInfo) => void;
-  setPrChangedFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
-}
-
-interface prMetaDataPropsStore {
-  prMetaData: PrMetaDataInfo;
-  setPrMetaData: (newPrMetaData: PrMetaDataInfo) => void;
-  resetPrMeTaData: () => void;
+  selectedCommitFile: PrChangedFileInfo;
+  commitFileList: PrChangedFileInfo[];
+  setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
+  setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -70,7 +71,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
       branchName: "",
     },
   },
-  setPrInfo: (newPrInfo) => set({ prInfo: newPrInfo }),
+  setPrInfo: (prInfoData) => set({ prInfo: prInfoData }),
   resetPrInfo: () =>
     set({
       prInfo: {
@@ -88,99 +89,91 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
 }));
 
 export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
-  selectedFile: {
+  selectedCommitFile: {
     filename: "",
     status: "init",
     language: "",
     additions: 0,
     deletions: 0,
     afterContent: "",
-    beforeContent: ",",
+    beforeContent: "",
   },
-  prChangedFileList: [],
-  setSelectedFile: (newFile) => set({ selectedFile: newFile }),
-  setPrChangedFileList: async ({
-    owner,
-    repo,
-    prNumber,
-  }: {
-    owner: string;
-    repo: string;
-    prNumber: number;
-  }) => {
-    const response = await getPrData({
-      owner,
-      repo,
-      prNumber,
-    });
-    const [requireUser, requireBranchName] = response.head.label.split(":");
-    const [requestOner, requestBranchName] = response.base.label.split(":");
-    const newPrInfo = {
-      userId: response.user.login,
-      requireUserInfo: {
-        owner: requireUser,
-        branchName: requireBranchName,
-      },
-      requestUserInfo: {
-        owner: requestOner,
-        branchName: requestBranchName,
-      },
-    };
+  commitFileList: [],
+  setSelectedCommitFile: (newFile) => set({ selectedCommitFile: newFile }),
+  setCommitFileList: async ({ owner, repo, prNumber }) => {
+    try {
+      const prResponse = await getPrData({ owner, repo, prNumber });
+      const [requireUser, requireBranchName] = prResponse.head.label.split(":");
+      const [requestOwner, requestBranchName] = prResponse.base.label.split(":");
+      
+      const prInfoData: PrInfoProps = {
+        userId: prResponse.user.login,
+        requireUserInfo: {
+          owner: requireUser,
+          branchName: requireBranchName,
+        },
+        requestUserInfo: {
+          owner: requestOwner,
+          branchName: requestBranchName,
+        },
+      };
 
-    prInfoStore.getState().setPrInfo(newPrInfo);
+      prInfoStore.getState().setPrInfo(prInfoData);
 
-    const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
-    const processedFiles = await Promise.all(
-      fetchCommitsData.map(async (commit) => {
-        let beforeContent;
-        let afterContent;
-        if (commit.status === "modified") {
+      const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
+
+      const processedFiles = await Promise.all(
+        fetchCommitsData.map(async (commit) => {
+          let beforeContent = "";
+          let afterContent = "";
+
           try {
-            beforeContent = await getFileContent(
-              newPrInfo.requestUserInfo.owner,
-              repo,
-              newPrInfo.requestUserInfo.branchName,
-              commit.filename,
-            );
-          } catch (e: unknown) {
-            beforeContent = "";
-          }
-        }
-        if (commit.status === "added" || commit.status === "modified") {
-          try {
-            afterContent = await getFileContent(
-              newPrInfo.requireUserInfo.owner,
-              repo,
-              newPrInfo.requireUserInfo.branchName,
-              commit.filename,
-            );
-          } catch (e: unknown) {
-            afterContent = "";
-          }
-        }
-        beforeContent =
-          typeof beforeContent === "object"
-            ? JSON.stringify(beforeContent, null, 2)
-            : beforeContent;
+            if (commit.status === "modified") {
+              const beforeContentResponse = await getFileContent(
+                prInfoData.requestUserInfo.owner,
+                repo,
+                prInfoData.requestUserInfo.branchName,
+                commit.filename
+              );
+              beforeContent = typeof beforeContentResponse === "object"
+                ? JSON.stringify(beforeContentResponse, null, 2)
+                : beforeContentResponse;
+            }
 
-        afterContent =
-          typeof afterContent === "object"
-            ? JSON.stringify(afterContent, null, 2)
-            : afterContent;
+            if (commit.status === "added" || commit.status === "modified") {
+              const afterContentResponse = await getFileContent(
+                prInfoData.requireUserInfo.owner,
+                repo,
+                prInfoData.requireUserInfo.branchName,
+                commit.filename
+              );
+              afterContent = typeof afterContentResponse === "object"
+                ? JSON.stringify(afterContentResponse, null, 2)
+                : afterContentResponse;
+            }
+          } catch (error) {
+            console.warn(`Failed to get content for file ${commit.filename}:`, error);
+          }
 
-        return {
-          filename: commit.filename,
-          status: commit.status,
-          language: getLanguageFromFileName(
-            String(commit.filename.split(".").at(-1)),
-          ),
-          additions: commit.additions,
-          deletions: commit.deletions,
-          afterContent: afterContent || "",
-          beforeContent: beforeContent || "",
-        };
-      }),
-    );
-    set({ prChangedFileList: processedFiles });
+          return {
+            filename: commit.filename,
+            status: commit.status,
+            language: getLanguageFromFileName(
+              String(commit.filename.split(".").at(-1))
+            ),
+            additions: commit.additions,
+            deletions: commit.deletions,
+            afterContent,
+            beforeContent,
+          };
+        })
+      );
+
+      set({ commitFileList: processedFiles });
+    } catch (error) {
+      console.error("PR 데이터 가져오기 실패", error);
+      set({ commitFileList: [] });
+      throw new Error("PR 데이터 가져오기 실패"); 
+    }
   },
 }));

@@ -30,7 +30,7 @@ const CreateRoomPage = () => {
   const setIsCreator = socketStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
-  const { setPrChangedFileList } = fileSysyemStore();
+  const { setCommitFileList } = fileSysyemStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
@@ -84,7 +84,7 @@ const CreateRoomPage = () => {
   };
 
   const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
-    setPrChangedFileList({ owner, prNumber, repo }).catch((e) => alert(e));
+    setCommitFileList({ owner, prNumber, repo }).catch((e) => alert(e));
 
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">

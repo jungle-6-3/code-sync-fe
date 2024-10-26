@@ -34,11 +34,9 @@ export const getFileData = async ({
   branchName,
   fileName,
 }: GetFileDataParams) => {
-  console.log("getFileData", owner, repo, branchName, fileName);
   const response = await githubHttps.get(
     `/raw/${owner}/${repo}/${branchName}/${fileName}`,
   );
-  console.log("getFileData", response);
   return response.data;
 };
 

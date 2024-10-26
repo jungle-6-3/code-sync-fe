@@ -1,4 +1,5 @@
 import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
+import FileTreeComponent from "@/components/File/PrFileExplorer";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
@@ -11,18 +12,13 @@ import useJoinRequestByToast, {
 import useUserDisconnectedToast, {
   SocketUserDisconnected,
 } from "@/hooks/Toast/useUserDisconnected";
-import {
-  fileSysyemStore,
-  PrChangedFileInfo,
-  prInfoStore,
-} from "@/stores/github.store";
+import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
-  const { selectedFile, prChangedFileList, setSelectedFile } =
-    fileSysyemStore();
+  const { selectedCommitFile } = fileSysyemStore();
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
@@ -44,10 +40,6 @@ const ConversationPage = () => {
     };
   }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
 
-  const fileOnclick = (selectedFile: PrChangedFileInfo) => {
-    setSelectedFile(selectedFile);
-  };
-
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
@@ -59,40 +51,25 @@ const ConversationPage = () => {
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
-            <div className="p-4">
-              <h2 className="text-lg font-semibold">Changed Files</h2>
-              <ul className="mt-2">
-                {prChangedFileList.map((file, index) => (
-                  <li
-                    key={index}
-                    className="py-1 text-sm"
-                    onClick={() => {
-                      fileOnclick(file);
-                    }}
-                  >
-                    {file.filename}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FileTreeComponent />
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                {selectedFile &&
-                  (selectedFile.status === "removed" ? (
+                {selectedCommitFile &&
+                  (selectedCommitFile.status === "removed" ? (
                     <div>diff load</div>
-                  ) : selectedFile.status === "added" ? (
+                  ) : selectedCommitFile.status === "added" ? (
                     <CodeEditor
-                      language={selectedFile.language}
-                      initialValue={selectedFile.afterContent}
+                      language={selectedCommitFile.language}
+                      initialValue={selectedCommitFile.afterContent}
                     />
                   ) : (
                     <CodeSplitEditor
-                      language={selectedFile.language}
-                      originalValue={selectedFile.beforeContent}
-                      modifiedValue={selectedFile.afterContent}
+                      language={selectedCommitFile.language}
+                      originalValue={selectedCommitFile.beforeContent}
+                      modifiedValue={selectedCommitFile.afterContent}
                     />
                   ))}
               </ResizablePanel>
