@@ -7,6 +7,8 @@ interface UserMediaState {
 
 interface UserMediaStore {
   isUserMediaOn: UserMediaState;
+  isShowWebcam: boolean;
+  toggleShowWebcam: () => void;
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
@@ -17,6 +19,8 @@ interface UserMediaStore {
 
 // Create a store for user media (singleton)
 export const userMediaStore = create<UserMediaStore>()((set) => ({
+  isShowWebcam: false,
+  toggleShowWebcam: () => set((state) => ({ isShowWebcam: !state.isShowWebcam })),
   isUserMediaOn: {
     audio: false,
     video: false,
