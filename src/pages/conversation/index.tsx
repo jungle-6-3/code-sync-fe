@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { peerStore } from "@/stores/peer.store";
 import { usePeer } from "@/hooks/usePeer";
 import { userMediaStore } from "@/stores/userMedia.store";
+import { ConversationCam } from "@/components/WebCam";
 
 interface SocketJoinRequestBy {
   message: string;
@@ -68,10 +69,15 @@ const ConversationJunctionPage = () => {
     setIsJoin(true);
   };
 
-  return isJoin ? (
-    <ConversationPage />
-  ) : (
-    <ConversationReadyPage setJoin={onSetJoin} />
+  return (
+    <>
+      <ConversationCam />
+      {isJoin ? (
+        <ConversationPage />
+      ) : (
+        <ConversationReadyPage setJoin={onSetJoin} />
+      )}
+    </>
   );
 };
 
