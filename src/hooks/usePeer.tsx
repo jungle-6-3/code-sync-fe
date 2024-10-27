@@ -23,7 +23,6 @@ interface SocketJoinRequestBy {
 export const usePeer = () => {
   const createPeer = peerStore((state) => state.createPeer);
   const peers = peerStore((state) => state.peers);
-  const isConnected = peerStore((state) => state.isConnected);
   const peer = peerStore((state) => state.peer);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const socket = socketStore((state) => state.socket);
@@ -36,7 +35,7 @@ export const usePeer = () => {
   );
 
   const onCreatePeer = () => {
-    if (!isConnected) {
+    if (!peer) {
       createPeer();
     }
   };

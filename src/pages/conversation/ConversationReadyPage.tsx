@@ -6,10 +6,10 @@ import { socketStore } from "@/stores/socket.store";
 import { SpinIcon } from "@/components/icons";
 
 interface ConversationReadyPageProps {
-  setJoin: (online: boolean) => void;
+  onSetJoin: (online: boolean) => void;
 }
 
-const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
+const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -23,20 +23,24 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
     if (isUserMediaOn.audio && !!socket) {
       setIsRejected(false);
       if (!socket.connected) socket.connect();
-      if (isCreator) return setJoin(true);
+      if (isCreator) return onSetJoin(true);
     }
   };
 
   useEffect(() => {
     if (!socket) return;
     socket.on("invite-accepted", () => {
-      setJoin(true);
+      onSetJoin(true);
     });
     socket.on("invite-rejected", () => {
       setIsLoaded(false);
       setIsRejected(true);
     });
-  }, [socket, setJoin]);
+    return () => {
+      socket.off("invite-accepted");
+      socket.off("invite-rejected");
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (videoRef.current) {

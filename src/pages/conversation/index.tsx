@@ -36,7 +36,7 @@ const ConversationJunctionPage = () => {
       {isJoin ? (
         <ConversationPage />
       ) : (
-        <ConversationReadyPage setJoin={onSetJoin} />
+        <ConversationReadyPage onSetJoin={onSetJoin} />
       )}
     </div>
   );

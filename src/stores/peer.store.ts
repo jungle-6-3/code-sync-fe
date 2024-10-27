@@ -18,12 +18,6 @@ export const peerStore = create<peerStore>((set) => ({
     const peer = new Peer();
     peer.on("open", (id) => {
       set({ peer, peerId: id });
-      peer.on("connection", () => {
-        set({ isConnected: true });
-      });
-      peer.on("disconnected", () => {
-        set({ isConnected: false });
-      });
     });
   },
   connect: (id, peerConnectionOptions) => {
