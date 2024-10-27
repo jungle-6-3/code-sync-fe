@@ -3,26 +3,28 @@ import { create } from "zustand";
 import Peer, { MediaConnection, PeerConnectOption } from "peerjs";
 
 interface peerStore {
-  createPeer: () => void;
+  createPeer: () => Promise<{ peer: Peer, id: string }>;
   connect: (id: string, peerConnectionOptions?: PeerConnectOption) => void;
   disconnect: () => void;
   isConnected: boolean;
   peer?: Peer;
   peers: Record<string, MediaConnection>;
+  setPeers: (peers: Record<string, MediaConnection>) => void;
   peerId?: string;
 }
 
-export const peerStore = create<peerStore>((set) => ({
+export const peerStore = create<peerStore>((set, get) => ({
   peers: {},
   createPeer: () => {
-    const peer = new Peer();
-    peer.on("open", (id) => {
-      set({ peer, peerId: id });
-      peer.on("connection", () => {
-        set({ isConnected: true });
-      });
-      peer.on("disconnected", () => {
-        set({ isConnected: false });
+    return new Promise((resolve) => {
+      let peer = get().peer;
+      if (peer !== undefined) {
+        return Promise.resolve({ peer, id: get().peerId });
+      }
+      peer = new Peer();
+      peer.once("open", (id) => {
+        set({ peer, peerId: id });
+        resolve({ peer, id });
       });
     });
   },
@@ -43,5 +45,6 @@ export const peerStore = create<peerStore>((set) => ({
     peer.destroy();
     set({ peer: undefined });
   },
+  setPeers: (peers) => set({ peers }),
   isConnected: false,
 }));

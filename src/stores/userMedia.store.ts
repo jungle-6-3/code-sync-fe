@@ -7,6 +7,8 @@ interface UserMediaState {
 
 interface UserMediaStore {
   isUserMediaOn: UserMediaState;
+  isShowWebcam: boolean;
+  toggleShowSharedWebcam: () => void;
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
@@ -17,6 +19,8 @@ interface UserMediaStore {
 
 // Create a store for user media (singleton)
 export const userMediaStore = create<UserMediaStore>()((set) => ({
+  isShowWebcam: false,
+  toggleShowSharedWebcam: () => set((state) => ({ isShowWebcam: !state.isShowWebcam })),
   isUserMediaOn: {
     audio: false,
     video: false,
@@ -58,13 +62,11 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   },
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {
-    console.log("addOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
     }));
   },
   removeOpponentMediaStream: (mediaStream) => {
-    console.log("removeOpponentMediaStream", mediaStream);
     set((state) => ({
       opponentsMediaStream: state.opponentsMediaStream.filter(
         (stream) => stream.id !== mediaStream.id,

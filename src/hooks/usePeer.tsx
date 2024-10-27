@@ -13,22 +13,14 @@ interface SocketUserDisconnected {
 }
 
 export const usePeer = () => {
-  const createPeer = peerStore((state) => state.createPeer);
   const peers = peerStore((state) => state.peers);
-  const isConnected = peerStore((state) => state.isConnected);
+  const setPeers = peerStore((state) => state.setPeers);
   const peer = peerStore((state) => state.peer);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const socket = socketStore((state) => state.socket);
 
   useEffect(() => {
-    if (!isConnected) {
-      createPeer();
-    }
-  }, [createPeer, isConnected]);
-
-  useEffect(() => {
     if (!peer) return;
-
     peer.on("call", (call) => {
       if (!mediaStream) return;
       call.answer(mediaStream);
@@ -45,12 +37,16 @@ export const usePeer = () => {
     socket.on(
       "user-disconnected",
       ({ data: { peerId } }: SocketUserDisconnected) => {
-        if (peers[peerId]) peers[peerId].close();
+        const call = peers[peerId];
+        if (!call) return;
+        call.close();
+        delete peers[peerId];
+        setPeers(peers);
       },
     );
 
     return () => {
       socket.off("new-peer-id");
     };
-  }, [socket, peers, peer]);
+  }, [socket, peers, peer, setPeers]);
 };
