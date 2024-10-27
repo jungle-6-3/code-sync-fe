@@ -18,7 +18,7 @@ interface UserMediaStore {
 }
 
 // Create a store for user media (singleton)
-export const userMediaStore = create<UserMediaStore>()((set) => ({
+export const userMediaStore = create<UserMediaStore>()((set, get) => ({
   isShowWebcam: false,
   toggleShowSharedWebcam: () => set((state) => ({ isShowWebcam: !state.isShowWebcam })),
   isUserMediaOn: {
@@ -55,16 +55,19 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
           }
         });
       set({
-        mediaStream: !video ? null : userMediaStore.getState().mediaStream,
+        mediaStream: !video ? null : get().mediaStream,
         isUserMediaOn: { video, audio },
       });
     }
   },
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {
-    set((state) => ({
-      opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
-    }));
+    let opponentsMediaStream = get().opponentsMediaStream;
+    if (get().opponentsMediaStream.some((stream) => stream.id === mediaStream.id))
+      opponentsMediaStream = opponentsMediaStream.filter((stream) => stream.id !== mediaStream.id);
+    set({
+      opponentsMediaStream: [...opponentsMediaStream, mediaStream],
+    });
   },
   removeOpponentMediaStream: (mediaStream) => {
     set((state) => ({
