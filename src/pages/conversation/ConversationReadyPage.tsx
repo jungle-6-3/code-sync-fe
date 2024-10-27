@@ -4,6 +4,8 @@ import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { socketStore } from "@/stores/socket.store";
 import { SpinIcon } from "@/components/icons";
+import { peerStore } from "@/stores/peer.store";
+import { addStreamConnectionAtPeer } from "@/lib/peer";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
@@ -17,30 +19,51 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const socket = socketStore((state) => state.socket);
+  const createPeer = peerStore((state) => state.createPeer);
+  const roomId = window.location.pathname.split("/")[1];
+  const setSocket = socketStore((state) => state.setSocket);
   const isCreator = socketStore((state) => state.isCreator);
 
-  const onStartConversation = () => {
-    if (isUserMediaOn.audio && !!socket) {
-      setIsRejected(false);
-      if (!socket.connected) socket.connect();
-      if (isCreator) return onSetJoin(true);
+  const onStartConversation = async () => {
+    if (isLoaded) return;
+    setIsRejected(false);
+    setIsLoaded(true);
+    if (isUserMediaOn.audio) {
+      try {
+        const [{ id: peerId, peer }, socket] = await Promise.all([
+          createPeer(),
+          setSocket(roomId),
+        ]);
+        // initialize the peer connection
+        // cuz of this work only when the socket and peer on the ready state
+        addStreamConnectionAtPeer(peer, peerId, socket);
+
+        if (isCreator) return onSetJoin(true);
+        // when the user is not the creator
+        socket
+          .on("invite-accepted", () => {
+            onSetJoin(true);
+            socket?.emit("share-peer-id", { peerId });
+          })
+          .on("invite-rejected", () => {
+            setIsLoaded(false);
+            setIsRejected(true);
+          });
+      } catch (error) {
+        alert("Error: " + error);
+      }
+
+      return;
     }
+    setIsLoaded(true);
   };
 
   useEffect(() => {
-    if (!socket) return;
-    socket.on("invite-accepted", () => {
-      onSetJoin(true);
-    });
-    socket.on("invite-rejected", () => {
-      setIsLoaded(false);
-      setIsRejected(true);
-    });
     return () => {
-      socket.off("invite-accepted");
-      socket.off("invite-rejected");
+      socket?.off("invite-accepted").off("invite-rejected");
     };
-  }, [socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
