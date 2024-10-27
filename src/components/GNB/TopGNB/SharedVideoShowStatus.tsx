@@ -2,7 +2,9 @@ import { userMediaStore } from "@/stores/userMedia.store";
 import { Airplay } from "lucide-react";
 
 const TopGNBSharedVideoShowStatus = () => {
-  const toggleShowWebcam = userMediaStore((state) => state.toggleShowWebcam);
+  const toggleShowWebcam = userMediaStore(
+    (state) => state.toggleShowSharedWebcam,
+  );
 
   return (
     <li>
