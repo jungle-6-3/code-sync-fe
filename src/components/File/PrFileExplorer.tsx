@@ -131,7 +131,6 @@ const PrFileExplorer = () => {
         <h3 className="text-sm font-medium">Changed Files</h3>
       </div>
       <div className="p-2">{renderTreeNode("src")}</div>
-      <Button></Button>
     </div>
   );
 };

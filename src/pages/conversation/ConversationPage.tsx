@@ -12,7 +12,9 @@ import useJoinRequestByToast, {
 import useUserDisconnectedToast, {
   SocketUserDisconnected,
 } from "@/hooks/Toast/useUserDisconnected";
+import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
+import messageStore from "@/stores/message.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
@@ -22,6 +24,10 @@ const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
+  const { isMessage } = messageStore();
+  // useEffect(() => {
+  //   console.log(isMessage);
+  // },[isMessage]);
 
   useEffect(() => {
     if (!socket) return;
@@ -51,7 +57,11 @@ const ConversationPage = () => {
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
-            <FileTreeComponent />
+            {isMessage === "folder" ? (
+              <FileTreeComponent />
+            ) : (
+              <ConversationChatting />
+            )}
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
