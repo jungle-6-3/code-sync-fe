@@ -2,7 +2,7 @@ import messageStore from "@/stores/message.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
 const LeftGNB = () => {
-  const { isMessage, setIsMessage } = messageStore();
+  const { setIsMessage } = messageStore();
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>

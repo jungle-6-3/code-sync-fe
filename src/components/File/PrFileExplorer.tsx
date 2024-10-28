@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
 import { fileSysyemStore } from "@/stores/github.store";
-import { Button } from "@/components/ui/button";
 
 const PrFileExplorer = () => {
   const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
