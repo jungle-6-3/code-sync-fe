@@ -1,18 +1,28 @@
 import ConversationPage from "@/pages/conversation/ConversationPage";
 import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { usePeer } from "@/hooks/usePeer";
+import { ConversationCam } from "@/components/WebCam";
 
 const ConversationJunctionPage = () => {
   const [isJoin, setIsJoin] = useState(false);
+  const constraintsRef = useRef(null);
+  usePeer();
 
-  const onSetJoin = () => {
+  const onSetJoin = async () => {
+    if (isJoin) return;
     setIsJoin(true);
   };
 
-  return isJoin ? (
-    <ConversationPage />
-  ) : (
-    <ConversationReadyPage setJoin={onSetJoin} />
+  return (
+    <div ref={constraintsRef}>
+      <ConversationCam containerRef={constraintsRef} />
+      {isJoin ? (
+        <ConversationPage />
+      ) : (
+        <ConversationReadyPage onSetJoin={onSetJoin} />
+      )}
+    </div>
   );
 };
 

@@ -6,14 +6,21 @@ interface UserMediaState {
 }
 
 interface UserMediaStore {
-  isUserMediaOn: UserMediaState
+  isUserMediaOn: UserMediaState;
+  isShowWebcam: boolean;
+  toggleShowSharedWebcam: () => void;
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
+  opponentsMediaStream: MediaStream[];
+  addOpponentMediaStream: (mediaStream: MediaStream) => void;
+  removeOpponentMediaStream: (mediaStream: MediaStream) => void;
 }
 
 // Create a store for user media (singleton)
 export const userMediaStore = create<UserMediaStore>()((set) => ({
+  isShowWebcam: false,
+  toggleShowSharedWebcam: () => set((state) => ({ isShowWebcam: !state.isShowWebcam })),
   isUserMediaOn: {
     audio: false,
     video: false,
@@ -21,10 +28,13 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   mediaStream: null,
   startWebcam: async ({ audio, video }: UserMediaState) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio, video });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio,
+        video,
+      });
       set({
         mediaStream: stream,
-        isUserMediaOn: { video, audio }
+        isUserMediaOn: { video, audio },
       });
     } catch (error) {
       alert("Error accessing webcam");
@@ -33,16 +43,34 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
   },
   stopWebcam: ({ audio, video }: UserMediaState) => {
     if (userMediaStore.getState().mediaStream) {
-      userMediaStore.getState().mediaStream?.getTracks().forEach((track) => {
-        if ((track.kind === "audio" && !audio) || (track.kind === "video" && !video)) {
-          track.stop();
-        }
-      });
+      userMediaStore
+        .getState()
+        .mediaStream?.getTracks()
+        .forEach((track) => {
+          if (
+            (track.kind === "audio" && !audio) ||
+            (track.kind === "video" && !video)
+          ) {
+            track.stop();
+          }
+        });
       set({
         mediaStream: !video ? null : userMediaStore.getState().mediaStream,
-        isUserMediaOn: { video, audio }
-      }
-      );
+        isUserMediaOn: { video, audio },
+      });
     }
-  }
+  },
+  opponentsMediaStream: [],
+  addOpponentMediaStream: (mediaStream) => {
+    set((state) => ({
+      opponentsMediaStream: [...state.opponentsMediaStream, mediaStream],
+    }));
+  },
+  removeOpponentMediaStream: (mediaStream) => {
+    set((state) => ({
+      opponentsMediaStream: state.opponentsMediaStream.filter(
+        (stream) => stream.id !== mediaStream.id,
+      ),
+    }));
+  },
 }));

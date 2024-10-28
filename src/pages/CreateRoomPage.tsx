@@ -1,4 +1,5 @@
 import { checkValidPullRequest } from "@/apis/pr/pr";
+import { SpinIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,9 +9,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useConversationMutation } from "@/hooks/useConversationMutation";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
-import { prInfoStore, PrMetaDataInfo } from "@/stores/github.store";
+import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
+import { socketStore } from "@/stores/socket.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -24,7 +27,10 @@ const createRoomSchema = z.object({
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setPrChangedFileList } = prInfoStore();
+  const setIsCreator = socketStore((state) => state.setIsCreator);
+  const { mutate: createRoom } = useConversationMutation();
+
+  const { setCommitFileList } = fileSysyemStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
@@ -41,23 +47,44 @@ const CreateRoomPage = () => {
       .then((response) => {
         if (response.status === 200) {
           setIsError(false);
-          InitializePrData({ owner, prNumber: +prNumber, repo });
         }
-        return false;
+        return true;
       })
       .catch(() => {
         setIsError(true);
         return false;
       });
+
     if (result) {
-      navigate("/conversation");
+      createRoom(
+        { githubPrUrl: value.ghPrLink },
+        {
+          onSuccess: ({ data }) => {
+            navigate(`/${data.roomUuid}`);
+            InitializePrData({ owner, prNumber: +prNumber, repo })
+              .then(() => {
+                setIsLoading(false);
+                setIsCreator(true);
+              })
+              .catch((e) => {
+                alert(e);
+                setIsLoading(false);
+              });
+          },
+          onError: ({ message }) => {
+            alert(message);
+            setIsLoading(false);
+          },
+        },
+      );
+      return;
     }
 
     setIsLoading(false);
   };
 
   const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
-    setPrChangedFileList({ owner, prNumber, repo }).catch((e) => alert(e));
+    setCommitFileList({ owner, prNumber, repo }).catch((e) => alert(e));
 
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">
@@ -80,10 +107,8 @@ const CreateRoomPage = () => {
               name="ghPrLink"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel className="relative flex flex-col gap-2">
-                    <FormLabel className="font-normal text-gray-400">
-                      Github PR 주소
-                    </FormLabel>
+                  <FormLabel className="relative flex flex-col gap-2 font-normal text-gray-400">
+                    Github PR 주소
                     <FormControl>
                       <Input
                         {...field}
@@ -106,7 +131,7 @@ const CreateRoomPage = () => {
               )}
             />
             <Button type="submit" className="bg-gray-400" size="lg">
-              새 회의 생성하기
+              {isLoading ? <SpinIcon /> : "새 회의 생성하기"}
             </Button>
           </form>
         </Form>

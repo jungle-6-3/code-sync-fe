@@ -1,8 +1,7 @@
 import axios from "axios";
-import VITE_BASE_URL from "../env.ts";
 
 const https = axios.create({
-  baseURL: VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:4000",
   withCredentials: true,
   timeout: 10000,
 });

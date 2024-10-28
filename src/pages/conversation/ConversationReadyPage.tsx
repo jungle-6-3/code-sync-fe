@@ -1,33 +1,77 @@
 import { Button } from "@/components/ui/button";
-import socket from "@/lib/socket";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
+import { socketStore } from "@/stores/socket.store";
+import { SpinIcon } from "@/components/icons";
+import { peerStore } from "@/stores/peer.store";
+import { addStreamConnectionAtPeer } from "@/lib/peer";
 
 interface ConversationReadyPageProps {
-  setJoin: (online: boolean) => void;
+  onSetJoin: (online: boolean) => void;
 }
 
-const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
+const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
+  const socket = socketStore((state) => state.socket);
+  const createPeer = peerStore((state) => state.createPeer);
+  const roomId = window.location.pathname.split("/")[1];
+  const setSocket = socketStore((state) => state.setSocket);
+  const isCreator = socketStore((state) => state.isCreator);
 
-  const onStartConversation = () => {
-    // if (socket.connected && isUserMediaOn.audio) setJoin(true);
-    setJoin(true);
+  const onStartConversation = async () => {
+    if (isLoaded) return;
+    setIsRejected(false);
+    setIsLoaded(true);
+    if (isUserMediaOn.audio) {
+      try {
+        const [{ id: peerId, peer }, socket] = await Promise.all([
+          createPeer(),
+          setSocket(roomId),
+        ]);
+        // initialize the peer connection
+        // cuz of this work only when the socket and peer on the ready state
+        addStreamConnectionAtPeer(peer, peerId, socket);
+
+        if (isCreator) return onSetJoin(true);
+        // when the user is not the creator
+        socket
+          .on("invite-accepted", () => {
+            onSetJoin(true);
+            socket?.emit("share-peer-id", { peerId });
+          })
+          .on("invite-rejected", () => {
+            setIsLoaded(false);
+            setIsRejected(true);
+          });
+      } catch (error) {
+        alert("Error: " + error);
+      }
+
+      return;
+    }
+    setIsLoaded(true);
   };
+
+  useEffect(() => {
+    return () => {
+      socket?.off("invite-accepted").off("invite-rejected");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = mediaStream;
     }
-  });
+  }, [mediaStream]);
 
   useEffect(() => {
-    // connecting when conversation ready page is mounted
-    socket.connect();
     startWebcam({ audio: true, video: true });
   }, [startWebcam]);
 
@@ -47,7 +91,10 @@ const ConversationReadyPage = ({ setJoin }: ConversationReadyPageProps) => {
       </div>
       <div className="flex flex-col gap-4 text-center">
         <h1>Conversation Ready Page</h1>
-        <Button onClick={onStartConversation}>Start Conversation</Button>
+        <Button onClick={onStartConversation}>
+          {isLoaded ? <SpinIcon /> : "Start Conversation"}
+        </Button>
+        {isRejected && <p>Conversation rejected</p>}
       </div>
     </div>
   );

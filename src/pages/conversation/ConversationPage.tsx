@@ -1,22 +1,44 @@
-import { CodeSplitEditor } from "@/components/CodeEditor";
+import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
+import FileTreeComponent from "@/components/File/PrFileExplorer";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import socket from "@/lib/socket";
-import { prInfoStore } from "@/stores/github.store";
+import useJoinRequestByToast, {
+  SocketJoinRequestBy,
+} from "@/hooks/Toast/useJoinReqeustBy";
+import useUserDisconnectedToast, {
+  SocketUserDisconnected,
+} from "@/hooks/Toast/useUserDisconnected";
+import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
+import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
 const ConversationPage = () => {
-  const { prInfo, prChangedFileList } = prInfoStore();
+  const { prInfo } = prInfoStore();
+  const { selectedCommitFile } = fileSysyemStore();
+  const socket = socketStore((state) => state.socket);
+  const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
+  const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
 
   useEffect(() => {
+    if (!socket) return;
+
+    socket.on("join-request-by", ({ data, message }: SocketJoinRequestBy) => {
+      onJoinRequestByToast({ data, message });
+    });
+    socket.on("user-disconnected", (data: SocketUserDisconnected) => {
+      onUserDisconnectedToast(data);
+    });
+
     return () => {
-      socket.disconnect();
+      // socket.disconnect();
+      socket.off("join-request-by");
+      socket.off("user-disconnected");
     };
-  }, []);
+  }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
 
   return (
     <div className="flex h-screen flex-col">
@@ -29,40 +51,27 @@ const ConversationPage = () => {
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
-            <div className="p-4">
-              <h2 className="text-lg font-semibold">Changed Files</h2>
-              <ul className="mt-2">
-                {prChangedFileList.map((file, index) => (
-                  <li key={index} className="py-1 text-sm">
-                    {file.filename}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FileTreeComponent />
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
-                {prChangedFileList.map((file, _) => {
-                  console.log(file.language);
-                  return (
-                    <CodeSplitEditor
-                      originalValue={JSON.stringify(
-                        file.beforeContent,
-                        null,
-                        "\t",
-                      )}
-                      modifiedValue={JSON.stringify(
-                        file.afterContent,
-                        null,
-                        "\t",
-                      )}
-                      language={file.language}
-                      key={_}
+                {selectedCommitFile &&
+                  (selectedCommitFile.status === "removed" ? (
+                    <div>diff load</div>
+                  ) : selectedCommitFile.status === "added" ? (
+                    <CodeEditor
+                      language={selectedCommitFile.language}
+                      initialValue={selectedCommitFile.afterContent}
                     />
-                  );
-                })}
+                  ) : (
+                    <CodeSplitEditor
+                      language={selectedCommitFile.language}
+                      originalValue={selectedCommitFile.beforeContent}
+                      modifiedValue={selectedCommitFile.afterContent}
+                    />
+                  ))}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
