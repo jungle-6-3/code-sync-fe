@@ -44,6 +44,7 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
           .on("invite-accepted", () => {
             onSetJoin(true);
             socket?.emit("share-peer-id", { peerId });
+            
           })
           .on("invite-rejected", () => {
             setIsLoaded(false);
