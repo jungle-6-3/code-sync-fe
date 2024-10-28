@@ -170,6 +170,10 @@ const ConversationPage = () => {
     setEditor(modifiedEditor);
   };
 
+  useEffect(() => {
+    console.log(commitFileList);
+  }, []);
+
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
