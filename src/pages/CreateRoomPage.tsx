@@ -112,7 +112,7 @@ const CreateRoomPage = () => {
         </Form>
       </div>
       <Button className="absolute bottom-12 right-12" size="lg" asChild>
-        <Link to="#">이전 회의록 보기</Link>
+        <Link to="/room/create/conferences">이전 회의록 보기</Link>
       </Button>
     </div>
   );
