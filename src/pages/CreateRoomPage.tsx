@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -38,6 +38,10 @@ const CreateRoomPage = () => {
       ghPrLink: "",
     },
   });
+  useEffect(() => {
+    setIsCreator(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
     const { owner, repo, prNumber } = extractGitHubPrDetails(value);
@@ -64,7 +68,6 @@ const CreateRoomPage = () => {
             InitializePrData({ owner, prNumber: +prNumber, repo })
               .then(() => {
                 setIsLoading(false);
-                setIsCreator(true);
               })
               .catch((e) => {
                 alert(e);
