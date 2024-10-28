@@ -37,3 +37,23 @@ export const addStreamConnectionAtPeer = (peer: Peer, peerId: string, socket: So
     },
   );
 }
+
+export function replaceStream(peerConnection: RTCPeerConnection, mediaStream: MediaStream) {
+  let sender;
+  for (sender of peerConnection.getSenders()) {
+    if (sender.track?.kind == "audio")
+      if (mediaStream.getAudioTracks().length > 0) {
+        sender.track.enabled = true;
+      } else {
+        sender.track.enabled = false;
+      }
+
+    if (sender.track?.kind == "video") {
+      if (mediaStream.getVideoTracks().length > 0) {
+        sender.track.enabled = true;
+      } else {
+        sender.track.enabled = false;
+      }
+    }
+  }
+}

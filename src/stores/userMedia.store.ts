@@ -42,9 +42,8 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
     }
   },
   stopWebcam: ({ audio, video }: UserMediaState) => {
-    if (userMediaStore.getState().mediaStream) {
-      userMediaStore
-        .getState()
+    if (get().mediaStream) {
+      get()
         .mediaStream?.getTracks()
         .forEach((track) => {
           if (
