@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: be-dev
+    runs-on: fe-dev
 
     steps:
       - name: Checkout
