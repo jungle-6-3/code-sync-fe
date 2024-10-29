@@ -79,7 +79,7 @@ const ConversationPage = () => {
                   (selectedCommitFile.status === "removed" ? (
                     <Alert>
                       <Terminal className="h-4 w-4" />
-                      <AlertTitle className="text-2xl">File Removed</AlertTitle>
+                      <AlertTitle className="text-2xl">Removed File</AlertTitle>
                       <AlertDescription className="text-xl">
                         File Removed.
                       </AlertDescription>
@@ -87,7 +87,7 @@ const ConversationPage = () => {
                   ) : selectedCommitFile.status === "renamed" ? (
                     <Alert>
                       <Terminal className="h-4 w-4" />
-                      <AlertTitle className="text-2xl">renamed file</AlertTitle>
+                      <AlertTitle className="text-2xl">Renamed File</AlertTitle>
                       <AlertDescription className="text-xl">
                         File renamed without changes.
                       </AlertDescription>
