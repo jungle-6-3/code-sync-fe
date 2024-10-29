@@ -74,7 +74,10 @@ const ConversationPage = () => {
               </span>
             </div>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={70} className="flex items-center justify-center">
+              <ResizablePanel
+                defaultSize={70}
+                className="flex items-center justify-center"
+              >
                 {selectedCommitFile &&
                   (selectedCommitFile.status === "removed" ? (
                     <Alert className="w-10/12 p-5">

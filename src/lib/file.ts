@@ -223,9 +223,9 @@ export const getDirectoryContents = (
 
   const items = allPaths.filter((itemPath) => {
     const itemSegments = itemPath.split("/");
-    const parentSegments = currentPath ? currentPath.split("/") : [];
+    const parentSegments = currentPath?.split("/") ?? [];
     return (
-      itemPath.startsWith(currentPath ? currentPath + "/" : "") &&
+      itemPath.startsWith(currentPath?.concat("/") ?? "") &&
       itemSegments.length === parentSegments.length + 1
     );
   });
