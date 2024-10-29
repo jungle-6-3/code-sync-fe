@@ -25,9 +25,7 @@ const PrFileExplorer = () => {
     fileList: PrChangedFileInfo[],
   ) => {
     const fileInfo = fileList.find((file) => file.filename === filePath);
-    if (fileInfo) {
-      setSelectedCommitFile(fileInfo);
-    }
+    if (fileInfo) setSelectedCommitFile(fileInfo);
   };
 
   const renderTreeNode = (currentPath: string = "", depth: number = 0) => {
