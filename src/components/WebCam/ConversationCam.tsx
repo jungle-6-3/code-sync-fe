@@ -42,14 +42,14 @@ const ConversationCam = ({ containerRef }: ConversationCamProps) => {
           ref={myVideoRef}
           autoPlay
           muted
-          className="aspect-[16/10] w-full bg-slate-200 object-cover"
+          className="aspect-[16/10] w-full -scale-x-100 transform bg-slate-200 object-cover"
         />
       )}
       {peerMediaStream[0] && (
         <video
           ref={peerVideoRef}
           autoPlay
-          className="aspect-[16/10] w-full bg-slate-200 object-cover"
+          className="aspect-[16/10] w-full -scale-x-100 transform bg-slate-200 object-cover"
         />
       )}
     </motion.div>
