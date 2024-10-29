@@ -22,6 +22,10 @@ const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
+  const selectedFileName = selectedCommitFile.filename.split("/").at(-1);
+  const selectedTotalFilePath = selectedCommitFile.filename
+    .split("/")
+    .join(" > ");
 
   useEffect(() => {
     if (!socket) return;
@@ -55,6 +59,14 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
+            <div>
+              <span className="item m-1 flex h-7 w-fit items-center border-b-4 border-blue-500 px-2 py-5">
+                {selectedFileName}
+              </span>
+              <span className="item border-b- m-1 flex h-4 w-full items-center p-2">
+                {selectedTotalFilePath}
+              </span>
+            </div>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70}>
                 {selectedCommitFile &&

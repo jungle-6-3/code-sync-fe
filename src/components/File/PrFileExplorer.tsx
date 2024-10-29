@@ -6,6 +6,7 @@ import {
   getFileStatusStyle,
   getRootItems,
 } from "@/lib/file";
+import { cn } from "@/lib/utils";
 
 const PrFileExplorer = () => {
   const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
@@ -48,9 +49,11 @@ const PrFileExplorer = () => {
               return (
                 <div
                   key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 hover:bg-red-500 ${
-                    selectedCommitFile.filename === itemPath ? "bg-red-500" : ""
-                  } ${getFileStatusStyle(itemPath, commitFileList)}`}
+                  className={cn(
+                    "flex cursor-pointer items-center p-2 hover:bg-red-500",
+                    getFileStatusStyle(itemPath, commitFileList),
+                    selectedCommitFile.filename === itemPath && "bg-red-500",
+                  )}
                   style={{ paddingLeft: indentation + 8 + "px" }}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
                 >
@@ -75,7 +78,7 @@ const PrFileExplorer = () => {
     return (
       <div key={currentPath}>
         <div
-          className="flex cursor-pointer items-center p-2 hover:bg-gray-100"
+          className="flex cursor-pointer items-center bg-white py-2 pl-2 hover:brightness-90"
           style={{ paddingLeft: indentation + "px" }}
           onClick={() => toggleDirectoryExpansion(currentPath)}
         >
@@ -99,9 +102,11 @@ const PrFileExplorer = () => {
               return (
                 <div
                   key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 ${
-                    selectedCommitFile.filename === itemPath ? "bg-blue-300" : ""
-                  } ${getFileStatusStyle(itemPath, commitFileList)}`}
+                  className={cn(
+                    "flex cursor-pointer items-center p-2 hover:brightness-90",
+                    getFileStatusStyle(itemPath, commitFileList),
+                    selectedCommitFile.filename === itemPath && "bg-blue-300",
+                  )}
                   style={{ paddingLeft: indentation + 24 + "px" }}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
                 >
@@ -124,11 +129,11 @@ const PrFileExplorer = () => {
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <div className="border-b bg-gray-50 p-3">
+    <div className="overflow-hidden">
+      <div className="border-b bg-gray-50 py-3 pl-3">
         <h3 className="text-sm font-medium">Changed Files</h3>
       </div>
-      <div className="p-2">{renderTreeNode("src")}</div>
+      {renderTreeNode("src")}
     </div>
   );
 };
