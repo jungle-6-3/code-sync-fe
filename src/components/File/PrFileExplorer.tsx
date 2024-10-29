@@ -1,43 +1,16 @@
 import { useState } from "react";
 import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
-import { fileSysyemStore } from "@/stores/github.store";
+import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
+import {
+  getDirectoryContents,
+  getFileStatusStyle,
+  getRootItems,
+} from "@/lib/file";
 
 const PrFileExplorer = () => {
   const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
     fileSysyemStore();
-  const [expandedPaths, setExpandedPaths] = useState<string[]>(["src"]);
-
-  const getAllDirectoryPaths = () => {
-    const directoryPaths = new Set<string>();
-
-    commitFileList.forEach((file) => {
-      const pathSegments = file.filename.split("/");
-      let currentPath = "";
-
-      pathSegments.slice(0, -1).forEach((segment) => {
-        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
-        directoryPaths.add(currentPath);
-      });
-    });
-
-    return Array.from(directoryPaths);
-  };
-
-  const getDirectoryContents = (currentPath: string) => {
-    const allPaths = [
-      ...commitFileList.map((file) => file.filename),
-      ...getAllDirectoryPaths(),
-    ];
-
-    return allPaths.filter((itemPath) => {
-      const itemSegments = itemPath.split("/");
-      const parentSegments = currentPath.split("/");
-      return (
-        itemPath.startsWith(currentPath + "/") &&
-        itemSegments.length === parentSegments.length + 1
-      );
-    });
-  };
+  const [expandedPaths, setExpandedPaths] = useState([""]);
 
   const toggleDirectoryExpansion = (directoryPath: string) => {
     setExpandedPaths((currentPaths) =>
@@ -47,31 +20,59 @@ const PrFileExplorer = () => {
     );
   };
 
-  const handleFileSelection = (filePath: string) => {
-    const fileInfo = commitFileList.find((file) => file.filename === filePath);
+  const handleFileSelection = (
+    filePath: string,
+    fileList: PrChangedFileInfo[],
+  ) => {
+    const fileInfo = fileList.find((file) => file.filename === filePath);
     if (fileInfo) {
       setSelectedCommitFile(fileInfo);
     }
   };
 
-  const getFileStatusStyle = (filePath: string) => {
-    const fileInfo = commitFileList.find((file) => file.filename === filePath);
-    switch (fileInfo?.status) {
-      case "added":
-        return "bg-green-100";
-      case "modified":
-        return "bg-yellow-100";
-      case "removed":
-        return "bg-red-100";
-      default:
-        return "";
-    }
-  };
-
-  const renderTreeNode = (currentPath: string, depth: number = 0) => {
-    const childItems = getDirectoryContents(currentPath);
+  const renderTreeNode = (currentPath: string = "", depth: number = 0) => {
+    const childItems =
+      currentPath === ""
+        ? getRootItems(commitFileList)
+        : getDirectoryContents(currentPath, commitFileList);
     const isExpanded = expandedPaths.includes(currentPath);
     const indentation = depth * 20;
+
+    if (currentPath === "") {
+      return (
+        <div>
+          {childItems.map((itemPath) => {
+            const isFile = commitFileList.some(
+              (file) => file.filename === itemPath,
+            );
+
+            if (isFile) {
+              return (
+                <div
+                  key={itemPath}
+                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
+                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
+                  } ${getFileStatusStyle(itemPath, commitFileList)}`}
+                  style={{ paddingLeft: indentation + 8 + "px" }}
+                  onClick={() => handleFileSelection(itemPath, commitFileList)}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>{itemPath}</span>
+                  <span className="ml-2 text-xs text-gray-500">
+                    {
+                      commitFileList.find((file) => file.filename === itemPath)
+                        ?.status
+                    }
+                  </span>
+                </div>
+              );
+            }
+
+            return renderTreeNode(itemPath, depth);
+          })}
+        </div>
+      );
+    }
 
     return (
       <div key={currentPath}>
@@ -102,9 +103,9 @@ const PrFileExplorer = () => {
                   key={itemPath}
                   className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
                     selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
-                  } ${getFileStatusStyle(itemPath)}`}
+                  } ${getFileStatusStyle(itemPath, commitFileList)}`}
                   style={{ paddingLeft: indentation + 24 + "px" }}
-                  onClick={() => handleFileSelection(itemPath)}
+                  onClick={() => handleFileSelection(itemPath, commitFileList)}
                 >
                   <FileText className="mr-2 h-4 w-4" />
                   <span>{itemPath.split("/").pop()}</span>

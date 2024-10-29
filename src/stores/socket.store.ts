@@ -3,14 +3,12 @@ import { create } from "zustand";
 
 const URL = import.meta.env.VITE_WS_URL || "http://localhost:4000";
 
-
 interface SocketErrorResponse {
   success: false;
   event: string;
   code: string;
   message: string;
 }
-
 
 interface SocketStore {
   socket?: Socket;
@@ -44,10 +42,9 @@ export const socketStore = create<SocketStore>()((set) => ({
         console.error(error);
       });
       return { socket };
-    })
+    });
   },
 }));
-
 
 // this.socket.on("invite-rejected", ({ message }: SocketInviteResponse) => {
 //   // TODO: reject 메시지를 보여주어야 함. (component에서)

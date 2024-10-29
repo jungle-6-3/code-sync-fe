@@ -1,3 +1,5 @@
+import { PrChangedFileInfo } from "@/stores/github.store";
+
 interface LanguageMapping {
   [key: string]: string;
 }
@@ -150,4 +152,90 @@ const fileExtensionsToLanguage: LanguageMapping = {
 export const getLanguageFromFileName = (fileName: string): string => {
   const extension = fileName.toLowerCase().split(".").pop() || "";
   return fileExtensionsToLanguage[extension] || "plaintext";
+};
+
+export const getAllDirectoryPaths = (fileList: PrChangedFileInfo[]) => {
+  const directoryPaths = new Set<string>();
+
+  fileList.forEach((file) => {
+    const pathSegments = file.filename.split("/");
+
+    pathSegments.slice(0, -1).reduce((currentPath, segment) => {
+      const newPath = currentPath ? `${currentPath}/${segment}` : segment;
+      directoryPaths.add(newPath);
+      return newPath;
+    }, "");
+  });
+
+  return Array.from(directoryPaths);
+};
+
+export const getRootItems = (fileList: PrChangedFileInfo[]) => {
+  const allPaths = [
+    ...fileList.map((file) => file.filename),
+    ...getAllDirectoryPaths(fileList),
+  ];
+
+  const rootItems = allPaths
+    .filter((itemPath) => !itemPath.includes("/"))
+    .concat(
+      allPaths
+        .filter((itemPath) => itemPath.includes("/"))
+        .map((itemPath) => itemPath.split("/")[0]),
+    )
+    .filter((item, index, self) => self.indexOf(item) === index);
+
+  // 폴더와 파일을 분리하고 정렬
+  const folders = rootItems.filter((item) =>
+    getAllDirectoryPaths(fileList).some((dir) => dir.startsWith(item)),
+  );
+  const files = rootItems.filter((item) => !folders.includes(item));
+
+  // 폴더를 먼저, 그 다음 파일을 반환
+  return [...folders.sort(), ...files.sort()];
+};
+
+export const getFileStatusStyle = (
+  filePath: string,
+  fileList: PrChangedFileInfo[],
+) => {
+  const fileInfo = fileList.find((file) => file.filename === filePath);
+  switch (fileInfo?.status) {
+    case "added":
+      return "bg-green-100";
+    case "modified":
+      return "bg-yellow-100";
+    case "removed":
+      return "bg-red-100";
+    default:
+      return "";
+  }
+};
+
+export const getDirectoryContents = (
+  currentPath: string,
+  fileList: PrChangedFileInfo[],
+) => {
+  const allPaths = [
+    ...fileList.map((file) => file.filename),
+    ...getAllDirectoryPaths(fileList),
+  ];
+
+  const items = allPaths.filter((itemPath) => {
+    const itemSegments = itemPath.split("/");
+    const parentSegments = currentPath ? currentPath.split("/") : [];
+    return (
+      itemPath.startsWith(currentPath ? currentPath + "/" : "") &&
+      itemSegments.length === parentSegments.length + 1
+    );
+  });
+
+  // 폴더와 파일을 분리하고 정렬
+  const folders = items.filter((item) =>
+    getAllDirectoryPaths(fileList).some((dir) => dir.startsWith(item)),
+  );
+  const files = items.filter((item) => !folders.includes(item));
+
+  // 폴더를 먼저, 그 다음 파일을 반환
+  return [...folders.sort(), ...files.sort()];
 };
