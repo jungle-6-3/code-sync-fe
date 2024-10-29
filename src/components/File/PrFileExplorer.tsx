@@ -5,7 +5,7 @@ import { fileSysyemStore } from "@/stores/github.store";
 const PrFileExplorer = () => {
   const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
     fileSysyemStore();
-  const [expandedPaths, setExpandedPaths] = useState<string[]>(["src"]);
+  const [expandedPaths, setExpandedPaths] = useState<string[]>([]);
 
   const getAllDirectoryPaths = () => {
     const directoryPaths = new Set<string>();
@@ -23,20 +23,54 @@ const PrFileExplorer = () => {
     return Array.from(directoryPaths);
   };
 
+  const getRootItems = () => {
+    const allPaths = [
+      ...commitFileList.map((file) => file.filename),
+      ...getAllDirectoryPaths(),
+    ];
+
+    const rootItems = allPaths
+      .filter((itemPath) => !itemPath.includes("/"))
+      .concat(
+        allPaths
+          .filter((itemPath) => itemPath.includes("/"))
+          .map((itemPath) => itemPath.split("/")[0]),
+      )
+      .filter((item, index, self) => self.indexOf(item) === index);
+
+    // 폴더와 파일을 분리하고 정렬
+    const folders = rootItems.filter((item) =>
+      getAllDirectoryPaths().some((dir) => dir.startsWith(item)),
+    );
+    const files = rootItems.filter((item) => !folders.includes(item));
+
+    // 폴더를 먼저, 그 다음 파일을 반환
+    return [...folders.sort(), ...files.sort()];
+  };
+
   const getDirectoryContents = (currentPath: string) => {
     const allPaths = [
       ...commitFileList.map((file) => file.filename),
       ...getAllDirectoryPaths(),
     ];
 
-    return allPaths.filter((itemPath) => {
+    const items = allPaths.filter((itemPath) => {
       const itemSegments = itemPath.split("/");
-      const parentSegments = currentPath.split("/");
+      const parentSegments = currentPath ? currentPath.split("/") : [];
       return (
-        itemPath.startsWith(currentPath + "/") &&
+        itemPath.startsWith(currentPath ? currentPath + "/" : "") &&
         itemSegments.length === parentSegments.length + 1
       );
     });
+
+    // 폴더와 파일을 분리하고 정렬
+    const folders = items.filter((item) =>
+      getAllDirectoryPaths().some((dir) => dir.startsWith(item)),
+    );
+    const files = items.filter((item) => !folders.includes(item));
+
+    // 폴더를 먼저, 그 다음 파일을 반환
+    return [...folders.sort(), ...files.sort()];
   };
 
   const toggleDirectoryExpansion = (directoryPath: string) => {
@@ -68,10 +102,47 @@ const PrFileExplorer = () => {
     }
   };
 
-  const renderTreeNode = (currentPath: string, depth: number = 0) => {
-    const childItems = getDirectoryContents(currentPath);
+  const renderTreeNode = (currentPath: string = "", depth: number = 0) => {
+    const childItems =
+      currentPath === "" ? getRootItems() : getDirectoryContents(currentPath);
     const isExpanded = expandedPaths.includes(currentPath);
     const indentation = depth * 20;
+
+    if (currentPath === "") {
+      return (
+        <div>
+          {childItems.map((itemPath) => {
+            const isFile = commitFileList.some(
+              (file) => file.filename === itemPath,
+            );
+
+            if (isFile) {
+              return (
+                <div
+                  key={itemPath}
+                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
+                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
+                  } ${getFileStatusStyle(itemPath)}`}
+                  style={{ paddingLeft: indentation + 8 + "px" }}
+                  onClick={() => handleFileSelection(itemPath)}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>{itemPath}</span>
+                  <span className="ml-2 text-xs text-gray-500">
+                    {
+                      commitFileList.find((file) => file.filename === itemPath)
+                        ?.status
+                    }
+                  </span>
+                </div>
+              );
+            }
+
+            return renderTreeNode(itemPath, depth);
+          })}
+        </div>
+      );
+    }
 
     return (
       <div key={currentPath}>
@@ -129,7 +200,7 @@ const PrFileExplorer = () => {
       <div className="border-b bg-gray-50 p-3">
         <h3 className="text-sm font-medium">Changed Files</h3>
       </div>
-      <div className="p-2">{renderTreeNode("src")}</div>
+      <div className="p-2">{renderTreeNode()}</div>
     </div>
   );
 };
