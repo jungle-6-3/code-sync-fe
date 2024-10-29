@@ -74,10 +74,10 @@ const ConversationPage = () => {
               </span>
             </div>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={70}>
+              <ResizablePanel defaultSize={70} className="flex items-center justify-center">
                 {selectedCommitFile &&
                   (selectedCommitFile.status === "removed" ? (
-                    <Alert>
+                    <Alert className="w-10/12 p-5">
                       <Terminal className="h-4 w-4" />
                       <AlertTitle className="text-2xl">Removed File</AlertTitle>
                       <AlertDescription className="text-xl">
@@ -85,7 +85,7 @@ const ConversationPage = () => {
                       </AlertDescription>
                     </Alert>
                   ) : selectedCommitFile.status === "renamed" ? (
-                    <Alert>
+                    <Alert className="w-10/12 p-5">
                       <Terminal className="h-4 w-4" />
                       <AlertTitle className="text-2xl">Renamed File</AlertTitle>
                       <AlertDescription className="text-xl">

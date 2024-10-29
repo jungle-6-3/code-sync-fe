@@ -31,3 +31,5 @@ const CodeEditor = ({ language, initialValue }: CodeEditorProps) => {
 };
 
 export default CodeEditor;
+
+// TODO: splitEditor와 editor를 합치기 고민하기

@@ -40,18 +40,18 @@ const PrFileExplorer = () => {
               (file) => file.filename === itemPath,
             );
 
-            if (isFile) {
-              return (
-                <PrFileExplororItem
-                  key={itemPath}
-                  indentation={indentation + 8 + "px"}
-                  itemPath={itemPath}
-                  onClick={() => handleFileSelection(itemPath, commitFileList)}
-                />
-              );
+            if (!isFile) {
+              return renderTreeNode(itemPath, depth);
             }
 
-            return renderTreeNode(itemPath, depth);
+            return (
+              <PrFileExplororItem
+                key={itemPath}
+                indentation={indentation + 8 + "px"}
+                itemPath={itemPath}
+                onClick={() => handleFileSelection(itemPath, commitFileList)}
+              />
+            );
           })}
         </div>
       );
@@ -73,18 +73,18 @@ const PrFileExplorer = () => {
               (file) => file.filename === itemPath,
             );
 
-            if (isFile) {
-              return (
-                <PrFileExplororItem
-                  key={itemPath}
-                  indentation={indentation + 24 + "px"}
-                  itemPath={itemPath}
-                  onClick={() => handleFileSelection(itemPath, commitFileList)}
-                />
-              );
+            if (!isFile) {
+              return renderTreeNode(itemPath, depth + 1);
             }
 
-            return renderTreeNode(itemPath, depth + 1);
+            return (
+              <PrFileExplororItem
+                key={itemPath}
+                indentation={indentation + 24 + "px"}
+                itemPath={itemPath}
+                onClick={() => handleFileSelection(itemPath, commitFileList)}
+              />
+            );
           })}
       </div>
     );
