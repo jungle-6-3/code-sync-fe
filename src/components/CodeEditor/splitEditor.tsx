@@ -1,5 +1,5 @@
 import { DiffEditor } from "@monaco-editor/react";
-import { type Monaco, DiffOnMount } from "@monaco-editor/react";
+import { type Monaco } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 interface CodeSplitEditorProps {
   language: string;

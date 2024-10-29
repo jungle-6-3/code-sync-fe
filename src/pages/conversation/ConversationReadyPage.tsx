@@ -89,7 +89,7 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
           ref={videoRef}
           autoPlay
           muted
-          className="aspect-[16/10] w-full rounded-md bg-slate-200 object-cover"
+          className="aspect-[16/10] w-full -scale-x-100 transform rounded-md bg-slate-200 object-cover"
         />
       </div>
       <div className="flex flex-col gap-4 text-center">
