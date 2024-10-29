@@ -27,6 +27,22 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
   },
   mediaStream: null,
   startWebcam: async ({ audio, video }: UserMediaState) => {
+    if (get().mediaStream) {
+      get().mediaStream?.getTracks()
+        .forEach((track) => {
+          if (
+            (track.kind === "audio" && !audio) ||
+            (track.kind === "video" && !video)
+          ) {
+            track.enabled = true;
+          }
+        });
+      set({
+        mediaStream: get().mediaStream,
+        isUserMediaOn: { video, audio },
+      });
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio,
@@ -50,7 +66,7 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
             (track.kind === "audio" && !audio) ||
             (track.kind === "video" && !video)
           ) {
-            track.stop();
+            track.enabled = false;
           }
         });
       set({
