@@ -195,22 +195,18 @@ export const getRootItems = (fileList: PrChangedFileInfo[]) => {
   return [...folders.sort(), ...files.sort()];
 };
 
-type Color = "added" | "modified" | "removed" | "init" | "renamed";
-
-type ColorType = Record<Color, string>;
-
 export const getFileStatusStyle = (
   filePath: string,
   fileList: PrChangedFileInfo[],
 ) => {
   const fileInfo = fileList.find((file) => file.filename === filePath);
 
-  const colors: ColorType = {
+  const colors = {
     added: "bg-green-100",
     modified: "bg-yellow-100",
     removed: "bg-red-100",
-    init: "",
     renamed: "bg-blue-100",
+    init: "",
   };
 
   return fileInfo?.status ? colors[fileInfo.status] : "";

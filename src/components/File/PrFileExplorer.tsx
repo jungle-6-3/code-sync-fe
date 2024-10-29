@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
 import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
-import {
-  getDirectoryContents,
-  getFileStatusStyle,
-  getRootItems,
-} from "@/lib/file";
-import { cn } from "@/lib/utils";
+import { getDirectoryContents, getRootItems } from "@/lib/file";
+import { PrFileExplororItem } from "./PrFileExplorerItem";
+import { PrDirectoryExplorer } from "./PrDirectoryExplorer";
 
 const PrFileExplorer = () => {
-  const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
-    fileSysyemStore();
+  const { commitFileList, setSelectedCommitFile } = fileSysyemStore();
   const [expandedPaths, setExpandedPaths] = useState([""]);
 
   const toggleDirectoryExpansion = (directoryPath: string) => {
@@ -47,25 +42,12 @@ const PrFileExplorer = () => {
 
             if (isFile) {
               return (
-                <div
+                <PrFileExplororItem
                   key={itemPath}
-                  className={cn(
-                    "flex cursor-pointer items-center p-2 hover:bg-red-500",
-                    getFileStatusStyle(itemPath, commitFileList),
-                    selectedCommitFile.filename === itemPath && "bg-red-500",
-                  )}
-                  style={{ paddingLeft: indentation + 8 + "px" }}
+                  indentation={indentation + 8 + "px"}
+                  itemPath={itemPath}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>{itemPath}</span>
-                  <span className="ml-2 text-xs text-gray-500">
-                    {
-                      commitFileList.find((file) => file.filename === itemPath)
-                        ?.status
-                    }
-                  </span>
-                </div>
+                />
               );
             }
 
@@ -74,23 +56,16 @@ const PrFileExplorer = () => {
         </div>
       );
     }
-
+//directory
     return (
       <div key={currentPath}>
-        <div
-          className="flex cursor-pointer items-center bg-white py-2 pl-2 hover:brightness-90"
-          style={{ paddingLeft: indentation + "px" }}
-          onClick={() => toggleDirectoryExpansion(currentPath)}
-        >
-          {childItems.length > 0 &&
-            (isExpanded ? (
-              <ChevronDown className="mr-1 h-4 w-4" />
-            ) : (
-              <ChevronRight className="mr-1 h-4 w-4" />
-            ))}
-          <Folder className="mr-2 h-4 w-4" />
-          <span>{currentPath.split("/").pop()}</span>
-        </div>
+        <PrDirectoryExplorer
+          indentation={indentation}
+          toggleDirectoryExpansion={toggleDirectoryExpansion}
+          currentPath={currentPath}
+          childItems={childItems}
+          isExpanded={isExpanded}
+        />
 
         {isExpanded &&
           childItems.map((itemPath) => {
@@ -100,25 +75,12 @@ const PrFileExplorer = () => {
 
             if (isFile) {
               return (
-                <div
+                <PrFileExplororItem
                   key={itemPath}
-                  className={cn(
-                    "flex cursor-pointer items-center p-2 hover:brightness-90",
-                    getFileStatusStyle(itemPath, commitFileList),
-                    selectedCommitFile.filename === itemPath && "bg-blue-300",
-                  )}
-                  style={{ paddingLeft: indentation + 24 + "px" }}
+                  indentation={indentation + 24 + "px"}
+                  itemPath={itemPath}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>{itemPath.split("/").pop()}</span>
-                  <span className="ml-2 text-xs text-gray-500">
-                    {
-                      commitFileList.find((file) => file.filename === itemPath)
-                        ?.status
-                    }
-                  </span>
-                </div>
+                />
               );
             }
 
