@@ -31,7 +31,7 @@ export const addStreamConnectionAtPeer = (peer: Peer, peerId: string, socket: So
         })
         .on("close", () => {
           removeOpponentMediaStream(call.remoteStream);
-        });
+        })
 
       setPeers({ ...peers, [remotePeerId]: call });
     },
