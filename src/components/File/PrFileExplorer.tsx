@@ -48,8 +48,8 @@ const PrFileExplorer = () => {
               return (
                 <div
                   key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
-                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
+                  className={`flex cursor-pointer items-center p-2 hover:bg-red-500 ${
+                    selectedCommitFile.filename === itemPath ? "bg-red-500" : ""
                   } ${getFileStatusStyle(itemPath, commitFileList)}`}
                   style={{ paddingLeft: indentation + 8 + "px" }}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
@@ -99,8 +99,8 @@ const PrFileExplorer = () => {
               return (
                 <div
                   key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
-                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
+                  className={`flex cursor-pointer items-center p-2 ${
+                    selectedCommitFile.filename === itemPath ? "bg-blue-300" : ""
                   } ${getFileStatusStyle(itemPath, commitFileList)}`}
                   style={{ paddingLeft: indentation + 24 + "px" }}
                   onClick={() => handleFileSelection(itemPath, commitFileList)}
