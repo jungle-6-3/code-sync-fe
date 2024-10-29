@@ -104,8 +104,9 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
     try {
       const prResponse = await getPrData({ owner, repo, prNumber });
       const [requireUser, requireBranchName] = prResponse.head.label.split(":");
-      const [requestOwner, requestBranchName] = prResponse.base.label.split(":");
-      
+      const [requestOwner, requestBranchName] =
+        prResponse.base.label.split(":");
+
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
         requireUserInfo: {
@@ -120,7 +121,11 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
 
       prInfoStore.getState().setPrInfo(prInfoData);
 
-      const fetchCommitsData = await getPrCommitsData({ owner, repo, prNumber });
+      const fetchCommitsData = await getPrCommitsData({
+        owner,
+        repo,
+        prNumber,
+      });
 
       const processedFiles = await Promise.all(
         fetchCommitsData.map(async (commit) => {
@@ -133,11 +138,12 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
                 prInfoData.requestUserInfo.owner,
                 repo,
                 prInfoData.requestUserInfo.branchName,
-                commit.filename
+                commit.filename,
               );
-              beforeContent = typeof beforeContentResponse === "object"
-                ? JSON.stringify(beforeContentResponse, null, 2)
-                : beforeContentResponse;
+              beforeContent =
+                typeof beforeContentResponse === "object"
+                  ? JSON.stringify(beforeContentResponse, null, 2)
+                  : beforeContentResponse;
             }
 
             if (commit.status === "added" || commit.status === "modified") {
@@ -145,35 +151,39 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
                 prInfoData.requireUserInfo.owner,
                 repo,
                 prInfoData.requireUserInfo.branchName,
-                commit.filename
+                commit.filename,
               );
-              afterContent = typeof afterContentResponse === "object"
-                ? JSON.stringify(afterContentResponse, null, 2)
-                : afterContentResponse;
+              afterContent =
+                typeof afterContentResponse === "object"
+                  ? JSON.stringify(afterContentResponse, null, 2)
+                  : afterContentResponse;
             }
           } catch (error) {
-            console.warn(`Failed to get content for file ${commit.filename}:`, error);
+            console.warn(
+              `Failed to get content for file ${commit.filename}:`,
+              error,
+            );
           }
 
           return {
             filename: commit.filename,
             status: commit.status,
             language: getLanguageFromFileName(
-              String(commit.filename.split(".").at(-1))
+              String(commit.filename.split(".").at(-1)),
             ),
             additions: commit.additions,
             deletions: commit.deletions,
             afterContent,
             beforeContent,
           };
-        })
+        }),
       );
-
+      console.log("processedFiles", processedFiles);
       set({ commitFileList: processedFiles });
     } catch (error) {
       console.error("PR 데이터 가져오기 실패", error);
       set({ commitFileList: [] });
-      throw new Error("PR 데이터 가져오기 실패"); 
+      throw new Error("PR 데이터 가져오기 실패");
     }
   },
 }));

@@ -15,10 +15,12 @@ import useUserDisconnectedToast, {
 import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
-  const { selectedCommitFile } = fileSysyemStore();
+  const { selectedCommitFile, commitFileList } = fileSysyemStore();
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
@@ -43,6 +45,10 @@ const ConversationPage = () => {
       socket.off("user-disconnected");
     };
   }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
+
+  useEffect(() => {
+    console.log(commitFileList);
+  }, []);
 
   return (
     <div className="flex h-screen flex-col">
@@ -71,7 +77,21 @@ const ConversationPage = () => {
               <ResizablePanel defaultSize={70}>
                 {selectedCommitFile &&
                   (selectedCommitFile.status === "removed" ? (
-                    <div>diff load</div>
+                    <Alert>
+                      <Terminal className="h-4 w-4" />
+                      <AlertTitle className="text-2xl">File Removed</AlertTitle>
+                      <AlertDescription className="text-xl">
+                        File Removed.
+                      </AlertDescription>
+                    </Alert>
+                  ) : selectedCommitFile.status === "renamed" ? (
+                    <Alert>
+                      <Terminal className="h-4 w-4" />
+                      <AlertTitle className="text-2xl">renamed file</AlertTitle>
+                      <AlertDescription className="text-xl">
+                        File renamed without changes.
+                      </AlertDescription>
+                    </Alert>
                   ) : selectedCommitFile.status === "added" ? (
                     <CodeEditor
                       language={selectedCommitFile.language}
