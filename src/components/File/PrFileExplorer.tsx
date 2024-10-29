@@ -56,12 +56,12 @@ const PrFileExplorer = () => {
         </div>
       );
     }
-//directory
+    //directory
     return (
       <div key={currentPath}>
         <PrDirectoryExplorer
           indentation={indentation}
-          toggleDirectoryExpansion={toggleDirectoryExpansion}
+          onToggle={() => toggleDirectoryExpansion(currentPath)}
           currentPath={currentPath}
           childItems={childItems}
           isExpanded={isExpanded}

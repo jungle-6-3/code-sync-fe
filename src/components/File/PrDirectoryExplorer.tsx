@@ -2,7 +2,7 @@ import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 
 interface PrDirectoryExplorerProps {
   indentation: number;
-  toggleDirectoryExpansion: (directoryPath: string) => void;
+  onToggle: () => void;
   currentPath: string;
   isExpanded: boolean;
   childItems: string[];
@@ -10,7 +10,7 @@ interface PrDirectoryExplorerProps {
 
 export const PrDirectoryExplorer = ({
   indentation,
-  toggleDirectoryExpansion,
+  onToggle,
   currentPath,
   childItems,
   isExpanded,
@@ -19,7 +19,7 @@ export const PrDirectoryExplorer = ({
     <div
       className="flex cursor-pointer items-center bg-white py-2 pl-2 hover:brightness-90"
       style={{ paddingLeft: indentation + "px" }}
-      onClick={() => toggleDirectoryExpansion(currentPath)}
+      onClick={onToggle}
     >
       {childItems.length > 0 &&
         (isExpanded ? (
