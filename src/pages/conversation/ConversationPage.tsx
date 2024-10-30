@@ -52,7 +52,7 @@ const ConversationPage = () => {
 
   const [drawBoard, setDrawBoard] = useState(false);
 
-  const toggleDrawBoard = () => {
+  const onToggleDrawBoard = () => {
     setDrawBoard(!drawBoard);
   };
 
@@ -177,11 +177,11 @@ const ConversationPage = () => {
     };
   }, [ydoc, editor, selectedCommitFile]);
 
-  const handleEditorMount = (editorInstance: editor.IStandaloneCodeEditor) => {
+  const onEditorMount = (editorInstance: editor.IStandaloneCodeEditor) => {
     setEditor(editorInstance);
   };
 
-  const handleDiffEditorMount = (diffEditor: editor.IStandaloneDiffEditor) => {
+  const onDiffEditorMount = (diffEditor: editor.IStandaloneDiffEditor) => {
     const modifiedEditor = diffEditor.getModifiedEditor();
     setEditor(modifiedEditor);
   };
@@ -193,7 +193,7 @@ const ConversationPage = () => {
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB toggleDrawBoard={toggleDrawBoard} />
+          <LeftGNB onToggleDrawBoard={onToggleDrawBoard} />
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
@@ -226,8 +226,8 @@ const ConversationPage = () => {
                     status={selectedCommitFile.status}
                     selectedCommitFile={selectedCommitFile}
                     commitFileList={commitFileList}
-                    onEditorMount={handleEditorMount}
-                    onSplitEditorMount={handleDiffEditorMount}
+                    onEditorMount={onEditorMount}
+                    onSplitEditorMount={onDiffEditorMount}
                   />
                 )}
               </ResizablePanel>

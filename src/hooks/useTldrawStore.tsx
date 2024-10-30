@@ -61,11 +61,10 @@ export function useTldrawStore({
     const unsubs: (() => void)[] = [];
 
     function handleSync() {
-      // 1.
-      // Connect store to yjs store and vis versa, for both the document and awareness
+      // 1. Connect store to yjs store and vis versa, for both the document and awareness
 
+      
       /* -------------------- Document -------------------- */
-
       // Sync store changes to the yjs doc
       unsubs.push(
         store.listen(
@@ -128,8 +127,8 @@ export function useTldrawStore({
       yStore.on("change", handleChange);
       unsubs.push(() => yStore.off("change", handleChange));
 
-      /* -------------------- Awareness ------------------- */
 
+      // Awareness
       const yClientId = room.awareness.clientID.toString();
       setUserPreferences({ id: yClientId });
 
