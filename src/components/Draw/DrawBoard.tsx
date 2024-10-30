@@ -1,11 +1,12 @@
 import { Tldraw, track, useEditor } from "tldraw";
 import "tldraw/tldraw.css";
 import { useTldrawStore } from "@/hooks/useTldrawStore";
+import { prMetaDataStore } from "@/stores/github.store";
 
 const NameEditor = track(() => {
   const editor = useEditor();
-
-  const { color, name } = editor.user.getUserPreferences();
+  const name = prMetaDataStore((state) => state.prMetaData.owner);
+  const { color } = editor.user.getUserPreferences();
 
   return (
     <div style={{ pointerEvents: "all", display: "flex" }}>
