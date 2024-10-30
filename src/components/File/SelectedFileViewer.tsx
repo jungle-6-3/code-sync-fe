@@ -2,6 +2,7 @@ import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { CodeEditor, CodeSplitEditor } from "../CodeEditor";
 import {
+  fileSysyemStore,
   PrChangedFileInfo,
   PrChangedFileStatusInfo,
 } from "@/stores/github.store";
@@ -80,7 +81,7 @@ const RemovedFile = () => {
     <Alert className="w-10/12 p-5">
       <Terminal className="h-4 w-4" />
       <AlertTitle className="text-2xl">Removed File</AlertTitle>
-      <AlertDescription className="text-xl">File Removed.</AlertDescription>
+      <AlertDescription className="">File Removed.</AlertDescription>
     </Alert>
   );
 };
@@ -90,7 +91,7 @@ const RenamedFile = () => {
     <Alert className="w-10/12 p-5">
       <Terminal className="h-4 w-4" />
       <AlertTitle className="text-2xl">Renamed File</AlertTitle>
-      <AlertDescription className="text-xl">
+      <AlertDescription className="">
         File renamed without changes.
       </AlertDescription>
     </Alert>
@@ -126,17 +127,21 @@ const InitFile = ({
 }: {
   commitFileList: PrChangedFileInfo[];
 }) => {
+  const setSelectedCommitFile = fileSysyemStore(
+    (state) => state.setSelectedCommitFile,
+  );
+
   return (
     <div className="flex w-4/5 flex-col">
-      <div className="my-2 ml-2 text-3xl font-bold">
-        Init Page : file changed status
+      <div className="my-2 ml-2 text-2xl font-bold">
+        File Changed List
       </div>
       <Table>
         <TableHeader>
-          <TableRow className="text-2xl">
+          <TableRow className="">
             <TableHead className="w-[200px]">File Name</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead>language</TableHead>
+            <TableHead>status</TableHead>
             <TableHead className="text-right">file additions</TableHead>
             <TableHead className="text-right">file deletions</TableHead>
           </TableRow>
@@ -144,12 +149,22 @@ const InitFile = ({
         <TableBody>
           {commitFileList.map((file, index) => {
             return (
-              <TableRow key={index} className="text-4xl">
-                <TableCell className="font-medium">{file.filename}</TableCell>
-                <TableCell>{file.language}</TableCell>
-                <TableCell>{file.status}</TableCell>
-                <TableCell className="text-right">{file.additions}</TableCell>
-                <TableCell className="text-right">{file.deletions}</TableCell>
+              <TableRow
+                key={index}
+                className="h-16 text-4xl"
+                onClick={() => setSelectedCommitFile(file)}
+              >
+                <TableCell className="py-4  font-medium">
+                  {file.filename}
+                </TableCell>
+                <TableCell className="py-4 ">{file.language}</TableCell>
+                <TableCell className="py-4 ">{file.status}</TableCell>
+                <TableCell className="py-4 text-right ">
+                  {file.additions}
+                </TableCell>
+                <TableCell className="py-4 text-right ">
+                  {file.deletions}
+                </TableCell>
               </TableRow>
             );
           })}
