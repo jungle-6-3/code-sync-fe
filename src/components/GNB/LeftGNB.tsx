@@ -1,8 +1,8 @@
-import messageStore from "@/stores/message.store";
+import chattingRoomStore from "@/stores/chattingRoom.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
 const LeftGNB = () => {
-  const { setIsMessage } = messageStore();
+  const { setIsMessage } = chattingRoomStore();
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>
@@ -12,7 +12,7 @@ const LeftGNB = () => {
           </button>
         </li>
         <li className="aspect-square">
-          <button className="p-2" onClick= {() => setIsMessage("message")}>
+          <button className="p-2" onClick={() => setIsMessage("message")}>
             <MessageSquare color="#334155" />
           </button>
         </li>

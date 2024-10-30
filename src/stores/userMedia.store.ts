@@ -20,7 +20,8 @@ interface UserMediaStore {
 // Create a store for user media (singleton)
 export const userMediaStore = create<UserMediaStore>()((set) => ({
   isShowWebcam: false,
-  toggleShowSharedWebcam: () => set((state) => ({ isShowWebcam: !state.isShowWebcam })),
+  toggleShowSharedWebcam: () =>
+    set((state) => ({ isShowWebcam: !state.isShowWebcam })),
   isUserMediaOn: {
     audio: false,
     video: false,
@@ -30,7 +31,7 @@ export const userMediaStore = create<UserMediaStore>()((set) => ({
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio,
-        video,
+        // video,
       });
       set({
         mediaStream: stream,

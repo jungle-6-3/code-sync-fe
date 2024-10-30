@@ -14,7 +14,7 @@ import useUserDisconnectedToast, {
 } from "@/hooks/Toast/useUserDisconnected";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
-import messageStore from "@/stores/message.store";
+import chattingRoomStore from "@/stores/chattingRoom.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
 
@@ -24,10 +24,7 @@ const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
-  const { isMessage } = messageStore();
-  // useEffect(() => {
-  //   console.log(isMessage);
-  // },[isMessage]);
+  const { isMessage } = chattingRoomStore();
 
   useEffect(() => {
     if (!socket) return;
