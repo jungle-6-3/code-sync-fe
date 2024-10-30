@@ -14,6 +14,7 @@ interface ConversationReadyPageProps {
 const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
+  const isStartVideoWebCam = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
@@ -26,39 +27,45 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
 
   const onStartConversation = async () => {
     if (isLoaded) return;
+    if (!isUserMediaOn.audio) return;
     setIsRejected(false);
     setIsLoaded(true);
-    if (isUserMediaOn.audio) {
-      try {
-        const [{ id: peerId, peer }, socket] = await Promise.all([
-          createPeer(),
-          setSocket(roomId),
-        ]);
-        // initialize the peer connection
-        // cuz of this work only when the socket and peer on the ready state
-        addStreamConnectionAtPeer(peer, peerId, socket);
+    try {
+      const [{ id: peerId, peer }, socket] = await Promise.all([
+        createPeer(),
+        setSocket(roomId),
+      ]);
+      // initialize the peer connection
+      // cuz of this work only when the socket and peer on the ready state
+      addStreamConnectionAtPeer(peer, peerId, socket);
 
-        if (isCreator) return onSetJoin(true);
-        // when the user is not the creator
-        socket
-          .on("invite-accepted", () => {
-            onSetJoin(true);
-            socket?.emit("share-peer-id", { peerId });
-          })
-          .on("invite-rejected", () => {
-            setIsLoaded(false);
-            setIsRejected(true);
-          });
-      } catch (error) {
-        alert("Error: " + error);
+      if (isCreator) {
+        return onSetJoin(true);
       }
-
-      return;
+      // when the user is not the creator
+      socket
+        .on("invite-accepted", () => {
+          onSetJoin(true);
+          socket?.emit("share-peer-id", { peerId });
+        })
+        .on("invite-rejected", () => {
+          setIsLoaded(false);
+          setIsRejected(true);
+        });
+    } catch (error) {
+      alert("Error: " + error);
+      setIsLoaded(true);
     }
-    setIsLoaded(true);
+
+    return;
   };
 
   useEffect(() => {
+    if (!isStartVideoWebCam.current) {
+      startWebcam({ audio: true, video: true });
+      isStartVideoWebCam.current = true;
+    }
+
     return () => {
       socket?.off("invite-accepted").off("invite-rejected");
     };
@@ -71,10 +78,6 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     }
   }, [mediaStream]);
 
-  useEffect(() => {
-    startWebcam({ audio: true, video: true });
-  }, [startWebcam]);
-
   return (
     <div className="flex min-h-screen items-center justify-center gap-8 max-lg:flex-col">
       <div className="relative aspect-[16/10] h-full w-full max-w-[40rem] p-8">
@@ -86,7 +89,7 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
           ref={videoRef}
           autoPlay
           muted
-          className="aspect-[16/10] w-full rounded-md bg-slate-200 object-cover"
+          className="aspect-[16/10] w-full -scale-x-100 transform rounded-md bg-slate-200 object-cover"
         />
       </div>
       <div className="flex flex-col gap-4 text-center">

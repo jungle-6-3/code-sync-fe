@@ -1,31 +1,31 @@
-import { userMediaStore } from "@/stores/userMedia.store";
+import { peerStore } from "@/stores/peer.store";
 import { Video, VideoOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBVideoStatus = () => {
   const [videoStatus, toggleVideoStatus] = useReducer((state) => !state, true);
-  const mediaStatus = userMediaStore((state) => state.isUserMediaOn);
-  const startWebcam = userMediaStore((state) => state.startWebcam);
-  const stopWebcam = userMediaStore((state) => state.stopWebcam);
+  const peers = peerStore((state) => state.peers);
 
-  const onVideoClick = () => {
+  const onVideoToggle = () => {
     toggleVideoStatus();
-    startWebcam({ audio: mediaStatus.audio, video: true });
-  };
-
-  const onVideoStopClick = () => {
-    toggleVideoStatus();
-    stopWebcam({ audio: mediaStatus.audio, video: false });
+    // TODO: when toggle video, video change other image
+    Object.values(peers).forEach((peer) => {
+      peer.localStream.getTracks().forEach((track) => {
+        if (track.kind === "video") {
+          track.enabled = !videoStatus;
+        }
+      });
+    });
   };
 
   return (
     <li>
       {videoStatus ? (
-        <button onClick={onVideoStopClick}>
+        <button onClick={onVideoToggle}>
           <Video color="#334155" size={16} />
         </button>
       ) : (
-        <button onClick={onVideoClick}>
+        <button onClick={onVideoToggle}>
           <VideoOff color="#334155" size={16} />
         </button>
       )}

@@ -1,0 +1,28 @@
+name: fe-CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: fe-dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: env 파일 생성
+        run: |
+          cd ~/code-sync-fe/
+          touch .env
+          echo VITE_BASE_URL=${{ secrets.VITE_BASE_URL }} >> .env
+          echo VITE_WS_URL=${{ secrets.VITE_WS_URL }} >> .env
+          echo VITE_PR_URL=${{ secrets.VITE_PR_URL }} >> .env
+          echo VITE_YJS_URL=${{ secrets.VITE_YJS_URL }} >> .env
+          cat .env
+
+      - name: run deploy
+        run: |
+          /bin/bash ~/deploy-fe.sh
