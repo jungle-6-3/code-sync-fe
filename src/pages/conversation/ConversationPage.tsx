@@ -26,6 +26,9 @@ import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import { socketStore } from "@/stores/socket.store";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
+import { DrawBoard } from "@/components/Draw/DrawBoard";
+import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
+import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -48,6 +51,8 @@ const ConversationPage = () => {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
   const fileMetadata = ydoc.getArray<PrChangedFileInfo>("fileMetadata");
+
+  const [drawBoard, setDrawBoard] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -170,13 +175,17 @@ const ConversationPage = () => {
     };
   }, [ydoc, editor, selectedCommitFile]);
 
-  const handleEditorMount = (editorInstance: editor.IStandaloneCodeEditor) => {
+  const onEditorMount = (editorInstance: editor.IStandaloneCodeEditor) => {
     setEditor(editorInstance);
   };
 
-  const handleDiffEditorMount = (diffEditor: editor.IStandaloneDiffEditor) => {
+  const onDiffEditorMount = (diffEditor: editor.IStandaloneDiffEditor) => {
     const modifiedEditor = diffEditor.getModifiedEditor();
     setEditor(modifiedEditor);
+  };
+
+  const toggleDrawBoard = () => {
+    setDrawBoard((prev) => !prev);
   };
 
   return (
@@ -186,7 +195,7 @@ const ConversationPage = () => {
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB />
+          <LeftGNB toggleDrawBoard={toggleDrawBoard} />
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
@@ -198,14 +207,11 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
+            {drawBoard && <DrawBoard roomId={roomId} />}
             {selectedCommitFile.filename !== "" && (
               <div>
-                <span className="item m-1 flex h-7 w-fit items-center border-b-4 border-blue-500 px-2 py-5">
-                  {selectedFileName}
-                </span>
-                <span className="item border-b- m-1 flex h-4 w-full items-center p-2">
-                  {selectedTotalFilePath}
-                </span>
+                <PrFileNameViewer fileName={String(selectedFileName)} />
+                <PrFilePathViewer filePath={selectedTotalFilePath} />
               </div>
             )}
             <ResizablePanelGroup direction="vertical">
@@ -218,8 +224,8 @@ const ConversationPage = () => {
                     status={selectedCommitFile.status}
                     selectedCommitFile={selectedCommitFile}
                     commitFileList={commitFileList}
-                    onEditorMount={handleEditorMount}
-                    onSplitEditorMount={handleDiffEditorMount}
+                    onEditorMount={onEditorMount}
+                    onSplitEditorMount={onDiffEditorMount}
                   />
                 )}
               </ResizablePanel>
