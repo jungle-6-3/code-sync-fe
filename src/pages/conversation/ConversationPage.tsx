@@ -75,7 +75,7 @@ const ConversationPage = () => {
   useEffect(() => {
     if (!providerRef.current) {
       providerRef.current = new WebsocketProvider(
-        "wss://demos.yjs.dev/ws",
+        import.meta.env.VITE_YJS_URL,
         roomId,
         ydoc,
         {
@@ -184,7 +184,7 @@ const ConversationPage = () => {
     setEditor(modifiedEditor);
   };
 
-  const toggleDrawBoard = () => {
+  const navigateMainFrame = () => {
     setDrawBoard((prev) => !prev);
   };
 
@@ -195,7 +195,7 @@ const ConversationPage = () => {
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB toggleDrawBoard={toggleDrawBoard} />
+          <LeftGNB navigateMainFrame={navigateMainFrame} />
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>

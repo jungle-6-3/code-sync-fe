@@ -27,7 +27,7 @@ import * as Y from "yjs";
 
 export function useTldrawStore({
   roomId = "example",
-  hostUrl = "wss://demos.yjs.dev/ws",
+  hostUrl = import.meta.env.VITE_YJS_URL,
   shapeUtils = [],
 }: Partial<{
   hostUrl: string;
