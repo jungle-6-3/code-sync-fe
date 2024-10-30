@@ -2,10 +2,10 @@ import chattingRoomStore from "@/stores/chattingRoom.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
 interface LeftGNBProps {
-  toggleDrawBoard(): void;
+  navigateMainFrame(): void;
 }
 
-const LeftGNB = ({ toggleDrawBoard }: LeftGNBProps) => {
+const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
   const { setIsMessage } = chattingRoomStore();
   return (
     <ul className="flex h-full flex-col justify-between">
@@ -28,7 +28,7 @@ const LeftGNB = ({ toggleDrawBoard }: LeftGNBProps) => {
           </button>
         </li>
         <li className="aspect-square">
-          <button className="p-2" onClick={toggleDrawBoard}>
+          <button className="p-2" onClick={navigateMainFrame}>
             <SquarePen color="#334155" />
           </button>
         </li>

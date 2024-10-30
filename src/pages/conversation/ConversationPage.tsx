@@ -29,6 +29,7 @@ import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
+import { useTldrawStore } from "@/hooks/useTldrawStore";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -54,6 +55,11 @@ const ConversationPage = () => {
 
   const [drawBoard, setDrawBoard] = useState(false);
 
+  const store = useTldrawStore({
+    hostUrl: import.meta.env.VITE_YJS_URL,
+    roomId,
+  });
+
   useEffect(() => {
     if (!socket) return;
 
@@ -75,7 +81,8 @@ const ConversationPage = () => {
   useEffect(() => {
     if (!providerRef.current) {
       providerRef.current = new WebsocketProvider(
-        "wss://demos.yjs.dev/ws",
+        import.meta.env.VITE_YJS_URL,
+        // "wss://demos.yjs.dev/ws",
         roomId,
         ydoc,
         {
@@ -184,7 +191,7 @@ const ConversationPage = () => {
     setEditor(modifiedEditor);
   };
 
-  const toggleDrawBoard = () => {
+  const navigateMainFrame = () => {
     setDrawBoard((prev) => !prev);
   };
 
@@ -195,7 +202,7 @@ const ConversationPage = () => {
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB toggleDrawBoard={toggleDrawBoard} />
+          <LeftGNB navigateMainFrame={navigateMainFrame} />
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
@@ -207,7 +214,7 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
-            {drawBoard && <DrawBoard roomId={roomId} />}
+            {drawBoard && <DrawBoard store={store} />}
             {selectedCommitFile.filename !== "" && (
               <div>
                 <PrFileNameViewer fileName={String(selectedFileName)} />

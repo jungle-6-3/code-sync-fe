@@ -27,7 +27,7 @@ import * as Y from "yjs";
 
 export function useTldrawStore({
   roomId = "example",
-  hostUrl = "wss://demos.yjs.dev/ws",
+  hostUrl = import.meta.env.VITE_YJS_URL,
   shapeUtils = [],
 }: Partial<{
   hostUrl: string;
@@ -52,7 +52,6 @@ export function useTldrawStore({
     const yArr = yDoc.getArray<{ key: string; val: TLRecord }>(`tl_${roomId}`);
     const yStore = new YKeyValue(yArr);
     const meta = yDoc.getMap<SerializedSchema>("meta");
-
     return {
       yDoc,
       yStore,
