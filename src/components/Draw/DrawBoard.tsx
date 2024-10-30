@@ -31,23 +31,25 @@ const NameEditor = track(() => {
   );
 });
 
-export const DrawBoard = ({ roomId }: { roomId: string }) => {
+interface DrawBoardpProps {
+  roomId: string;
+}
+
+export const DrawBoard = ({ roomId }: DrawBoardpProps) => {
   const store = useTldrawStore({
     roomId,
     hostUrl: "wss://demos.yjs.dev/ws",
   });
 
   return (
-    <div className="h-full w-full">
-      <div className="tldraw__editor h-full w-full">
-        <Tldraw
-          autoFocus
-          store={store}
-          components={{
-            SharePanel: NameEditor,
-          }}
-        />
-      </div>
+    <div className="tldraw__editor h-full">
+      <Tldraw
+        autoFocus
+        store={store}
+        components={{
+          SharePanel: NameEditor,
+        }}
+      />
     </div>
   );
 };
