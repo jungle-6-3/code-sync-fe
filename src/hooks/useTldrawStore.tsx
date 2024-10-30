@@ -1,3 +1,9 @@
+/**
+ * This code is adapted from tldraw-yjs-example
+ * @see https://github.com/tldraw/tldraw-yjs-example
+ * @license MIT
+ */
+
 import {
   InstancePresenceRecordType,
   TLAnyShapeUtilConstructor,
@@ -63,7 +69,6 @@ export function useTldrawStore({
     function handleSync() {
       // 1.Connect store to yjs store and vis versa, for both the document and awareness
 
-      
       /* -------------------- Document -------------------- */
       // Sync store changes to the yjs doc
       unsubs.push(
@@ -126,7 +131,6 @@ export function useTldrawStore({
 
       yStore.on("change", handleChange);
       unsubs.push(() => yStore.off("change", handleChange));
-
 
       // Awareness
       const yClientId = room.awareness.clientID.toString();
