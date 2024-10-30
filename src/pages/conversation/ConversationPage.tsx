@@ -29,6 +29,7 @@ import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
+import { useTldrawStore } from "@/hooks/useTldrawStore";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -54,6 +55,11 @@ const ConversationPage = () => {
 
   const [drawBoard, setDrawBoard] = useState(false);
 
+  const store = useTldrawStore({
+    hostUrl: import.meta.env.VITE_YJS_URL,
+    roomId,
+  });
+
   useEffect(() => {
     if (!socket) return;
 
@@ -76,6 +82,7 @@ const ConversationPage = () => {
     if (!providerRef.current) {
       providerRef.current = new WebsocketProvider(
         import.meta.env.VITE_YJS_URL,
+        // "wss://demos.yjs.dev/ws",
         roomId,
         ydoc,
         {
@@ -207,7 +214,7 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
-            {drawBoard && <DrawBoard roomId={roomId} />}
+            {drawBoard && <DrawBoard store={store} />}
             {selectedCommitFile.filename !== "" && (
               <div>
                 <PrFileNameViewer fileName={String(selectedFileName)} />

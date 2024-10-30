@@ -1,4 +1,4 @@
-import { Tldraw, track, useEditor } from "tldraw";
+import { Tldraw, TldrawProps, track, useEditor } from "tldraw";
 import "tldraw/tldraw.css";
 import { useTldrawStore } from "@/hooks/useTldrawStore";
 import { prMetaDataStore } from "@/stores/github.store";
@@ -31,16 +31,9 @@ const NameEditor = track(() => {
   );
 });
 
-interface DrawBoardpProps {
-  roomId: string;
-}
+type DrawBoardProps = Pick<TldrawProps, "store">;
 
-export const DrawBoard = ({ roomId }: DrawBoardpProps) => {
-  const store = useTldrawStore({
-    roomId,
-    hostUrl: "wss://demos.yjs.dev/ws",
-  });
-
+export const DrawBoard = ({ store }: DrawBoardProps) => {
   return (
     <div className="tldraw__editor h-full">
       <Tldraw

@@ -52,7 +52,6 @@ export function useTldrawStore({
     const yArr = yDoc.getArray<{ key: string; val: TLRecord }>(`tl_${roomId}`);
     const yStore = new YKeyValue(yArr);
     const meta = yDoc.getMap<SerializedSchema>("meta");
-
     return {
       yDoc,
       yStore,
