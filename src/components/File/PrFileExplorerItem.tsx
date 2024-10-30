@@ -7,18 +7,12 @@ interface PrFileExplorerItemProps {
   itemPath: string;
   indentation: string;
   onClick: () => void;
-  // fileStatus: PrChangedFileInfo["status"];
 }
-
-// const fileBackgroundColor = {
-
-// }
 
 export const PrFileExplororItem = ({
   itemPath,
   indentation,
   onClick,
-  // fileStatus,
 }: PrFileExplorerItemProps) => {
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const selectedCommitFile = fileSysyemStore(
