@@ -1,6 +1,5 @@
 import { Tldraw, TldrawProps, track, useEditor } from "tldraw";
 import "tldraw/tldraw.css";
-import { useTldrawStore } from "@/hooks/useTldrawStore";
 import { prMetaDataStore } from "@/stores/github.store";
 
 const NameEditor = track(() => {
