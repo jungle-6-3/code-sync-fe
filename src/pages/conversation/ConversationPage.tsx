@@ -27,6 +27,8 @@ import { editor } from "monaco-editor";
 import { socketStore } from "@/stores/socket.store";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
+import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
+import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -208,12 +210,8 @@ const ConversationPage = () => {
             {drawBoard && <DrawBoard roomId={roomId} />}
             {selectedCommitFile.filename !== "" && (
               <div>
-                <span className="item m-1 flex h-7 w-fit items-center border-b-4 border-blue-500 px-2 py-5">
-                  {selectedFileName}
-                </span>
-                <span className="item border-b- m-1 flex h-4 w-full items-center p-2">
-                  {selectedTotalFilePath}
-                </span>
+                <PrFileNameViewer fileName={String(selectedFileName)} />
+                <PrFilePathViewer filePath={selectedTotalFilePath} />
               </div>
             )}
             <ResizablePanelGroup direction="vertical">

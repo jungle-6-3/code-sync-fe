@@ -128,11 +128,13 @@ const InitFile = ({
 }) => {
   return (
     <div className="flex w-4/5 flex-col">
-      <div className="text-2xl">Init Page : file changed status</div>
+      <div className="my-2 ml-2 text-3xl font-bold">
+        Init Page : file changed status
+      </div>
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-[200px]">Invoice</TableHead>
+          <TableRow className="text-2xl">
+            <TableHead className="w-[200px]">File Name</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Method</TableHead>
             <TableHead className="text-right">file additions</TableHead>
@@ -142,7 +144,7 @@ const InitFile = ({
         <TableBody>
           {commitFileList.map((file, index) => {
             return (
-              <TableRow key={index}>
+              <TableRow key={index} className="text-4xl">
                 <TableCell className="font-medium">{file.filename}</TableCell>
                 <TableCell>{file.language}</TableCell>
                 <TableCell>{file.status}</TableCell>
