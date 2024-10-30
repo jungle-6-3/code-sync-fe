@@ -61,7 +61,7 @@ export function useTldrawStore({
     const unsubs: (() => void)[] = [];
 
     function handleSync() {
-      // 1. Connect store to yjs store and vis versa, for both the document and awareness
+      // 1.Connect store to yjs store and vis versa, for both the document and awareness
 
       
       /* -------------------- Document -------------------- */

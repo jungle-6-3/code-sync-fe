@@ -140,9 +140,9 @@ const InitFile = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {commitFileList.map((file) => {
+          {commitFileList.map((file, index) => {
             return (
-              <TableRow>
+              <TableRow key={index}>
                 <TableCell className="font-medium">{file.filename}</TableCell>
                 <TableCell>{file.language}</TableCell>
                 <TableCell>{file.status}</TableCell>
