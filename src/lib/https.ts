@@ -33,8 +33,8 @@ https.interceptors.response.use(
   },
   function (error) {
     if (error.response && error.response.status) {
-      if (errorAuth.includes(error.response.code)) {
-        return alert(error.response.message);
+      if (errorAuth.includes(error.response.data?.code)) {
+        return alert(error.response.data?.message);
       }
     }
     return Promise.reject(error);

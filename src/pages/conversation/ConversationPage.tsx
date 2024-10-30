@@ -5,6 +5,14 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import useJoinRequestByToast, {
+  SocketJoinRequestBy,
+} from "@/hooks/Toast/useJoinReqeustBy";
+import useUserDisconnectedToast, {
+  SocketUserDisconnected,
+} from "@/hooks/Toast/useUserDisconnected";
+import ConversationChatting from "@/pages/conversation/ConversationChatting";
+import chattingRoomStore from "@/stores/chattingRoom.store";
 import {
   fileSysyemStore,
   PrChangedFileInfo,
@@ -18,9 +26,6 @@ import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import { socketStore } from "@/stores/socket.store";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
-import { useJoinRequestByToast, useUserDisconnectedToast } from "@/hooks/Toast";
-import { SocketJoinRequestBy } from "@/hooks/Toast/useJoinReqeustBy";
-import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -34,6 +39,7 @@ const ConversationPage = () => {
   const selectedTotalFilePath = selectedCommitFile.filename
     .split("/")
     .join(" > ");
+  const { isMessage } = chattingRoomStore();
 
   const ydoc = useMemo(() => new Y.Doc(), []);
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(
@@ -184,7 +190,11 @@ const ConversationPage = () => {
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
-            <FileTreeComponent />
+            {isMessage === "folder" ? (
+              <FileTreeComponent />
+            ) : (
+              <ConversationChatting />
+            )}
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
