@@ -31,9 +31,11 @@ interface prMetaDataPropsStore {
   resetPrMeTaData: () => void;
 }
 
-export interface PrChangedFileInfo {
-  filename: string;
+export interface PrChangedFileStatusInfo {
   status: "init" | "modified" | "added" | "removed" | "renamed";
+}
+export interface PrChangedFileInfo extends PrChangedFileStatusInfo {
+  filename: string;
   language: string;
   additions: number;
   deletions: number;

@@ -1,4 +1,3 @@
-import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
@@ -15,8 +14,7 @@ import useUserDisconnectedToast, {
 import { fileSysyemStore, prInfoStore } from "@/stores/github.store";
 import { socketStore } from "@/stores/socket.store";
 import { useEffect } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
+import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -46,10 +44,6 @@ const ConversationPage = () => {
     };
   }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
 
-  useEffect(() => {
-    console.log(commitFileList);
-  }, []);
-
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
@@ -78,35 +72,13 @@ const ConversationPage = () => {
                 defaultSize={70}
                 className="flex items-center justify-center"
               >
-                {selectedCommitFile &&
-                  (selectedCommitFile.status === "removed" ? (
-                    <Alert className="w-10/12 p-5">
-                      <Terminal className="h-4 w-4" />
-                      <AlertTitle className="text-2xl">Removed File</AlertTitle>
-                      <AlertDescription className="text-xl">
-                        File Removed.
-                      </AlertDescription>
-                    </Alert>
-                  ) : selectedCommitFile.status === "renamed" ? (
-                    <Alert className="w-10/12 p-5">
-                      <Terminal className="h-4 w-4" />
-                      <AlertTitle className="text-2xl">Renamed File</AlertTitle>
-                      <AlertDescription className="text-xl">
-                        File renamed without changes.
-                      </AlertDescription>
-                    </Alert>
-                  ) : selectedCommitFile.status === "added" ? (
-                    <CodeEditor
-                      language={selectedCommitFile.language}
-                      initialValue={selectedCommitFile.afterContent}
-                    />
-                  ) : (
-                    <CodeSplitEditor
-                      language={selectedCommitFile.language}
-                      originalValue={selectedCommitFile.beforeContent}
-                      modifiedValue={selectedCommitFile.afterContent}
-                    />
-                  ))}
+                {selectedCommitFile && (
+                  <SelectedFileViewer
+                    status={selectedCommitFile.status}
+                    selectedCommitFile={selectedCommitFile}
+                    commitFileList={commitFileList}
+                  />
+                )}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
