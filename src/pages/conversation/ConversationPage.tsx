@@ -26,6 +26,7 @@ import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import { socketStore } from "@/stores/socket.store";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
+import { DrawBoard } from "@/components/Draw/DrawBoar";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -48,6 +49,12 @@ const ConversationPage = () => {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
   const fileMetadata = ydoc.getArray<PrChangedFileInfo>("fileMetadata");
+
+  const [drawBoard, setDrawBoard] = useState(false);
+
+  const toggleDrawBoard = () => {
+    setDrawBoard(!drawBoard);
+  };
 
   useEffect(() => {
     if (!socket) return;
@@ -179,6 +186,10 @@ const ConversationPage = () => {
     setEditor(modifiedEditor);
   };
 
+  useEffect(() => {
+    console.log(drawBoard);
+  }, [drawBoard]);
+
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
@@ -186,7 +197,7 @@ const ConversationPage = () => {
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB />
+          <LeftGNB toggleDrawBoard={toggleDrawBoard} />
         </nav>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20}>
@@ -198,6 +209,7 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
+            {drawBoard && <DrawBoard roomId={roomId} />}
             {selectedCommitFile.filename !== "" && (
               <div>
                 <span className="item m-1 flex h-7 w-fit items-center border-b-4 border-blue-500 px-2 py-5">
