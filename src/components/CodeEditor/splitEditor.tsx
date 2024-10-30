@@ -5,7 +5,7 @@ interface CodeSplitEditorProps {
   language: string;
   originalValue: string;
   modifiedValue: string;
-  onEditorMount?: (
+  onSplitEditorMount?: (
     editor: editor.IStandaloneDiffEditor,
     monaco: Monaco,
   ) => void;
@@ -15,14 +15,14 @@ const CodeSplitEditor = ({
   language,
   originalValue,
   modifiedValue,
-  onEditorMount,
+  onSplitEditorMount,
 }: CodeSplitEditorProps) => {
   const handleEditorMount = (
     eidtor: editor.IStandaloneDiffEditor,
     monaco: Monaco,
   ) => {
-    if (onEditorMount) {
-      onEditorMount(eidtor, monaco);
+    if (onSplitEditorMount) {
+      onSplitEditorMount(eidtor, monaco);
     }
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,

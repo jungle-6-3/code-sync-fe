@@ -1,77 +1,12 @@
 import { useState } from "react";
-import { ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
-import { fileSysyemStore } from "@/stores/github.store";
+import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
+import { getDirectoryContents, getRootItems } from "@/lib/file";
+import { PrFileExplororItem } from "./PrFileExplorerItem";
+import { PrDirectoryExplorer } from "./PrDirectoryExplorer";
 
 const PrFileExplorer = () => {
-  const { commitFileList, selectedCommitFile, setSelectedCommitFile } =
-    fileSysyemStore();
-  const [expandedPaths, setExpandedPaths] = useState<string[]>([]);
-
-  const getAllDirectoryPaths = () => {
-    const directoryPaths = new Set<string>();
-
-    commitFileList.forEach((file) => {
-      const pathSegments = file.filename.split("/");
-      let currentPath = "";
-
-      pathSegments.slice(0, -1).forEach((segment) => {
-        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
-        directoryPaths.add(currentPath);
-      });
-    });
-
-    return Array.from(directoryPaths);
-  };
-
-  const getRootItems = () => {
-    const allPaths = [
-      ...commitFileList.map((file) => file.filename),
-      ...getAllDirectoryPaths(),
-    ];
-
-    const rootItems = allPaths
-      .filter((itemPath) => !itemPath.includes("/"))
-      .concat(
-        allPaths
-          .filter((itemPath) => itemPath.includes("/"))
-          .map((itemPath) => itemPath.split("/")[0]),
-      )
-      .filter((item, index, self) => self.indexOf(item) === index);
-
-    // 폴더와 파일을 분리하고 정렬
-    const folders = rootItems.filter((item) =>
-      getAllDirectoryPaths().some((dir) => dir.startsWith(item)),
-    );
-    const files = rootItems.filter((item) => !folders.includes(item));
-
-    // 폴더를 먼저, 그 다음 파일을 반환
-    return [...folders.sort(), ...files.sort()];
-  };
-
-  const getDirectoryContents = (currentPath: string) => {
-    const allPaths = [
-      ...commitFileList.map((file) => file.filename),
-      ...getAllDirectoryPaths(),
-    ];
-
-    const items = allPaths.filter((itemPath) => {
-      const itemSegments = itemPath.split("/");
-      const parentSegments = currentPath ? currentPath.split("/") : [];
-      return (
-        itemPath.startsWith(currentPath ? currentPath + "/" : "") &&
-        itemSegments.length === parentSegments.length + 1
-      );
-    });
-
-    // 폴더와 파일을 분리하고 정렬
-    const folders = items.filter((item) =>
-      getAllDirectoryPaths().some((dir) => dir.startsWith(item)),
-    );
-    const files = items.filter((item) => !folders.includes(item));
-
-    // 폴더를 먼저, 그 다음 파일을 반환
-    return [...folders.sort(), ...files.sort()];
-  };
+  const { commitFileList, setSelectedCommitFile } = fileSysyemStore();
+  const [expandedPaths, setExpandedPaths] = useState([""]);
 
   const toggleDirectoryExpansion = (directoryPath: string) => {
     setExpandedPaths((currentPaths) =>
@@ -81,30 +16,19 @@ const PrFileExplorer = () => {
     );
   };
 
-  const handleFileSelection = (filePath: string) => {
-    const fileInfo = commitFileList.find((file) => file.filename === filePath);
-    if (fileInfo) {
-      setSelectedCommitFile(fileInfo);
-    }
-  };
-
-  const getFileStatusStyle = (filePath: string) => {
-    const fileInfo = commitFileList.find((file) => file.filename === filePath);
-    switch (fileInfo?.status) {
-      case "added":
-        return "bg-green-100";
-      case "modified":
-        return "bg-yellow-100";
-      case "removed":
-        return "bg-red-100";
-      default:
-        return "";
-    }
+  const handleFileSelection = (
+    filePath: string,
+    fileList: PrChangedFileInfo[],
+  ) => {
+    const fileInfo = fileList.find((file) => file.filename === filePath);
+    if (fileInfo) setSelectedCommitFile(fileInfo);
   };
 
   const renderTreeNode = (currentPath: string = "", depth: number = 0) => {
     const childItems =
-      currentPath === "" ? getRootItems() : getDirectoryContents(currentPath);
+      currentPath === ""
+        ? getRootItems(commitFileList)
+        : getDirectoryContents(currentPath, commitFileList);
     const isExpanded = expandedPaths.includes(currentPath);
     const indentation = depth * 20;
 
@@ -116,29 +40,18 @@ const PrFileExplorer = () => {
               (file) => file.filename === itemPath,
             );
 
-            if (isFile) {
-              return (
-                <div
-                  key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
-                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
-                  } ${getFileStatusStyle(itemPath)}`}
-                  style={{ paddingLeft: indentation + 8 + "px" }}
-                  onClick={() => handleFileSelection(itemPath)}
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>{itemPath}</span>
-                  <span className="ml-2 text-xs text-gray-500">
-                    {
-                      commitFileList.find((file) => file.filename === itemPath)
-                        ?.status
-                    }
-                  </span>
-                </div>
-              );
+            if (!isFile) {
+              return renderTreeNode(itemPath, depth);
             }
 
-            return renderTreeNode(itemPath, depth);
+            return (
+              <PrFileExplororItem
+                key={itemPath}
+                indentation={indentation + 8 + "px"}
+                itemPath={itemPath}
+                onClick={() => handleFileSelection(itemPath, commitFileList)}
+              />
+            );
           })}
         </div>
       );
@@ -146,20 +59,13 @@ const PrFileExplorer = () => {
 
     return (
       <div key={currentPath}>
-        <div
-          className="flex cursor-pointer items-center p-2 hover:bg-gray-100"
-          style={{ paddingLeft: indentation + "px" }}
-          onClick={() => toggleDirectoryExpansion(currentPath)}
-        >
-          {childItems.length > 0 &&
-            (isExpanded ? (
-              <ChevronDown className="mr-1 h-4 w-4" />
-            ) : (
-              <ChevronRight className="mr-1 h-4 w-4" />
-            ))}
-          <Folder className="mr-2 h-4 w-4" />
-          <span>{currentPath.split("/").pop()}</span>
-        </div>
+        <PrDirectoryExplorer
+          indentation={indentation}
+          onToggle={() => toggleDirectoryExpansion(currentPath)}
+          currentPath={currentPath}
+          childItems={childItems}
+          isExpanded={isExpanded}
+        />
 
         {isExpanded &&
           childItems.map((itemPath) => {
@@ -167,40 +73,29 @@ const PrFileExplorer = () => {
               (file) => file.filename === itemPath,
             );
 
-            if (isFile) {
-              return (
-                <div
-                  key={itemPath}
-                  className={`flex cursor-pointer items-center p-2 hover:bg-gray-50 ${
-                    selectedCommitFile.filename === itemPath ? "bg-blue-50" : ""
-                  } ${getFileStatusStyle(itemPath)}`}
-                  style={{ paddingLeft: indentation + 24 + "px" }}
-                  onClick={() => handleFileSelection(itemPath)}
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>{itemPath.split("/").pop()}</span>
-                  <span className="ml-2 text-xs text-gray-500">
-                    {
-                      commitFileList.find((file) => file.filename === itemPath)
-                        ?.status
-                    }
-                  </span>
-                </div>
-              );
+            if (!isFile) {
+              return renderTreeNode(itemPath, depth + 1);
             }
 
-            return renderTreeNode(itemPath, depth + 1);
+            return (
+              <PrFileExplororItem
+                key={itemPath}
+                indentation={indentation + 24 + "px"}
+                itemPath={itemPath}
+                onClick={() => handleFileSelection(itemPath, commitFileList)}
+              />
+            );
           })}
       </div>
     );
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <div className="border-b bg-gray-50 p-3">
+    <div className="overflow-hidden">
+      <div className="border-b bg-gray-50 py-3 pl-3">
         <h3 className="text-sm font-medium">Changed Files</h3>
       </div>
-      <div className="p-2">{renderTreeNode()}</div>
+      {renderTreeNode("src")}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { CodeEditor, CodeSplitEditor } from "@/components/CodeEditor";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import {
@@ -26,6 +25,7 @@ import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import { socketStore } from "@/stores/socket.store";
+import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 
 const ConversationPage = () => {
   const { prInfo } = prInfoStore();
@@ -35,6 +35,10 @@ const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
+  const selectedFileName = selectedCommitFile.filename.split("/").at(-1);
+  const selectedTotalFilePath = selectedCommitFile.filename
+    .split("/")
+    .join(" > ");
   const { isMessage } = chattingRoomStore();
 
   const ydoc = useMemo(() => new Y.Doc(), []);
@@ -112,7 +116,6 @@ const ConversationPage = () => {
             }));
 
           fileSysyemStore.setState({ commitFileList: files });
-          fileSysyemStore.setState({ selectedCommitFile: files[0] });
         }
       }
     });
@@ -195,25 +198,30 @@ const ConversationPage = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={80}>
+            {selectedCommitFile.filename !== "" && (
+              <div>
+                <span className="item m-1 flex h-7 w-fit items-center border-b-4 border-blue-500 px-2 py-5">
+                  {selectedFileName}
+                </span>
+                <span className="item border-b- m-1 flex h-4 w-full items-center p-2">
+                  {selectedTotalFilePath}
+                </span>
+              </div>
+            )}
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={70}>
-                {selectedCommitFile &&
-                  (selectedCommitFile.status === "removed" ? (
-                    <div>diff load</div>
-                  ) : selectedCommitFile.status === "added" ? (
-                    <CodeEditor
-                      language={selectedCommitFile.language}
-                      initialValue={selectedCommitFile.afterContent}
-                      onEditorMount={handleEditorMount}
-                    />
-                  ) : (
-                    <CodeSplitEditor
-                      language={selectedCommitFile.language}
-                      originalValue={selectedCommitFile.beforeContent}
-                      modifiedValue={selectedCommitFile.afterContent}
-                      onEditorMount={handleDiffEditorMount}
-                    />
-                  ))}
+              <ResizablePanel
+                defaultSize={70}
+                className="flex items-center justify-center"
+              >
+                {selectedCommitFile && (
+                  <SelectedFileViewer
+                    status={selectedCommitFile.status}
+                    selectedCommitFile={selectedCommitFile}
+                    commitFileList={commitFileList}
+                    onEditorMount={handleEditorMount}
+                    onSplitEditorMount={handleDiffEditorMount}
+                  />
+                )}
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>

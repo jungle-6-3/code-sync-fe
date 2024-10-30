@@ -49,3 +49,5 @@ const CodeEditor = ({
 };
 
 export default CodeEditor;
+
+// TODO: splitEditor와 editor를 합치기 고민하기
