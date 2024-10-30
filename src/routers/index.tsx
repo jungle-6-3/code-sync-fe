@@ -4,19 +4,32 @@ import SignUpPage from "@/pages/SignUpPage";
 import ConversationJunctionPage from "@/pages/conversation";
 import CreateRoomPage from "@/pages/CreateRoomPage";
 import PreviousMeeting from "@/pages/PreviousMeeting";
+import { UserGuard, UserLoginPageGuard } from "@/hooks/useCheckUserValid";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    element: (
+      <UserLoginPageGuard>
+        <LoginPage />
+      </UserLoginPageGuard>
+    ),
   },
   {
     path: "/room/create",
-    element: <CreateRoomPage />,
+    element: (
+      <UserGuard>
+        <CreateRoomPage />
+      </UserGuard>
+    ),
   },
   {
     path: "/signup",
-    element: <SignUpPage />,
+    element: (
+      <UserLoginPageGuard>
+        <SignUpPage />
+      </UserLoginPageGuard>
+    ),
   },
   {
     path: "/:conversationId",
@@ -24,6 +37,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/room/create/conferences",
-    element: <PreviousMeeting />,
+    element: (
+      <UserGuard>
+        <PreviousMeeting />
+      </UserGuard>
+    ),
   },
 ]);
