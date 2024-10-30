@@ -128,7 +128,6 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
         repo,
         prNumber,
       });
-
       const processedFiles = await Promise.all(
         fetchCommitsData.map(async (commit) => {
           let beforeContent = "";
@@ -180,7 +179,6 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
           };
         }),
       );
-      console.log("processedFiles", processedFiles);
       set({ commitFileList: processedFiles });
     } catch (error) {
       console.error("PR 데이터 가져오기 실패", error);

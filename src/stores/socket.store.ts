@@ -12,44 +12,38 @@ interface SocketErrorResponse {
 
 interface SocketStore {
   socket?: Socket;
-  roomUuid: string;
   isCreator: boolean;
   setIsCreator: (isCreator: boolean) => void;
-  setRoomUuid: (uuid: string) => void;
-  setSocket: () => void;
+  setSocket: (roomUuid: string) => Promise<Socket>;
 }
 
-export const socketStore = create<SocketStore>()((set) => ({
+export const socketStore = create<SocketStore>()((set, get) => ({
   socket: undefined,
-  roomUuid: "",
   isCreator: false,
   setIsCreator: (isCreator) => set({ isCreator }),
-  setRoomUuid: (uuid) => set({ roomUuid: uuid }),
-  setSocket: () => {
-    set((state) => {
+  setSocket: (roomUuid?: string) => {
+    return new Promise((resolve) => {
       // for singleton pattern
-      if (state.socket) return { socket: state.socket };
-      const roomUuid = state.roomUuid;
+      let socket = get().socket;
+      if (socket) return resolve(socket);
       if (!roomUuid) throw new Error("잘못된 접근입니다.");
-      const socket = io(URL, {
+      socket = io(URL, {
         autoConnect: false,
         withCredentials: true,
         query: {
           roomUuid,
         },
       });
-      socket.on("exception", (error: SocketErrorResponse) => {
-        console.error(error);
-      });
-      return { socket };
+
+      socket
+        .connect()
+        .on("exception", (error: SocketErrorResponse) => {
+          console.error(error);
+        })
+        .once("connect", () => {
+          set({ socket });
+          resolve(socket);
+        });
     });
-  },
+  }
 }));
-
-// this.socket.on("invite-rejected", ({ message }: SocketInviteResponse) => {
-//   // TODO: reject 메시지를 보여주어야 함. (component에서)
-// });
-
-// this.socket.on("invite-accepted", ({ message }: SocketInviteResponse) => {
-//   // TODO: ready화면에서 conversation 화면으로 이동해야함.
-// });

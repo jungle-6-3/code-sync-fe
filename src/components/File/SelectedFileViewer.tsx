@@ -8,13 +8,13 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from "react";
+import { editor } from "monaco-editor";
+import { Monaco } from "@monaco-editor/react";
 
 interface SelectedFileProps {
   language: string;
@@ -25,20 +25,51 @@ interface SelectedFileProps {
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   selectedCommitFile: SelectedFileProps;
   commitFileList: PrChangedFileInfo[];
+  onEditorMount?: (
+    editor: editor.IStandaloneCodeEditor,
+    monaco: Monaco,
+  ) => void;
+  onSplitEditorMount?: (
+    editor: editor.IStandaloneDiffEditor,
+    monaco: Monaco,
+  ) => void;
+}
+interface FileEditorProps {
+  selectedCommitFile: SelectedFileProps;
+  onEditorMount?: (
+    editor: editor.IStandaloneCodeEditor,
+    monaco: Monaco,
+  ) => void;
+  onSplitEditorMount?: (
+    editor: editor.IStandaloneDiffEditor,
+    monaco: Monaco,
+  ) => void;
 }
 
 const SelectedFileViewer = ({
   status,
   selectedCommitFile,
   commitFileList,
+  onEditorMount,
+  onSplitEditorMount,
 }: SelectedFileViewerProps) => {
   const fileComponent: {
     [key in PrChangedFileStatusInfo["status"]]: React.ReactNode;
   } = {
     removed: <RemovedFile />,
     renamed: <RenamedFile />,
-    added: <AddedFile selectedCommitFile={selectedCommitFile} />,
-    modified: <ModifiedFile selectedCommitFile={selectedCommitFile} />,
+    added: (
+      <AddedFile
+        selectedCommitFile={selectedCommitFile}
+        onEditorMount={onEditorMount}
+      />
+    ),
+    modified: (
+      <ModifiedFile
+        selectedCommitFile={selectedCommitFile}
+        onSplitEditorMount={onSplitEditorMount}
+      />
+    ),
     init: <InitFile commitFileList={commitFileList} />,
   };
   return fileComponent[status] || <div>invalue</div>;
@@ -66,29 +97,26 @@ const RenamedFile = () => {
   );
 };
 
-const AddedFile = ({
-  selectedCommitFile,
-}: {
-  selectedCommitFile: SelectedFileProps;
-}) => {
+const AddedFile = ({ selectedCommitFile, onEditorMount }: FileEditorProps) => {
   return (
     <CodeEditor
       language={selectedCommitFile.language}
       initialValue={selectedCommitFile.afterContent}
+      onEditorMount={onEditorMount}
     />
   );
 };
 
 const ModifiedFile = ({
   selectedCommitFile,
-}: {
-  selectedCommitFile: SelectedFileProps;
-}) => {
+  onSplitEditorMount,
+}: FileEditorProps) => {
   return (
     <CodeSplitEditor
       language={selectedCommitFile.language}
       originalValue={selectedCommitFile.beforeContent}
       modifiedValue={selectedCommitFile.afterContent}
+      onSplitEditorMount={onSplitEditorMount}
     />
   );
 };

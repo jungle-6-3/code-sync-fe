@@ -56,7 +56,7 @@ const PrFileExplorer = () => {
         </div>
       );
     }
-    //directory
+
     return (
       <div key={currentPath}>
         <PrDirectoryExplorer

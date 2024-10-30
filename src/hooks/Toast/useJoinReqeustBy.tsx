@@ -18,8 +18,9 @@ const useJoinRequestByToast = () => {
   const peerId = peerStore((state) => state.peerId);
 
   const onInvite = (t: string | number, { data }: SocketJoinRequestBy) => {
-    socket?.emit("invite-user", { email: data.participant.email });
-    socket?.emit("share-peer-id", { peerId });
+    socket?.emit("invite-user", { email: data.participant.email }, () => {
+      socket?.emit("share-peer-id", { peerId });
+    });
     toast.dismiss(t);
   };
 
