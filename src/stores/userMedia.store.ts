@@ -47,7 +47,7 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio,
-        video,
+        // video,
       });
       set({
         mediaStream: stream,
