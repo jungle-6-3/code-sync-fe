@@ -29,3 +29,8 @@ export interface CheckUserLoginResponseDto {
   message: string;
   data: UserData;
 }
+
+export interface LogOutResponseDto {
+  success: boolean;
+  message: string;
+}
