@@ -1,5 +1,6 @@
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { SpinIcon } from "@/components/icons";
+import { LogoutButton } from "@/components/useLogoutButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -93,6 +94,9 @@ const CreateRoomPage = () => {
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">
       <div className="flex w-full max-w-[30rem] flex-col gap-8">
+        <div className="absolute right-0 top-0 m-5">
+          <LogoutButton />
+        </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold text-gray-500">
             새로운 회의를 생성하고 싶으신가요?

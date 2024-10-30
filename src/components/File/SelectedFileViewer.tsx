@@ -151,18 +151,18 @@ const InitFile = ({
             return (
               <TableRow
                 key={index}
-                className="h-16 text-4xl"
+                className=" text-4xl"
                 onClick={() => setSelectedCommitFile(file)}
               >
-                <TableCell className="py-4  font-medium">
+                <TableCell className=" font-medium">
                   {file.filename}
                 </TableCell>
-                <TableCell className="py-4 ">{file.language}</TableCell>
-                <TableCell className="py-4 ">{file.status}</TableCell>
-                <TableCell className="py-4 text-right ">
+                <TableCell className="">{file.language}</TableCell>
+                <TableCell className="">{file.status}</TableCell>
+                <TableCell className="text-right ">
                   {file.additions}
                 </TableCell>
-                <TableCell className="py-4 text-right ">
+                <TableCell className="text-right ">
                   {file.deletions}
                 </TableCell>
               </TableRow>
