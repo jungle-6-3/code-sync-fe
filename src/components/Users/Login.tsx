@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import formLoginSchema from "@/components/Users/LoginSchema";
+import formLoginSchema from "@/lib/Schema/LoginSchema";
 import useLoginQuery from "@/hooks/useLoginQuery";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Terminal } from "lucide-react";

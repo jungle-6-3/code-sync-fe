@@ -18,3 +18,14 @@ export interface SignUpResponseUserDto {
   success: boolean;
   message: string;
 }
+
+interface UserData {
+  email: string;
+  name: string;
+}
+
+export interface CheckUserLoginResponseDto {
+  success: boolean;
+  message: string;
+  data: UserData;
+}
