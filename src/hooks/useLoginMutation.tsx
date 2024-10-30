@@ -1,4 +1,4 @@
-import signInFetch from "@/apis/users/useLoginAxios";
+import signInFetch from "@/apis/users/loginApi";
 import { useMutation } from "@tanstack/react-query";
 
 export default function useLoginQuery() {
