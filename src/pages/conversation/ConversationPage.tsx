@@ -186,10 +186,6 @@ const ConversationPage = () => {
     setEditor(modifiedEditor);
   };
 
-  useEffect(() => {
-    console.log(drawBoard);
-  }, [drawBoard]);
-
   return (
     <div className="flex h-screen flex-col">
       <nav className="border-b p-1">
