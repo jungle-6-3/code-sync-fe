@@ -1,4 +1,4 @@
-import { useLogOutMutation } from "@/hooks/useLogOutMutation";
+import { useLogOutMutation } from "@/hooks/Users/useLogOutMutation";
 import { Button } from "@/components/ui/button";
 
 export const LogoutButton = () => {

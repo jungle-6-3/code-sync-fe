@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useCheckUserQuery from "@/hooks/useCheckUserQuery";
+import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 
 interface UserGuardProps {
   children: ReactNode;

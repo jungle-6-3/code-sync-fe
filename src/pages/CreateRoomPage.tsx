@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { socketStore } from "@/stores/socket.store";
 import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
-import { useConversationMutation } from "@/hooks/useConversationMutation";
+import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

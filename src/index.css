@@ -64,8 +64,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-td {
-  padding: 7px;
-  font-size: small;
-}
