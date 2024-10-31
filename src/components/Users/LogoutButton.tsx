@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { useLogOutMutation } from "@/hooks/useLogOutMutation";
+import { Button } from "@/components/ui/button";
 
 export const LogoutButton = () => {
   const logOut = useLogOutMutation();
@@ -15,5 +15,9 @@ export const LogoutButton = () => {
       },
     });
   };
-  return <Button onClick={onLogOut}>로그아웃</Button>;
+  return (
+    <Button onClick={onLogOut} variant="ghost">
+      로그아웃
+    </Button>
+  );
 };

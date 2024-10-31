@@ -1,7 +1,7 @@
+import { useEffect } from "react";
 import { peerStore } from "@/stores/peer.store";
 import { socketStore } from "@/stores/socket.store";
 import { userMediaStore } from "@/stores/userMedia.store";
-import { useEffect } from "react";
 
 interface SocketUserDisconnected {
   message: string;
