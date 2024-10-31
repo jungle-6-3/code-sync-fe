@@ -81,7 +81,7 @@ const RemovedFile = () => {
     <Alert className="w-10/12 p-5">
       <Terminal className="h-4 w-4" />
       <AlertTitle className="text-2xl">Removed File</AlertTitle>
-      <AlertDescription className="">File Removed.</AlertDescription>
+      <AlertDescription>File Removed.</AlertDescription>
     </Alert>
   );
 };
@@ -91,9 +91,7 @@ const RenamedFile = () => {
     <Alert className="w-10/12 p-5">
       <Terminal className="h-4 w-4" />
       <AlertTitle className="text-2xl">Renamed File</AlertTitle>
-      <AlertDescription className="">
-        File renamed without changes.
-      </AlertDescription>
+      <AlertDescription>File renamed without changes.</AlertDescription>
     </Alert>
   );
 };
@@ -133,12 +131,10 @@ const InitFile = ({
 
   return (
     <div className="flex w-4/5 flex-col">
-      <div className="my-2 ml-2 text-2xl font-bold">
-        File Changed List
-      </div>
+      <div className="my-2 ml-2 text-2xl font-bold">File Changed List</div>
       <Table>
         <TableHeader>
-          <TableRow className="">
+          <TableRow>
             <TableHead className="w-[200px]">File Name</TableHead>
             <TableHead>language</TableHead>
             <TableHead>status</TableHead>
@@ -151,20 +147,14 @@ const InitFile = ({
             return (
               <TableRow
                 key={index}
-                className=" text-4xl"
+                className="text-4xl"
                 onClick={() => setSelectedCommitFile(file)}
               >
-                <TableCell className=" font-medium">
-                  {file.filename}
-                </TableCell>
-                <TableCell className="">{file.language}</TableCell>
-                <TableCell className="">{file.status}</TableCell>
-                <TableCell className="text-right ">
-                  {file.additions}
-                </TableCell>
-                <TableCell className="text-right ">
-                  {file.deletions}
-                </TableCell>
+                <TableCell className="font-medium">{file.filename}</TableCell>
+                <TableCell>{file.language}</TableCell>
+                <TableCell>{file.status}</TableCell>
+                <TableCell className="text-right">{file.additions}</TableCell>
+                <TableCell className="text-right">{file.deletions}</TableCell>
               </TableRow>
             );
           })}

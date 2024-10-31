@@ -58,7 +58,6 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
     prNumber: 0,
   },
   setPrMetaData: (newPrMetaData) => {
-    console.log(newPrMetaData);
     set({ prMetaData: newPrMetaData });
   },
   resetPrMeTaData: () =>
