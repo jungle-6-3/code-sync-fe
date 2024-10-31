@@ -48,8 +48,11 @@ export interface PrChangedFileInfo extends PrChangedFileStatusInfo {
 interface fileSysyemPropsStore {
   selectedCommitFile: PrChangedFileInfo;
   commitFileList: PrChangedFileInfo[];
+  clickedFileList: PrChangedFileInfo[];
   setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
   setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  addClickedFileList: (newFile: PrChangedFileInfo) => void;
+  removeClickedFileList: (newFile: PrChangedFileInfo) => void;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -99,7 +102,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     }),
 }));
 
-export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
+export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
   selectedCommitFile: {
     filename: "",
     status: "init",
@@ -110,7 +113,39 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
     beforeContent: "",
   },
   commitFileList: [],
-  setSelectedCommitFile: (newFile) => set({ selectedCommitFile: newFile }),
+  clickedFileList: [],
+  setSelectedCommitFile: (newFile) => {
+    set({ selectedCommitFile: newFile });
+    if (!fileSysyemStore.getState().clickedFileList.includes(newFile)) {
+      fileSysyemStore.getState().addClickedFileList(newFile);
+    }
+  },
+  addClickedFileList: (newFile) =>
+    set((state) => ({
+      clickedFileList: [...state.clickedFileList, newFile],
+    })),
+  removeClickedFileList: (removeFile) =>
+    set((state) => {
+      const updateClickedFileList = state.clickedFileList.filter(
+        (file) => file.filename !== removeFile.filename,
+      );
+      if (state.selectedCommitFile.filename === removeFile.filename) {
+        const newSelectedFile =
+          updateClickedFileList.length > 0
+            ? updateClickedFileList[updateClickedFileList.length - 1]
+            : {
+                filename: "",
+                status: "init" as PrChangedFileStatusInfo["status"],
+                language: "",
+                additions: 0,
+                deletions: 0,
+                afterContent: "",
+                beforeContent: "",
+              };
+        get().setSelectedCommitFile(newSelectedFile);
+      }
+      return { clickedFileList: updateClickedFileList };
+    }),
   setCommitFileList: async ({ owner, repo, prNumber }) => {
     try {
       const prResponse = await getPrData({ owner, repo, prNumber });
