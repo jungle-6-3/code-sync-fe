@@ -8,12 +8,12 @@ interface Chatting {
 
 interface ChattingStore {
   messages: Chatting[];
-  addMessage: (date: Date, name: string, message: string) => void;
+  addMessage: ({date, name, message}: Chatting) => void;
 }
 
 export const chattingMessageStore = create<ChattingStore>((set) => ({
   messages: [],
-  addMessage: (date, name, message) =>
+  addMessage: ({date, name, message}: Chatting) =>
     set((state) => ({
       messages: [...state.messages, { date, name, message }],
     })),
