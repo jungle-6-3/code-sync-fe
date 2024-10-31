@@ -4,31 +4,54 @@ import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+class ChattingSocketResponse {
+  name: string;
+  message: string;
+  email: string;
+  date: Date;
+  constructor({
+    name,
+    message,
+    email,
+    date,
+  }: {
+    name: string;
+    message: string;
+    email: string;
+    date: string;
+  }) {
+    this.name = name;
+    this.message = message;
+    this.email = email;
+    this.date = new Date(date);
+  }
+}
+
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
   const socket = socketStore((state) => state.socket);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
+
   useEffect(() => {
     if (!socket) return;
-    const handleChatting = (msg: {
+    const onChatting = (msg: {
       name: string;
       message: string;
       email: string;
-      date: Date;
+      date: string;
     }) => {
       try {
-        const newDate = new Date(msg.date);
-        addMessage(newDate, msg.name, msg.message);
+        addMessage(new ChattingSocketResponse(msg));
       } catch (e) {
         console.error(e);
       }
     };
 
-    socket.on("chatting", handleChatting);
+    socket.on("chatting", onChatting);
     return () => {
-      socket.off("chatting", handleChatting);
+      socket.off("chatting", onChatting);
     };
   }, [socket, addMessage]);
 
@@ -36,7 +59,7 @@ export default function ConversationChatting() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!socket) return;
     try {
@@ -50,7 +73,8 @@ export default function ConversationChatting() {
           email: string;
         }) => {
           const newDate = new Date(data.date);
-          addMessage(newDate, "나", message);
+          //TODO "나"말고 더 좋은 것으로 바꾸기.
+          addMessage({ date: newDate, name: "나", message: message });
         },
       );
       setMessage("");
@@ -89,7 +113,7 @@ export default function ConversationChatting() {
           <div ref={messagesEndRef} />
         </ul>
       </div>
-      <form onSubmit={handleSubmit} className="p-2">
+      <form onSubmit={onSubmit} className="p-2">
         <div className="flex items-center gap-2">
           <Input
             value={message}

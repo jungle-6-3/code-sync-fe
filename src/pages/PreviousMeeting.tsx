@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export default function PreviousMeeting() {
   return (
-    <div className="h-screenflex-[3_1_0] relative flex h-screen flex-col items-center justify-start overflow-hidden overflow-x-hidden bg-gradient-to-br from-slate-700 to-black py-20">
+    <div className="h-screen flex-[3_1_0] relative flex flex-col items-center justify-start overflow-hidden overflow-x-hidden bg-gradient-to-br from-slate-700 to-black py-20">
       <div className="flex w-full max-w-[70rem] flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold text-gray-300">이전 기록들</h1>
