@@ -89,6 +89,6 @@ export interface GetPrDataParams {
 export interface GetFileDataParams {
   owner: string;
   repo: string;
-  branchName: string;
+  commitHash: string;
   fileName: string;
 }

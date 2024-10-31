@@ -18,6 +18,7 @@ export interface PrMetaDataInfo {
 interface PrUserInfo {
   owner: string;
   branchName: string;
+  commitHash: string;
 }
 
 interface PrInfoPropsStore {
@@ -70,10 +71,12 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     requireUserInfo: {
       owner: "",
       branchName: "",
+      commitHash: "",
     },
     requestUserInfo: {
       owner: "",
       branchName: "",
+      commitHash: "",
     },
   },
   setPrInfo: (prInfoData) => set({ prInfo: prInfoData }),
@@ -84,10 +87,12 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         requireUserInfo: {
           owner: "",
           branchName: "",
+          commitHash: "",
         },
         requestUserInfo: {
           owner: "",
           branchName: "",
+          commitHash: "",
         },
       },
     }),
@@ -111,16 +116,20 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
       const [requireUser, requireBranchName] = prResponse.head.label.split(":");
       const [requestOwner, requestBranchName] =
         prResponse.base.label.split(":");
+      const requireSha = prResponse.head.sha;
+      const requesteSha = prResponse.base.sha;
 
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
         requireUserInfo: {
           owner: requireUser,
           branchName: requireBranchName,
+          commitHash: requireSha,
         },
         requestUserInfo: {
           owner: requestOwner,
           branchName: requestBranchName,
+          commitHash: requesteSha,
         },
       };
 
@@ -135,13 +144,12 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
         fetchCommitsData.map(async (commit) => {
           let beforeContent = "";
           let afterContent = "";
-
           try {
             if (commit.status === "modified") {
               const beforeContentResponse = await getFileContent(
                 prInfoData.requestUserInfo.owner,
                 repo,
-                prInfoData.requestUserInfo.branchName,
+                prInfoData.requestUserInfo.commitHash,
                 commit.filename,
               );
               beforeContent =
@@ -154,7 +162,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
               const afterContentResponse = await getFileContent(
                 prInfoData.requireUserInfo.owner,
                 repo,
-                prInfoData.requireUserInfo.branchName,
+                prInfoData.requireUserInfo.commitHash,
                 commit.filename,
               );
               afterContent =
