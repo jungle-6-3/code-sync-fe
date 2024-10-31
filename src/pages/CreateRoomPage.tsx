@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { socketStore } from "@/stores/socket.store";
+import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
+import { useConversationMutation } from "@/hooks/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
-import { SpinIcon } from "@/components/icons";
-import { LogoutButton } from "@/components/useLogoutButton";
-import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -9,17 +14,12 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useConversationMutation } from "@/hooks/useConversationMutation";
-import { extractGitHubPrDetails } from "@/lib/github";
 import { cn } from "@/lib/utils";
-import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
-import { socketStore } from "@/stores/socket.store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { SpinIcon } from "@/components/icons";
+import { LogoutButton } from "@/components/Users/LogoutButton";
+import { extractGitHubPrDetails } from "@/lib/github";
 
 const createRoomSchema = z.object({
   ghPrLink: z.string().url(),
@@ -94,7 +94,9 @@ const CreateRoomPage = () => {
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">
       <div className="flex w-full max-w-[30rem] flex-col gap-8">
+        <div className="absolute right-0 top-0 p-4">
           <LogoutButton />
+        </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold text-gray-500">
             새로운 회의를 생성하고 싶으신가요?

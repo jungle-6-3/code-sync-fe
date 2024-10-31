@@ -1,14 +1,21 @@
-import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import { userMediaStore } from "@/stores/userMedia.store";
-import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
-import { socketStore } from "@/stores/socket.store";
-import { SpinIcon } from "@/components/icons";
 import { peerStore } from "@/stores/peer.store";
+import { socketStore } from "@/stores/socket.store";
+import { userMediaStore } from "@/stores/userMedia.store";
+import { fileSysyemStore, prMetaDataStore } from "@/stores/github.store";
+import { Button } from "@/components/ui/button";
+import { SpinIcon } from "@/components/icons";
+import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
+import { extractGitHubPrDetails } from "@/lib/github";
 import { addStreamConnectionAtPeer } from "@/lib/peer";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
+}
+
+interface InviteAcceptedRespone {
+  prUrl: string;
+  role: "creator" | "participant";
 }
 
 const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
@@ -24,6 +31,9 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const roomId = window.location.pathname.split("/")[1];
   const setSocket = socketStore((state) => state.setSocket);
   const isCreator = socketStore((state) => state.isCreator);
+  const setPrMetaDataInfo = prMetaDataStore((state) => state.setPrMetaData);
+  const setCommitFileList = fileSysyemStore((state) => state.setCommitFileList);
+  const setIsCreator = socketStore((state) => state.setIsCreator);
 
   const onStartConversation = async () => {
     if (isLoaded) return;
@@ -44,10 +54,34 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
       }
       // when the user is not the creator
       socket
-        .on("invite-accepted", () => {
-          onSetJoin(true);
-          socket?.emit("share-peer-id", { peerId });
-        })
+        .on(
+          "invite-accepted",
+          async ({ prUrl, role }: InviteAcceptedRespone) => {
+            const { owner, repo, prNumber } = extractGitHubPrDetails({
+              ghPrLink: prUrl,
+            });
+            setPrMetaDataInfo({
+              owner,
+              repo,
+              prNumber: +prNumber,
+              prUrl,
+            });
+            if (role === "creator") {
+              await setCommitFileList({ owner, prNumber: +prNumber, repo })
+                .then(() => {
+                  onSetJoin(true);
+                  setIsCreator(true);
+                })
+                .catch((error) => {
+                  alert("Error: " + error);
+                  setIsLoaded(false);
+                });
+              return;
+            }
+            onSetJoin(true);
+            socket?.emit("share-peer-id", { peerId });
+          },
+        )
         .on("invite-rejected", () => {
           setIsLoaded(false);
           setIsRejected(true);
