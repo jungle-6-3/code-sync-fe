@@ -35,6 +35,7 @@ export interface GitHubPrResponse {
   additions: number;
   deletions: number;
   changed_files: number;
+  html_url: string;
 }
 // GitHub 사용자 정보 인터페이스
 export interface GitHubUser {

@@ -4,6 +4,7 @@ import { getLanguageFromFileName } from "@/lib/file";
 
 interface PrInfoProps {
   userId: string;
+  prUrl: string;
   requireUserInfo: PrUserInfo;
   requestUserInfo: PrUserInfo;
 }
@@ -68,6 +69,7 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
 export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   prInfo: {
     userId: "",
+    prUrl: "",
     requireUserInfo: {
       owner: "",
       branchName: "",
@@ -84,6 +86,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     set({
       prInfo: {
         userId: "",
+        prUrl: "",
         requireUserInfo: {
           owner: "",
           branchName: "",
@@ -121,6 +124,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
 
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
+        prUrl: prResponse.html_url,
         requireUserInfo: {
           owner: requireUser,
           branchName: requireBranchName,

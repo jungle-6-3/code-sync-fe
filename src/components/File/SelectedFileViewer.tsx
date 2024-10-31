@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/table";
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
-import { useEffect } from "react";
 
 interface SelectedFileProps {
   language: string;
