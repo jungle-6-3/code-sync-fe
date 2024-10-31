@@ -45,12 +45,10 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
     roomId,
   });
 
-  // Provider 초기화
   useEffect(() => {
     if (!providerRef.current) {
       providerRef.current = new WebsocketProvider(
         import.meta.env.VITE_YJS_URL,
-        // "wss://demos.yjs.dev/ws",
         roomId,
         ydoc,
         {
