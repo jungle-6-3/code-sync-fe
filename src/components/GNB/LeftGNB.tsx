@@ -1,10 +1,12 @@
 import chattingRoomStore from "@/stores/chattingRoom.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
-const LeftGNB = () => {
-  const setLeftSNBSelection = chattingRoomStore(
-    (state) => state.setLeftSNBSelection,
-  );
+interface LeftGNBProps {
+  navigateMainFrame(): void;
+}
+
+const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
+  const { setLeftSNBSelection } = chattingRoomStore();
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>
@@ -14,10 +16,7 @@ const LeftGNB = () => {
           </button>
         </li>
         <li className="aspect-square">
-          <button
-            className="p-2"
-            onClick={() => setLeftSNBSelection("message")}
-          >
+          <button className="p-2" onClick={() => setLeftSNBSelection("message")}>
             <MessageSquare color="#334155" />
           </button>
         </li>
