@@ -60,7 +60,6 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
             const { owner, repo, prNumber } = extractGitHubPrDetails({
               ghPrLink: prUrl,
             });
-            console.log("pr url invite accept",prUrl)
             setPrMetaDataInfo({
               owner,
               repo,
