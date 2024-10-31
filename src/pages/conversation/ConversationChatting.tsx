@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { socketStore } from "@/stores/socket.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");

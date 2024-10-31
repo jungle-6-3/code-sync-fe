@@ -1,24 +1,24 @@
-import FileTreeComponent from "@/components/File/PrFileExplorer";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import ConversationChatting from "@/pages/conversation/ConversationChatting";
-import chattingRoomStore from "@/stores/chattingRoom.store";
-import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
 import { useEffect, useMemo, useRef, useState } from "react";
-
+import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
+import { useTldrawStore } from "@/hooks/useTldrawStore";
+import chattingRoomStore from "@/stores/chattingRoom.store";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import FileTreeComponent from "@/components/File/PrFileExplorer";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
+import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
-import { useTldrawStore } from "@/hooks/useTldrawStore";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
+
 
 interface MainFrameProps {
   drawBoard: boolean;

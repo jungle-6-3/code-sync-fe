@@ -1,10 +1,10 @@
-import LoginPage from "@/pages/LoginPage";
 import { createBrowserRouter } from "react-router-dom";
+import { UserGuard, UserLoginPageGuard } from "@/hooks/useCheckUserValid";
+import LoginPage from "@/pages/LoginPage";
 import SignUpPage from "@/pages/SignUpPage";
-import ConversationJunctionPage from "@/pages/conversation";
 import CreateRoomPage from "@/pages/CreateRoomPage";
 import PreviousMeeting from "@/pages/PreviousMeeting";
-import { UserGuard, UserLoginPageGuard } from "@/hooks/useCheckUserValid";
+import ConversationJunctionPage from "@/pages/conversation";
 
 export const router = createBrowserRouter([
   {

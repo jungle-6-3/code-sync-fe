@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { useLogOutMutation } from "@/hooks/useLogOutMutation";
+import { Button } from "@/components/ui/button";
 
 export const LogoutButton = () => {
   const logOut = useLogOutMutation();

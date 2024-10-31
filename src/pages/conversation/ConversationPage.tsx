@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { socketStore } from "@/stores/socket.store";
+import { MainFrame } from "@/components/Frame/MainFrame";
 import { LeftGNB, TopGNB } from "@/components/GNB";
 import useJoinRequestByToast, {
   SocketJoinRequestBy,
@@ -5,9 +8,6 @@ import useJoinRequestByToast, {
 import useUserDisconnectedToast, {
   SocketUserDisconnected,
 } from "@/hooks/Toast/useUserDisconnected";
-import { useEffect, useState } from "react";
-import { socketStore } from "@/stores/socket.store";
-import { MainFrame } from "@/components/Frame/MainFrame";
 
 const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);

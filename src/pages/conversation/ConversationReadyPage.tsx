@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import { userMediaStore } from "@/stores/userMedia.store";
-import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
-import { socketStore } from "@/stores/socket.store";
-import { SpinIcon } from "@/components/icons";
 import { peerStore } from "@/stores/peer.store";
-import { addStreamConnectionAtPeer } from "@/lib/peer";
+import { socketStore } from "@/stores/socket.store";
+import { userMediaStore } from "@/stores/userMedia.store";
 import { fileSysyemStore, prMetaDataStore } from "@/stores/github.store";
+import { Button } from "@/components/ui/button";
+import { SpinIcon } from "@/components/icons";
+import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { extractGitHubPrDetails } from "@/lib/github";
+import { addStreamConnectionAtPeer } from "@/lib/peer";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;

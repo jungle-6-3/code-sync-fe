@@ -29,7 +29,8 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
   mediaStream: null,
   startWebcam: async ({ audio, video }: UserMediaState) => {
     if (get().mediaStream) {
-      get().mediaStream?.getTracks()
+      get()
+        .mediaStream?.getTracks()
         .forEach((track) => {
           if (
             (track.kind === "audio" && !audio) ||
@@ -79,8 +80,12 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {
     let opponentsMediaStream = get().opponentsMediaStream;
-    if (get().opponentsMediaStream.some((stream) => stream.id === mediaStream.id))
-      opponentsMediaStream = opponentsMediaStream.filter((stream) => stream.id !== mediaStream.id);
+    if (
+      get().opponentsMediaStream.some((stream) => stream.id === mediaStream.id)
+    )
+      opponentsMediaStream = opponentsMediaStream.filter(
+        (stream) => stream.id !== mediaStream.id,
+      );
     set({
       opponentsMediaStream: [...opponentsMediaStream, mediaStream],
     });
