@@ -1,6 +1,6 @@
 import { prInfoStore } from "@/stores/github.store";
 
-export const BottomGNB = () => {
+export const PRBottomFileExplorer = () => {
   const { prInfo } = prInfoStore();
   return (
     <div className="p-4">

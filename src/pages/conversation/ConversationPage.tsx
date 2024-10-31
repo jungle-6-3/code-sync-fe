@@ -13,10 +13,7 @@ import useUserDisconnectedToast, {
 } from "@/hooks/Toast/useUserDisconnected";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import chattingRoomStore from "@/stores/chattingRoom.store";
-import {
-  fileSysyemStore,
-  PrChangedFileInfo,
-} from "@/stores/github.store";
+import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import * as Y from "yjs";
@@ -29,7 +26,7 @@ import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { useTldrawStore } from "@/hooks/useTldrawStore";
-import { BottomGNB } from "@/components/GNB/BottomGNB";
+import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 
 const ConversationPage = () => {
   const { selectedCommitFile, commitFileList } = fileSysyemStore();
@@ -237,7 +234,7 @@ const ConversationPage = () => {
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
-                <BottomGNB />
+                <PRBottomFileExplorer />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
