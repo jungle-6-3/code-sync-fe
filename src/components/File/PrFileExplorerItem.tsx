@@ -30,7 +30,7 @@ export const PrFileExplororItem = ({
       onClick={onClick}
     >
       <FileText className="mr-2 h-4 w-4" />
-      <span>{itemPath}</span>
+      <span>{itemPath.split("/").at(-1)}</span>
       <span className="ml-2 text-xs text-gray-500">
         {commitFileList.find((file) => file.filename === itemPath)?.status}
       </span>
