@@ -57,7 +57,9 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
     repo: "",
     prNumber: 0,
   },
-  setPrMetaData: (newPrMetaData) => set({ prMetaData: newPrMetaData }),
+  setPrMetaData: (newPrMetaData) => {
+    set({ prMetaData: newPrMetaData });
+  },
   resetPrMeTaData: () =>
     set({ prMetaData: { owner: "", repo: "", prNumber: 0 } }),
 }));

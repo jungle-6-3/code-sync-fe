@@ -1,4 +1,4 @@
-import postSignUp from "@/apis/users/useSignUpAxios";
+import postSignUp from "@/apis/users/signUpApi";
 import { useMutation } from "@tanstack/react-query";
 
 export default function usePostData() {

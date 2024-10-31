@@ -2,7 +2,7 @@ import SignUp from "@/components/Users/SignUp";
 
 export default function SignUpPage() {
   return (
-    <div className="flex h-screen relative">
+    <div className="relative flex h-screen">
       <div className="relative flex-[3_1_0] bg-gradient-to-br from-slate-700 to-black">
         <div className="absolute bottom-12 left-12 border-l-2 border-blue-100 pl-4 text-lg text-blue-100">
           <div>마라탕 먹고싶다</div>

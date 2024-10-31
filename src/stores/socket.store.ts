@@ -1,5 +1,5 @@
-import { io, Socket } from "socket.io-client";
 import { create } from "zustand";
+import { io, Socket } from "socket.io-client";
 
 const URL = import.meta.env.VITE_WS_URL || "http://localhost:4000";
 

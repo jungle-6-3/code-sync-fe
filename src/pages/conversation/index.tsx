@@ -1,8 +1,8 @@
-import ConversationPage from "@/pages/conversation/ConversationPage";
-import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 import { useRef, useState } from "react";
 import { usePeer } from "@/hooks/usePeer";
 import { ConversationCam } from "@/components/WebCam";
+import ConversationPage from "@/pages/conversation/ConversationPage";
+import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 
 const ConversationJunctionPage = () => {
   const [isJoin, setIsJoin] = useState(false);

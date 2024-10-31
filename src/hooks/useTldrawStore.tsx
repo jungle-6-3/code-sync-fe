@@ -4,6 +4,8 @@
  * @license MIT
  */
 
+import { useEffect, useMemo, useState } from "react";
+import * as Y from "yjs";
 import {
   InstancePresenceRecordType,
   TLAnyShapeUtilConstructor,
@@ -20,10 +22,8 @@ import {
   react,
   SerializedSchema,
 } from "tldraw";
-import { useEffect, useMemo, useState } from "react";
 import { YKeyValue } from "y-utility/y-keyvalue";
 import { WebsocketProvider } from "y-websocket";
-import * as Y from "yjs";
 
 export function useTldrawStore({
   roomId = "example",
