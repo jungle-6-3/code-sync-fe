@@ -16,7 +16,6 @@ import chattingRoomStore from "@/stores/chattingRoom.store";
 import {
   fileSysyemStore,
   PrChangedFileInfo,
-  prInfoStore,
 } from "@/stores/github.store";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -30,9 +29,9 @@ import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { useTldrawStore } from "@/hooks/useTldrawStore";
+import { BottomGNB } from "@/components/GNB/BottomGNB";
 
 const ConversationPage = () => {
-  const { prInfo } = prInfoStore();
   const { selectedCommitFile, commitFileList } = fileSysyemStore();
   const roomId = window.location.pathname.split("/")[1];
 
@@ -238,13 +237,7 @@ const ConversationPage = () => {
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30}>
-                <div className="p-4">
-                  <h3 className="font-medium">Commit Information</h3>
-                  <p className="mt-2 text-sm">
-                    Branch: {prInfo.requireUserInfo.branchName} →{" "}
-                    {prInfo.requestUserInfo.branchName}
-                  </p>
-                </div>
+                <BottomGNB />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
