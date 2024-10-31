@@ -4,7 +4,6 @@ import { getLanguageFromFileName } from "@/lib/file";
 
 interface PrInfoProps {
   userId: string;
-  prUrl: string;
   requireUserInfo: PrUserInfo;
   requestUserInfo: PrUserInfo;
 }
@@ -58,6 +57,7 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
     owner: "",
     repo: "",
     prNumber: 0,
+    prUrl: "",
   },
   setPrMetaData: (newPrMetaData) => {
     set({ prMetaData: newPrMetaData });
@@ -69,7 +69,6 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
 export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
   prInfo: {
     userId: "",
-    prUrl: "",
     requireUserInfo: {
       owner: "",
       branchName: "",
@@ -86,7 +85,6 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     set({
       prInfo: {
         userId: "",
-        prUrl: "",
         requireUserInfo: {
           owner: "",
           branchName: "",
@@ -121,10 +119,14 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
         prResponse.base.label.split(":");
       const requireSha = prResponse.head.sha;
       const requesteSha = prResponse.base.sha;
-
+      prMetaDataStore.getState().setPrMetaData({
+        owner,
+        repo,
+        prNumber,
+        prUrl: prResponse.html_url, // PR URL 추가
+      });
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
-        prUrl: prResponse.html_url,
         requireUserInfo: {
           owner: requireUser,
           branchName: requireBranchName,
