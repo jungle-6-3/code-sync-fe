@@ -15,5 +15,9 @@ export const LogoutButton = () => {
       },
     });
   };
-  return <Button onClick={onLogOut}>로그아웃</Button>;
+  return (
+    <Button onClick={onLogOut} className="hover:bg-gray-800 bg-black text-white">
+      로그아웃
+    </Button>
+  );
 };
