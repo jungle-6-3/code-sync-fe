@@ -94,7 +94,7 @@ const CreateRoomPage = () => {
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">
       <div className="flex w-full max-w-[30rem] flex-col gap-8">
-        <div className="m- absolute right-0 top-0 p-4">
+        <div className="absolute right-0 top-0 p-4">
           <LogoutButton />
         </div>
         <div className="flex flex-col gap-2">

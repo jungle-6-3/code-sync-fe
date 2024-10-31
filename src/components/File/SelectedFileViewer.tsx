@@ -131,7 +131,7 @@ const InitFile = ({
 
   return (
     <div className="flex w-4/5 flex-col">
-      <div className="my-2 ml-2 text-2xl font-bold">File Changed List</div>
+      <div className="my-2 ml-2 text-2xl font-semibold">File Changed</div>
       <Table>
         <TableHeader>
           <TableRow>
