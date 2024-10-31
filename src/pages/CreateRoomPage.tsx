@@ -1,6 +1,6 @@
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { SpinIcon } from "@/components/icons";
-import { LogoutButton } from "@/components/useLogoutButton";
+import { LogoutButton } from "@/components/Users/LogoutButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
