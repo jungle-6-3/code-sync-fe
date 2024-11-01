@@ -172,8 +172,13 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
         {selectedCommitFile.filename !== "" && (
           <>
             <div className="flex w-full overflow-x-scroll">
-              {clickedFileList.map((file) => {
-                return <PrFileNameViewer fileName={String(file.filename)} />;
+              {clickedFileList.map((file, index) => {
+                return (
+                  <PrFileNameViewer
+                    key={index}
+                    fileName={String(file.filename)}
+                  />
+                );
               })}
             </div>
             <PrFilePathViewer filePath={selectedTotalFilePath} />
