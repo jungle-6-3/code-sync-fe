@@ -16,6 +16,7 @@ jobs:
       - name: env 파일 생성
         run: |
           cd ~/code-sync-fe/
+          rm .env
           touch .env
           echo VITE_BASE_URL=${{ secrets.VITE_BASE_URL }} >> .env
           echo VITE_WS_URL=${{ secrets.VITE_WS_URL }} >> .env
