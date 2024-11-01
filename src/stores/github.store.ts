@@ -51,6 +51,7 @@ interface fileSysyemPropsStore {
   clickedFileList: PrChangedFileInfo[];
   setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
   setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void;
   addClickedFileList: (newFile: PrChangedFileInfo) => void;
   removeClickedFileList: (newFile: PrChangedFileInfo) => void;
 }
@@ -141,14 +142,14 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
           updateClickedFileList.length > 0
             ? updateClickedFileList[updateClickedFileList.length - 1]
             : {
-                filename: "",
-                status: "init" as PrChangedFileStatusInfo["status"],
-                language: "",
-                additions: 0,
-                deletions: 0,
-                afterContent: "",
-                beforeContent: "",
-              };
+              filename: "",
+              status: "init" as PrChangedFileStatusInfo["status"],
+              language: "",
+              additions: 0,
+              deletions: 0,
+              afterContent: "",
+              beforeContent: "",
+            };
         get().setSelectedCommitFile(newSelectedFile);
       }
       return { clickedFileList: updateClickedFileList };
@@ -245,4 +246,5 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
       throw new Error("PR 데이터 가져오기 실패");
     }
   },
+  initCommitFileList: (commitFileList) => set({ commitFileList }),
 }));

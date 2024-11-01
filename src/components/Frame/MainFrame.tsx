@@ -1,9 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
-import { useTldrawStore } from "@/hooks/useTldrawStore";
+import { useEffect, useRef, useState } from "react";
+import { fileSysyemStore } from "@/stores/github.store";
 import chattingRoomStore from "@/stores/chattingRoom.store";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import {
@@ -18,92 +15,41 @@ import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
+import { initFileStructSync } from "@/lib/yjs";
+import { yjsStore } from "@/stores/yjs.store";
 
 interface MainFrameProps {
   drawBoard: boolean;
 }
 export const MainFrame = ({ drawBoard }: MainFrameProps) => {
-  const { isMessage } = chattingRoomStore();
-  const { selectedCommitFile, commitFileList, clickedFileList } =
-    fileSysyemStore();
+  const isMessage = chattingRoomStore((state) => state.isMessage);
+  const selectedCommitFile = fileSysyemStore(
+    (state) => state.selectedCommitFile,
+  );
+  const commitFileList = fileSysyemStore((state) => state.commitFileList);
+  const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
   const roomId = window.location.pathname.split("/")[1];
   const selectedTotalFilePath = selectedCommitFile.filename
     .split("/")
     .join(" > ");
 
-  const ydoc = useMemo(() => new Y.Doc(), []);
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
-  const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
-  const fileMetadata = ydoc.getArray<PrChangedFileInfo>("fileMetadata");
-
-  const store = useTldrawStore({
-    hostUrl: import.meta.env.VITE_YJS_URL,
-    roomId,
-  });
+  const ydoc = yjsStore((state) => state.ydoc);
+  const provider = yjsStore((state) => state.provider);
+  const initCommitFileList = fileSysyemStore(
+    (state) => state.initCommitFileList,
+  );
 
   useEffect(() => {
-    if (!providerRef.current) {
-      providerRef.current = new WebsocketProvider(
-        import.meta.env.VITE_YJS_URL,
-        roomId,
-        ydoc,
-        {
-          connect: true,
-          maxBackoffTime: 2500,
-        },
-      );
+    // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화
+    if (provider) {
+      initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
     }
-
-    // sync 이벤트 핸들러 내부
-    providerRef.current.on("sync", (isSynced: boolean) => {
-      if (isSynced) {
-        // 방장인 경우: 파일 메타데이터 공유
-        if (commitFileList?.length && fileMetadata.length === 0) {
-          // 기존 배열을 비우고
-          fileMetadata.delete(0, fileMetadata.length);
-
-          // 각 파일의 메타데이터를 개별적으로 push
-          commitFileList.forEach((file) => {
-            fileMetadata.push([
-              {
-                filename: file.filename,
-                language: file.language || "plaintext",
-                status: file.status,
-                additions: file.additions || 0,
-                deletions: file.deletions || 0,
-                afterContent: file.afterContent || "",
-                beforeContent: file.beforeContent || "",
-              },
-            ]);
-          });
-        } else if (commitFileList.length === 0 && fileMetadata.length > 0) {
-          const files = fileMetadata
-            .toArray()
-            .map((metadata: PrChangedFileInfo) => ({
-              filename: metadata.filename,
-              language: metadata.language,
-              status: metadata.status,
-              beforeContent: metadata.beforeContent,
-              afterContent: metadata.afterContent,
-              additions: metadata.additions,
-              deletions: metadata.deletions,
-            }));
-
-          fileSysyemStore.setState({ commitFileList: files });
-        }
-      }
-    });
-
-    return () => {
-      if (providerRef.current) {
-        providerRef.current.destroy();
-        providerRef.current = null;
-      }
-    };
-  }, [ydoc, roomId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, ydoc, roomId]);
 
   // 파일 내용 초기화
   useEffect(() => {
@@ -120,7 +66,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
 
   // 에디터 바인딩
   useEffect(() => {
-    if (!providerRef.current || !editor || !selectedCommitFile) return;
+    if (!provider || !editor || !selectedCommitFile) return;
 
     // 이전 바인딩 정리
     if (bindingRef.current) {
@@ -136,7 +82,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       ytext,
       model,
       new Set([editor]),
-      providerRef.current.awareness,
+      provider.awareness,
     );
 
     return () => {
@@ -146,7 +92,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
         bindingRef.current = null;
       }
     };
-  }, [ydoc, editor, selectedCommitFile]);
+  }, [ydoc, editor, selectedCommitFile, provider]);
 
   const onEditorMount = (editorInstance: editor.IStandaloneCodeEditor) => {
     setEditor(editorInstance);
@@ -168,7 +114,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={80}>
-        {drawBoard && <DrawBoard store={store} />}
+        {drawBoard && <DrawBoard />}
         {selectedCommitFile.filename !== "" && (
           <>
             <div className="flex w-full overflow-x-scroll">

@@ -8,6 +8,8 @@ import { SpinIcon } from "@/components/icons";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { addStreamConnectionAtPeer } from "@/lib/peer";
+import { WebsocketProvider } from "y-websocket";
+import { yjsStore } from "@/stores/yjs.store";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
@@ -17,6 +19,8 @@ interface InviteAcceptedRespone {
   prUrl: string;
   role: "creator" | "participant";
 }
+
+const YJS_SOCKET = import.meta.env.VITE_YJS_URL || "wss://demos.yjs.dev/ws";
 
 const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -34,6 +38,8 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const setPrMetaDataInfo = prMetaDataStore((state) => state.setPrMetaData);
   const setCommitFileList = fileSysyemStore((state) => state.setCommitFileList);
   const setIsCreator = socketStore((state) => state.setIsCreator);
+  const ydoc = yjsStore((state) => state.ydoc);
+  const setProvider = yjsStore((state) => state.setProvider);
 
   const onStartConversation = async () => {
     if (isLoaded) return;
@@ -41,10 +47,17 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     setIsRejected(false);
     setIsLoaded(true);
     try {
+      // prepare sockets(peer, socketio, yjs)
       const [{ id: peerId, peer }, socket] = await Promise.all([
         createPeer(),
         setSocket(roomId),
       ]);
+      const provider = new WebsocketProvider(YJS_SOCKET, roomId, ydoc, {
+        connect: true,
+        maxBackoffTime: 2500,
+      });
+      setProvider(provider);
+
       // initialize the peer connection
       // cuz of this work only when the socket and peer on the ready state
       addStreamConnectionAtPeer(peer, peerId, socket);
