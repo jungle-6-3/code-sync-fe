@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import checkUserLogin from "@/apis/checkUserValidApi";
 
 export default function useCheckUserQuery() {
-  const { data: checkUser } = useQuery({
+  const { data: checkUser } = useSuspenseQuery({
     queryKey: ["userCheck"],
     queryFn: checkUserLogin,
   });

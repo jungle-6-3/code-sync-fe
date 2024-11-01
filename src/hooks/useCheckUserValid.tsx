@@ -24,6 +24,7 @@ export const UserGuard = ({ children }: UserGuardProps) => {
   const { checkUser } = useCheckUserQuery();
 
   useEffect(() => {
+    console.log(checkUser);
     if (!checkUser) {
       navigate("/");
     }
