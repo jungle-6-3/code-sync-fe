@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import SignUpPage from "@/pages/SignUpPage";
 import ConversationJunctionPage from "@/pages/conversation";
 import CreateRoomPage from "@/pages/CreateRoomPage";
-import PreviousMeeting from "@/pages/PreviousMeeting";
+import PreviousRoom from "@/pages/PreviousRoom";
 import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
 
 export const router = createBrowserRouter([
@@ -36,10 +36,10 @@ export const router = createBrowserRouter([
     element: <ConversationJunctionPage />,
   },
   {
-    path: "/room/create/conferences",
+    path: "/room",
     element: (
       // <UserGuard>
-      <PreviousMeeting />
+      <PreviousRoom />
       // </UserGuard>
     ),
   },

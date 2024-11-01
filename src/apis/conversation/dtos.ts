@@ -16,7 +16,12 @@ export interface Conversation {
   participant: UserData;
 }
 
-export interface PreviousMeetingResponseDto {
+export interface Data {
+  total: number;
+  conversations: Conversation[];
+}
+
+export interface PreviousRoomResponseDto {
   success: boolean;
-  data: Conversation;
+  data: Data;
 }
