@@ -1,3 +1,4 @@
+import { GlobalError } from "@/apis/dto";
 import axios from "axios";
 
 const https = axios.create({
@@ -28,16 +29,14 @@ const errorAuth = [
 ];
 
 https.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
+  (response) => response,
+  (error) => {
     if (error.response && error.response.status) {
       if (errorAuth.includes(error.response.data?.code)) {
         return alert(error.response.data?.message);
       }
     }
-    return Promise.reject(error);
+    return Promise.reject(new GlobalError(error.response?.data));
   },
 );
 

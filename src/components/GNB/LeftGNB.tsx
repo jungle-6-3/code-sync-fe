@@ -1,7 +1,11 @@
 import chattingRoomStore from "@/stores/chattingRoom.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
-const LeftGNB = () => {
+interface LeftGNBProps {
+  navigateMainFrame: () => void;
+}
+
+const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
   const setLeftSNBSelection = chattingRoomStore(
     (state) => state.setLeftSNBSelection,
   );
