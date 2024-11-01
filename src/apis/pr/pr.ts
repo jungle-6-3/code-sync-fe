@@ -31,11 +31,11 @@ export const getPrCommitsData = async ({
 export const getFileData = async ({
   owner,
   repo,
-  branchName,
+  commitHash,
   fileName,
 }: GetFileDataParams) => {
   const response = await githubHttps.get(
-    `/raw/${owner}/${repo}/${branchName}/${fileName}`,
+    `/raw/${owner}/${repo}/${commitHash}/${fileName}`,
   );
   return response.data;
 };
@@ -43,13 +43,13 @@ export const getFileData = async ({
 export const getFileContent = async (
   owner: string,
   repo: string,
-  branchName: string,
+  commitHash: string,
   fileName: string,
 ) => {
   const response = getFileData({
     owner,
     repo,
-    branchName,
+    commitHash,
     fileName,
   });
   return response;

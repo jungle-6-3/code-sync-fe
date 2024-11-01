@@ -1,7 +1,6 @@
 import { getFileStatusStyle } from "@/lib/file";
 import { cn } from "@/lib/utils";
 import { fileSysyemStore } from "@/stores/github.store";
-import { FileText } from "lucide-react";
 
 interface PrFileExplorerItemProps {
   itemPath: string;
@@ -29,7 +28,6 @@ export const PrFileExplororItem = ({
       style={{ paddingLeft: indentation }}
       onClick={onClick}
     >
-      <FileText className="mr-2 h-4 w-4" />
       <span>{itemPath.split("/").at(-1)}</span>
       <span className="ml-2 text-xs text-gray-500">
         {commitFileList.find((file) => file.filename === itemPath)?.status}

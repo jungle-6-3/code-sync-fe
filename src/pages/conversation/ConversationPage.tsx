@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socketStore } from "@/stores/socket.store";
 import { MainFrame } from "@/components/Frame/MainFrame";
-import { LeftGNB, TopGNB } from "@/components/GNB";
+import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
 import useJoinRequestByToast, {
   SocketJoinRequestBy,
 } from "@/hooks/Toast/useJoinReqeustBy";
-import useUserDisconnectedToast, {
-  SocketUserDisconnected,
-} from "@/hooks/Toast/useUserDisconnected";
+import { useUserDisconnectedToast } from "@/hooks/Toast";
+import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
 
 const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
@@ -31,23 +30,18 @@ const ConversationPage = () => {
     };
   }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
 
-  const [drawBoard, setDrawBoard] = useState(false);
-  const navigateMainFrame = () => {
-    setDrawBoard((prev) => !prev);
-  };
-
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
       <nav className="border-b p-1">
         <TopGNB />
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB navigateMainFrame={navigateMainFrame} />
+          <LeftGNB />
         </nav>
-        <MainFrame drawBoard={drawBoard} />
+        <MainFrame />
       </div>
-      <div className="bg-blue-400 p-1">bottom status</div>
+      <BottomGNB />
     </div>
   );
 };

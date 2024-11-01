@@ -1,12 +1,26 @@
 import chattingRoomStore from "@/stores/chattingRoom.store";
+import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
-interface LeftGNBProps {
-  navigateMainFrame(): void;
-}
+const LeftGNB = () => {
+  const setLeftSNBSelection = chattingRoomStore(
+    (state) => state.setLeftSNBSelection,
+  );
+  const setSelectedCommitFile = fileSysyemStore(
+    (state) => state.setSelectedCommitFile,
+  );
 
-const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
-  const { setLeftSNBSelection } = chattingRoomStore();
+  const setNavigate = (filename: string) =>
+    setSelectedCommitFile({
+      additions: 0,
+      afterContent: "",
+      beforeContent: "",
+      deletions: 0,
+      filename: filename,
+      language: "",
+      status: "init",
+    });
+
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>
@@ -16,7 +30,10 @@ const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
           </button>
         </li>
         <li className="aspect-square">
-          <button className="p-2" onClick={() => setLeftSNBSelection("message")}>
+          <button
+            className="p-2"
+            onClick={() => setLeftSNBSelection("message")}
+          >
             <MessageSquare color="#334155" />
           </button>
         </li>
@@ -28,7 +45,7 @@ const LeftGNB = ({ navigateMainFrame }: LeftGNBProps) => {
           </button>
         </li>
         <li className="aspect-square">
-          <button className="p-2" onClick={navigateMainFrame}>
+          <button className="p-2" onClick={() => setNavigate("MainDrawBoard")}>
             <SquarePen color="#334155" />
           </button>
         </li>

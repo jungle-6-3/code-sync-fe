@@ -18,6 +18,7 @@ export interface PrMetaDataInfo {
 interface PrUserInfo {
   owner: string;
   branchName: string;
+  commitHash: string;
 }
 
 interface PrInfoPropsStore {
@@ -47,8 +48,12 @@ export interface PrChangedFileInfo extends PrChangedFileStatusInfo {
 interface fileSysyemPropsStore {
   selectedCommitFile: PrChangedFileInfo;
   commitFileList: PrChangedFileInfo[];
+  clickedFileList: PrChangedFileInfo[];
   setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
   setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void;
+  addClickedFileList: (newFile: PrChangedFileInfo) => void;
+  removeClickedFileList: (newFile: PrChangedFileInfo) => void;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -56,6 +61,7 @@ export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
     owner: "",
     repo: "",
     prNumber: 0,
+    prUrl: "",
   },
   setPrMetaData: (newPrMetaData) => {
     set({ prMetaData: newPrMetaData });
@@ -70,10 +76,12 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     requireUserInfo: {
       owner: "",
       branchName: "",
+      commitHash: "",
     },
     requestUserInfo: {
       owner: "",
       branchName: "",
+      commitHash: "",
     },
   },
   setPrInfo: (prInfoData) => set({ prInfo: prInfoData }),
@@ -84,16 +92,18 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
         requireUserInfo: {
           owner: "",
           branchName: "",
+          commitHash: "",
         },
         requestUserInfo: {
           owner: "",
           branchName: "",
+          commitHash: "",
         },
       },
     }),
 }));
 
-export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
+export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
   selectedCommitFile: {
     filename: "",
     status: "init",
@@ -104,23 +114,71 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
     beforeContent: "",
   },
   commitFileList: [],
-  setSelectedCommitFile: (newFile) => set({ selectedCommitFile: newFile }),
+  clickedFileList: [],
+  setSelectedCommitFile: (newFile) => {
+    set((state) => {
+      const isFileInList = state.clickedFileList.some(
+        (file) => file.filename === newFile.filename,
+      );
+      return {
+        selectedCommitFile: newFile,
+        clickedFileList: isFileInList
+          ? state.clickedFileList
+          : [...state.clickedFileList, newFile],
+      };
+    });
+  },
+  addClickedFileList: (newFile) =>
+    set((state) => ({
+      clickedFileList: [...state.clickedFileList, newFile],
+    })),
+  removeClickedFileList: (removeFile) =>
+    set((state) => {
+      const updateClickedFileList = state.clickedFileList.filter(
+        (file) => file.filename !== removeFile.filename,
+      );
+      if (state.selectedCommitFile.filename === removeFile.filename) {
+        const newSelectedFile =
+          updateClickedFileList.length > 0
+            ? updateClickedFileList[updateClickedFileList.length - 1]
+            : {
+              filename: "",
+              status: "init" as PrChangedFileStatusInfo["status"],
+              language: "",
+              additions: 0,
+              deletions: 0,
+              afterContent: "",
+              beforeContent: "",
+            };
+        get().setSelectedCommitFile(newSelectedFile);
+      }
+      return { clickedFileList: updateClickedFileList };
+    }),
   setCommitFileList: async ({ owner, repo, prNumber }) => {
     try {
       const prResponse = await getPrData({ owner, repo, prNumber });
       const [requireUser, requireBranchName] = prResponse.head.label.split(":");
       const [requestOwner, requestBranchName] =
         prResponse.base.label.split(":");
-
+      const requireSha = prResponse.head.sha;
+      const requesteSha = prResponse.base.sha;
+      prMetaDataStore.getState().setPrMetaData({
+        owner,
+        repo,
+        prNumber,
+        prUrl: prResponse.html_url,
+      });
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
         requireUserInfo: {
           owner: requireUser,
           branchName: requireBranchName,
+          commitHash: requireSha,
         },
         requestUserInfo: {
           owner: requestOwner,
           branchName: requestBranchName,
+          commitHash: requesteSha,
         },
       };
 
@@ -135,13 +193,12 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
         fetchCommitsData.map(async (commit) => {
           let beforeContent = "";
           let afterContent = "";
-
           try {
             if (commit.status === "modified") {
               const beforeContentResponse = await getFileContent(
                 prInfoData.requestUserInfo.owner,
                 repo,
-                prInfoData.requestUserInfo.branchName,
+                prInfoData.requestUserInfo.commitHash,
                 commit.filename,
               );
               beforeContent =
@@ -154,7 +211,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
               const afterContentResponse = await getFileContent(
                 prInfoData.requireUserInfo.owner,
                 repo,
-                prInfoData.requireUserInfo.branchName,
+                prInfoData.requireUserInfo.commitHash,
                 commit.filename,
               );
               afterContent =
@@ -189,4 +246,5 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
       throw new Error("PR 데이터 가져오기 실패");
     }
   },
+  initCommitFileList: (commitFileList) => set({ commitFileList }),
 }));
