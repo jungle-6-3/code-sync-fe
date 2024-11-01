@@ -7,9 +7,9 @@ import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
@@ -19,15 +19,14 @@ import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNam
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 
-
 interface MainFrameProps {
   drawBoard: boolean;
 }
 export const MainFrame = ({ drawBoard }: MainFrameProps) => {
   const { isMessage } = chattingRoomStore();
-  const { selectedCommitFile, commitFileList } = fileSysyemStore();
+  const { selectedCommitFile, commitFileList, clickedFileList } =
+    fileSysyemStore();
   const roomId = window.location.pathname.split("/")[1];
-  const selectedFileName = selectedCommitFile.filename.split("/").at(-1);
   const selectedTotalFilePath = selectedCommitFile.filename
     .split("/")
     .join(" > ");
@@ -45,12 +44,10 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
     roomId,
   });
 
-  // Provider 초기화
   useEffect(() => {
     if (!providerRef.current) {
       providerRef.current = new WebsocketProvider(
         import.meta.env.VITE_YJS_URL,
-        // "wss://demos.yjs.dev/ws",
         roomId,
         ydoc,
         {
@@ -145,6 +142,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
     return () => {
       if (bindingRef.current) {
         bindingRef.current.destroy();
+
         bindingRef.current = null;
       }
     };
@@ -172,10 +170,19 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       <ResizablePanel defaultSize={80}>
         {drawBoard && <DrawBoard store={store} />}
         {selectedCommitFile.filename !== "" && (
-          <div>
-            <PrFileNameViewer fileName={String(selectedFileName)} />
+          <>
+            <div className="flex w-full overflow-x-scroll">
+              {clickedFileList.map((file, index) => {
+                return (
+                  <PrFileNameViewer
+                    key={index}
+                    fileName={String(file.filename)}
+                  />
+                );
+              })}
+            </div>
             <PrFilePathViewer filePath={selectedTotalFilePath} />
-          </div>
+          </>
         )}
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel

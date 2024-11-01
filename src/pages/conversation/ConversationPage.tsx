@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { socketStore } from "@/stores/socket.store";
 import { MainFrame } from "@/components/Frame/MainFrame";
-import { LeftGNB, TopGNB } from "@/components/GNB";
+import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
 import useJoinRequestByToast, {
   SocketJoinRequestBy,
 } from "@/hooks/Toast/useJoinReqeustBy";
-import useUserDisconnectedToast, {
-  SocketUserDisconnected,
-} from "@/hooks/Toast/useUserDisconnected";
+import { useUserDisconnectedToast } from "@/hooks/Toast";
+import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
 
 const ConversationPage = () => {
   const socket = socketStore((state) => state.socket);
@@ -47,7 +46,7 @@ const ConversationPage = () => {
         </nav>
         <MainFrame drawBoard={drawBoard} />
       </div>
-      <div className="bg-blue-400 p-1">bottom status</div>
+      <BottomGNB />
     </div>
   );
 };
