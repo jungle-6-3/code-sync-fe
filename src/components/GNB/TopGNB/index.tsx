@@ -6,7 +6,7 @@ import TopGNBWifiStatus from "@/components/GNB/TopGNB/WifiStatus";
 import { Button } from "@/components/ui/button";
 
 const TopGNB = () => {
-  const url = window.location.href;
+  const urlPath = window.location.href.split("/").at(-1);
 
   const handleCopyClipBoard = (text: string) => {
     try {
@@ -20,8 +20,8 @@ const TopGNB = () => {
   return (
     <ul className="flex px-4 text-sm text-slate-700">
       <div className="flex flex-1">
-        <button onClick={() => handleCopyClipBoard(`${url}`)}>
-          URL: {url}
+        <button onClick={() => handleCopyClipBoard(`${urlPath}`)}>
+          URL: {urlPath}
         </button>
       </div>
       <div className="flex flex-1 items-center justify-center">
