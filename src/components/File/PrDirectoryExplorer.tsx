@@ -23,11 +23,11 @@ export const PrDirectoryExplorer = ({
     >
       {childItems.length > 0 &&
         (isExpanded ? (
-          <ChevronDown className="mr-1 h-4 w-4" />
+          <ChevronDown className="mr-1 aspect-square h-4 w-4" />
         ) : (
-          <ChevronRight className="mr-1 h-4 w-4" />
+          <ChevronRight className="mr-1 aspect-square h-4 w-4" />
         ))}
-      <Folder className="mr-2 h-4 w-4" />
+      <Folder className="mr-2 aspect-square h-4 w-4" />
       <span>{currentPath.split("/").pop()}</span>
     </div>
   );

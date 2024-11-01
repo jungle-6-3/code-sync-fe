@@ -1,5 +1,6 @@
 import { fileSysyemStore } from "@/stores/github.store";
 import { cn } from "../../../lib/utils";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 interface PrFileNameViewerProps {
   fileName: string;
@@ -29,19 +30,19 @@ export const PrFileNameViewer = ({ fileName }: PrFileNameViewerProps) => {
   return (
     <div
       className={cn(
-        "mx-1 flex",
+        "flex cursor-pointer border-b-2 bg-white text-sm hover:brightness-90",
         selectedCommitFile.filename === fileName &&
-          "border-b-4 border-blue-500",
+          "border-b-2 border-blue-600",
       )}
     >
       <span
         className={cn(
-          "item m-1 flex h-7 w-fit items-center px-2 py-6",
-          selectedCommitFile.filename === fileName && "text-pink-500",
+          "item flex w-fit items-center px-2 py-2",
+          selectedCommitFile.filename !== fileName && "text-zinc-500",
         )}
         onClick={onFileSelect}
       >
-        {fileName}
+        {fileName.split("/").at(-1)}
       </span>
       {selectedCommitFile.filename === fileName && (
         <button
@@ -50,7 +51,7 @@ export const PrFileNameViewer = ({ fileName }: PrFileNameViewerProps) => {
           }}
           className="mx-1"
         >
-          x
+          <Cross1Icon />
         </button>
       )}
     </div>
