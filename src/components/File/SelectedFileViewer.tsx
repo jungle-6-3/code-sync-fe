@@ -131,10 +131,10 @@ const InitFile = ({
 
   return (
     <div className="flex w-4/5 flex-col">
-      <div className="my-2 ml-2 text-2xl font-semibold">File Changed</div>
+      <div className="text-2xl font-semibold">File Changed</div>
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-slate-200 hover:bg-slate-200">
             <TableHead className="w-[200px]">File Name</TableHead>
             <TableHead>language</TableHead>
             <TableHead>status</TableHead>
@@ -147,7 +147,7 @@ const InitFile = ({
             return (
               <TableRow
                 key={index}
-                className="text-4xl"
+                className="cursor-pointer"
                 onClick={() => setSelectedCommitFile(file)}
               >
                 <TableCell className="font-medium">{file.filename}</TableCell>
