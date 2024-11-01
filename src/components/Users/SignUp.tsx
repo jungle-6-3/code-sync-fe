@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import usePostData from "@/hooks/useSignUpMutation";
+import usePostData from "@/hooks/Users/useSignUpMutation";
 import { z } from "zod";
 import {
   FormControl,

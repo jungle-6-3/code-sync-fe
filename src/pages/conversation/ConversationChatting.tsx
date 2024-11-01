@@ -55,6 +55,8 @@ export default function ConversationChatting() {
     };
   }, [socket, addMessage]);
 
+  // TODO 후에 상대방이 채팅을 보냈을 시에도 내 스크롤은 내려가지않게
+  // 또 내가 채팅을 보냈을때도 상대방 스크롤은 내려가지 않게
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

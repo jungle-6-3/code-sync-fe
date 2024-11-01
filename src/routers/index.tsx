@@ -1,10 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
-import { UserGuard, UserLoginPageGuard } from "@/hooks/useCheckUserValid";
 import LoginPage from "@/pages/LoginPage";
+import { createBrowserRouter } from "react-router-dom";
 import SignUpPage from "@/pages/SignUpPage";
-import CreateRoomPage from "@/pages/CreateRoomPage";
-import PreviousMeeting from "@/pages/PreviousMeeting";
 import ConversationJunctionPage from "@/pages/conversation";
+import CreateRoomPage from "@/pages/CreateRoomPage";
+import PreviousRoom from "@/pages/PreviousRoom";
+import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
 import RoomSavePage from "@/pages/RoomSavePage";
 
 export const router = createBrowserRouter([
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <UserGuard>
-            <PreviousMeeting />
+            <PreviousRoom />
           </UserGuard>
         ),
       },

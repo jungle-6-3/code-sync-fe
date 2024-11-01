@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { socketStore } from "@/stores/socket.store";
 import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
-import { useConversationMutation } from "@/hooks/useConversationMutation";
+import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -145,7 +145,7 @@ const CreateRoomPage = () => {
         </Form>
       </div>
       <Button className="absolute bottom-12 right-12" size="lg" asChild>
-        <Link to="/room/create/conferences">이전 회의록 보기</Link>
+        <Link to="/room">이전 회의록 보기</Link>
       </Button>
     </div>
   );
