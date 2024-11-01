@@ -22,7 +22,7 @@ interface MainFrameProps {
   drawBoard: boolean;
 }
 export const MainFrame = ({ drawBoard }: MainFrameProps) => {
-  const { isMessage } = chattingRoomStore();
+  const isMessage = chattingRoomStore((state) => state.isMessage);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
