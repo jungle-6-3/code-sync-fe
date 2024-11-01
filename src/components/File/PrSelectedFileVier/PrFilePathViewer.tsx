@@ -1,11 +1,24 @@
+import { ChevronRightIcon } from "lucide-react";
+
 interface PrFilePathViewerProps {
-  filePath: string;
+  filePaths: string[];
 }
 
-export const PrFilePathViewer = ({ filePath }: PrFilePathViewerProps) => {
+export const PrFilePathViewer = ({ filePaths }: PrFilePathViewerProps) => {
   return (
-    <span className="item border-b- m-1 flex h-4 w-full items-center p-2">
-      {filePath}
+    <span className="flex w-full items-center border-b px-2 py-1 text-sm">
+      {filePaths.map((filePath, index) => {
+        return (
+          <span key={index} className="flex items-center">
+            <span className="text-gray-500">{filePath}</span>
+            {index !== filePaths.length - 1 && (
+              <span className="text-gray-500">
+                <ChevronRightIcon size="16" />
+              </span>
+            )}
+          </span>
+        );
+      })}
     </span>
   );
 };

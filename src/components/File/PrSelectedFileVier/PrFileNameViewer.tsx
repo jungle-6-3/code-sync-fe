@@ -30,9 +30,9 @@ export const PrFileNameViewer = ({ fileName }: PrFileNameViewerProps) => {
   return (
     <div
       className={cn(
-        "mx-1 flex",
+        "flex cursor-pointer border-b-2 bg-white text-sm hover:brightness-90",
         selectedCommitFile.filename === fileName &&
-          "border-b-2 border-blue-500",
+          "border-b-2 border-blue-600",
       )}
     >
       <span
@@ -42,7 +42,7 @@ export const PrFileNameViewer = ({ fileName }: PrFileNameViewerProps) => {
         )}
         onClick={onFileSelect}
       >
-        {fileName}
+        {fileName.split("/").at(-1)}
       </span>
       {selectedCommitFile.filename === fileName && (
         <button

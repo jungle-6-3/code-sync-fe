@@ -25,9 +25,7 @@ export const MainFrame = () => {
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
   const roomId = window.location.pathname.split("/")[1];
-  const selectedTotalFilePath = selectedCommitFile.filename
-    .split("/")
-    .join(" > ");
+  const selectedTotalFilePath = selectedCommitFile.filename.split("/");
 
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
@@ -115,14 +113,11 @@ export const MainFrame = () => {
             <div className="flex w-full overflow-x-scroll border-b">
               {clickedFileList.map((file, index) => {
                 return (
-                  <PrFileNameViewer
-                    key={index}
-                    fileName={String(file.filename)}
-                  />
+                  <PrFileNameViewer key={index} fileName={file.filename} />
                 );
               })}
             </div>
-            <PrFilePathViewer filePath={selectedTotalFilePath} />
+            <PrFilePathViewer filePaths={selectedTotalFilePath} />
           </>
         )}
         <ResizablePanelGroup direction="vertical">
