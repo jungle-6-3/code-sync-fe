@@ -1,7 +1,9 @@
+import ConversationSaveHeader from "@/components/Conversation/Save/Header";
+
 const RoomSavePage = () => {
   return (
-    <div>
-      <h1>Room Save Page</h1>
+    <div className="py-4">
+      <ConversationSaveHeader />
     </div>
   );
 };
