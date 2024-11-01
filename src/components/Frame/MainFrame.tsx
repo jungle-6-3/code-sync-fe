@@ -170,14 +170,14 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       <ResizablePanel defaultSize={80}>
         {drawBoard && <DrawBoard store={store} />}
         {selectedCommitFile.filename !== "" && (
-          <div>
+          <>
             <div className="flex w-full overflow-x-scroll">
               {clickedFileList.map((file) => {
                 return <PrFileNameViewer fileName={String(file.filename)} />;
               })}
             </div>
             <PrFilePathViewer filePath={selectedTotalFilePath} />
-          </div>
+          </>
         )}
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel

@@ -115,10 +115,17 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
   commitFileList: [],
   clickedFileList: [],
   setSelectedCommitFile: (newFile) => {
-    set({ selectedCommitFile: newFile });
-    if (!fileSysyemStore.getState().clickedFileList.includes(newFile)) {
-      fileSysyemStore.getState().addClickedFileList(newFile);
-    }
+    set((state) => {
+      const isFileInList = state.clickedFileList.some(
+        (file) => file.filename === newFile.filename,
+      );
+      return {
+        selectedCommitFile: newFile,
+        clickedFileList: isFileInList
+          ? state.clickedFileList
+          : [...state.clickedFileList, newFile],
+      };
+    });
   },
   addClickedFileList: (newFile) =>
     set((state) => ({
@@ -158,7 +165,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
         owner,
         repo,
         prNumber,
-        prUrl: prResponse.html_url, // PR URL 추가
+        prUrl: prResponse.html_url,
       });
       const prInfoData: PrInfoProps = {
         userId: prResponse.user.login,
