@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socketStore } from "@/stores/socket.store";
 import { MainFrame } from "@/components/Frame/MainFrame";
 import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
@@ -30,21 +30,16 @@ const ConversationPage = () => {
     };
   }, [socket, onJoinRequestByToast, onUserDisconnectedToast]);
 
-  const [drawBoard, setDrawBoard] = useState(false);
-  const navigateMainFrame = () => {
-    setDrawBoard((prev) => !prev);
-  };
-
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
       <nav className="border-b p-1">
         <TopGNB />
       </nav>
       <div className="flex h-full">
         <nav className="border-r">
-          <LeftGNB navigateMainFrame={navigateMainFrame} />
+          <LeftGNB />
         </nav>
-        <MainFrame drawBoard={drawBoard} />
+        <MainFrame />
       </div>
       <BottomGNB />
     </div>

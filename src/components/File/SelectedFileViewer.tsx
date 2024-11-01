@@ -16,15 +16,10 @@ import {
 } from "@/components/ui/table";
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
-
-interface SelectedFileProps {
-  language: string;
-  afterContent: string;
-  beforeContent: string;
-}
+import { DrawBoard } from "@/components/Draw/DrawBoard";
 
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
-  selectedCommitFile: SelectedFileProps;
+  selectedCommitFile: PrChangedFileInfo;
   commitFileList: PrChangedFileInfo[];
   onEditorMount?: (
     editor: editor.IStandaloneCodeEditor,
@@ -36,7 +31,7 @@ interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   ) => void;
 }
 interface FileEditorProps {
-  selectedCommitFile: SelectedFileProps;
+  selectedCommitFile: PrChangedFileInfo;
   onEditorMount?: (
     editor: editor.IStandaloneCodeEditor,
     monaco: Monaco,
@@ -73,6 +68,11 @@ const SelectedFileViewer = ({
     ),
     init: <InitFile commitFileList={commitFileList} />,
   };
+
+  if (selectedCommitFile.filename === "MainDrawBoard") {
+    return <DrawBoard />;
+  }
+
   return fileComponent[status] || <div>invalue</div>;
 };
 

@@ -11,17 +11,13 @@ import {
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
-import { DrawBoard } from "@/components/Draw/DrawBoard";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { yjsStore } from "@/stores/yjs.store";
 
-interface MainFrameProps {
-  drawBoard: boolean;
-}
-export const MainFrame = ({ drawBoard }: MainFrameProps) => {
+export const MainFrame = () => {
   const isMessage = chattingRoomStore((state) => state.isMessage);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
@@ -114,10 +110,9 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={80}>
-        {drawBoard && <DrawBoard />}
         {selectedCommitFile.filename !== "" && (
           <>
-            <div className="flex w-full overflow-x-scroll">
+            <div className="flex w-full overflow-x-scroll border-b">
               {clickedFileList.map((file, index) => {
                 return (
                   <PrFileNameViewer
