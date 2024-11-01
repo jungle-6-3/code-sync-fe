@@ -49,6 +49,7 @@ interface fileSysyemPropsStore {
   commitFileList: PrChangedFileInfo[];
   setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
   setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
+  initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -189,4 +190,5 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set) => ({
       throw new Error("PR 데이터 가져오기 실패");
     }
   },
+  initCommitFileList: (commitFileList) => set({ commitFileList }),
 }));

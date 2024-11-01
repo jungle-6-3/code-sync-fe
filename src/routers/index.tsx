@@ -17,22 +17,6 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/room/create",
-    element: (
-      <UserGuard>
-        <CreateRoomPage />
-      </UserGuard>
-    ),
-  },
-  {
-    path: "/room/save",
-    element: (
-      <UserGuard>
-        <RoomSavePage />
-      </UserGuard>
-    ),
-  },
-  {
     path: "/signup",
     element: (
       <UserLoginPageGuard>
@@ -42,14 +26,39 @@ export const router = createBrowserRouter([
   },
   {
     path: "/:conversationId",
-    element: <ConversationJunctionPage />,
-  },
-  {
-    path: "/room/create/conferences",
     element: (
       <UserGuard>
-        <PreviousMeeting />
+        <ConversationJunctionPage />
       </UserGuard>
     ),
+  },
+  {
+    path: "/room",
+    children: [
+      {
+        index: true,
+        element: (
+          <UserGuard>
+            <PreviousMeeting />
+          </UserGuard>
+        ),
+      },
+      {
+        path: "/room/create",
+        element: (
+          <UserGuard>
+            <CreateRoomPage />
+          </UserGuard>
+        ),
+      },
+      {
+        path: "/room/save",
+        element: (
+          <UserGuard>
+            <RoomSavePage />
+          </UserGuard>
+        ),
+      },
+    ],
   },
 ]);
