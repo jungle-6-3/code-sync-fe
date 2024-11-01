@@ -22,13 +22,13 @@ interface MainFrameProps {
   drawBoard: boolean;
 }
 export const MainFrame = ({ drawBoard }: MainFrameProps) => {
-  const { isMessage } = chattingRoomStore();
+  const isMessage = chattingRoomStore((state) => state.isMessage);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
+  const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
   const roomId = window.location.pathname.split("/")[1];
-  const selectedFileName = selectedCommitFile.filename.split("/").at(-1);
   const selectedTotalFilePath = selectedCommitFile.filename
     .split("/")
     .join(" > ");
@@ -88,6 +88,7 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
     return () => {
       if (bindingRef.current) {
         bindingRef.current.destroy();
+
         bindingRef.current = null;
       }
     };
@@ -115,10 +116,19 @@ export const MainFrame = ({ drawBoard }: MainFrameProps) => {
       <ResizablePanel defaultSize={80}>
         {drawBoard && <DrawBoard />}
         {selectedCommitFile.filename !== "" && (
-          <div>
-            <PrFileNameViewer fileName={String(selectedFileName)} />
+          <>
+            <div className="flex w-full overflow-x-scroll">
+              {clickedFileList.map((file, index) => {
+                return (
+                  <PrFileNameViewer
+                    key={index}
+                    fileName={String(file.filename)}
+                  />
+                );
+              })}
+            </div>
             <PrFilePathViewer filePath={selectedTotalFilePath} />
-          </div>
+          </>
         )}
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
