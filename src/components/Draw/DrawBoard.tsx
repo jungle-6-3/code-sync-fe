@@ -3,7 +3,7 @@ import * as Y from "yjs";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { ExcalidrawBinding, yjsToExcalidraw } from "y-excalidraw";
 import { useEffect, useRef, useState } from "react";
-import { yjsStore } from "@/stores/yjs.store";
+import { socketManager } from "@/lib/socketManager";
 
 const usercolors = [{ color: "#30bced", light: "#30bced33" }];
 
@@ -11,15 +11,15 @@ export const DrawBoard = () => {
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const [binding, setBindings] = useState<ExcalidrawBinding | null>(null);
   const excalidrawRef = useRef(null);
-  const provider = yjsStore((state) => state.provider);
-  const yElements = yjsStore((state) =>
-    state.ydoc.getArray<Y.Map<unknown>>("elements"),
-  );
-  const yAssets = yjsStore((state) => state.ydoc.getMap("assets"));
+  const provider = socketManager.yjsSocket?.provider;
+  const yElements =
+    socketManager.yjsSocket?.ydoc.getArray<Y.Map<unknown>>("elements");
+  const yAssets = socketManager.yjsSocket?.ydoc.getMap("assets");
 
   useEffect(() => {
     if (!api) return;
     if (!excalidrawRef.current) return;
+    if (yElements === undefined || yAssets === undefined) return;
 
     provider?.awareness.setLocalStateField("user", {
       color: usercolors[0].color,
@@ -47,7 +47,7 @@ export const DrawBoard = () => {
   }, [api, provider, yElements, yAssets]);
 
   const initData = {
-    elements: yjsToExcalidraw(yElements),
+    elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
   };
 
   return (

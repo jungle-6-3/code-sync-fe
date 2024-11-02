@@ -15,7 +15,7 @@ import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNam
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
-import { yjsStore } from "@/stores/yjs.store";
+import { socketManager } from "@/lib/socketManager";
 
 export const MainFrame = () => {
   const isMessage = chattingRoomStore((state) => state.isMessage);
@@ -31,13 +31,15 @@ export const MainFrame = () => {
     null,
   );
   const bindingRef = useRef<MonacoBinding | null>(null);
-  const ydoc = yjsStore((state) => state.ydoc);
-  const provider = yjsStore((state) => state.provider);
+  const provider = socketManager.yjsSocket?.provider;
+  const ydoc = socketManager.yjsSocket?.ydoc;
   const initCommitFileList = fileSysyemStore(
     (state) => state.initCommitFileList,
   );
 
   useEffect(() => {
+    if (!provider) return;
+    if (!ydoc) return;
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화
     if (provider) {
       initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
@@ -48,6 +50,7 @@ export const MainFrame = () => {
   // 파일 내용 초기화
   useEffect(() => {
     if (!commitFileList || commitFileList.length === 0) return;
+    if (!ydoc) return;
 
     commitFileList.forEach((file) => {
       const ytext = ydoc.getText(`${file.filename}`);
@@ -61,6 +64,7 @@ export const MainFrame = () => {
   // 에디터 바인딩
   useEffect(() => {
     if (!provider || !editor || !selectedCommitFile) return;
+    if (!ydoc) return;
 
     // 이전 바인딩 정리
     if (bindingRef.current) {
