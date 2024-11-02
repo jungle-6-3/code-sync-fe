@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { socketManager } from "@/lib/socketManager";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 import { toast } from "sonner";
 
 export interface SocketJoinRequestBy {
@@ -13,18 +14,23 @@ export interface SocketJoinRequestBy {
 }
 
 const useJoinRequestByToast = () => {
-  const socket = socketManager.socketIOSocket;
-  const peerId = socketManager.peerConnection?.peer.id;
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const socket = SocketManager.getInstance().socketIOSocket;
+  const peerId = SocketManager.getInstance().peerConnection.id;
 
   const onInvite = (t: string | number, { data }: SocketJoinRequestBy) => {
-    socket?.emit("invite-user", { email: data.participant.email }, () => {
-      socket?.emit("share-peer-id", { peerId });
+    socket.emit("invite-user", { email: data.participant.email }, () => {
+      socket.emit("share-peer-id", { peerId });
     });
     toast.dismiss(t);
   };
 
   const onReject = (t: string | number, { data }: SocketJoinRequestBy) => {
-    socket?.emit("reject-user", { email: data.participant.email });
+    socket.emit("reject-user", { email: data.participant.email });
     toast.dismiss(t);
   };
 

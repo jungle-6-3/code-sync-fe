@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { socketManager } from "@/lib/socketManager";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 
 class ChattingSocketResponse {
   name: string;
@@ -29,13 +30,17 @@ class ChattingSocketResponse {
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
-  const socket = socketManager.socketIOSocket;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
-    if (!socket) return;
     const onChatting = (msg: {
       name: string;
       message: string;

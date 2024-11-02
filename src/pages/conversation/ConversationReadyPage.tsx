@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { extractGitHubPrDetails } from "@/lib/github";
-import { useCommunicationStore } from "@/stores/CommunicationState.store";
-import { socketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { SocketManager } from "@/lib/socketManager";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
@@ -25,14 +25,15 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
-  const initilaizeSockets = useCommunicationStore(
-    (state) => state.initializeSockets,
-  );
+  const onStaging = useCommunicationStore((state) => state.onStaging);
   const roomUuid = window.location.pathname.split("/")[1];
   const setPrMetaDataInfo = prMetaDataStore((state) => state.setPrMetaData);
   const setCommitFileList = fileSysyemStore((state) => state.setCommitFileList);
   const isCreator = userMediaStore((state) => state.isCreator);
   const setIsCreator = userMediaStore((state) => state.setIsCreator);
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
 
   const onStartConversation = async () => {
     if (isLoaded) return;
@@ -40,12 +41,12 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     setIsRejected(false);
     setIsLoaded(true);
     try {
-      await initilaizeSockets({ roomUuid });
+      const socketManger = await onStaging({ roomUuid });
       if (isCreator) {
         return onSetJoin(true);
       }
       // when the user is not the creator
-      socketManager.socketIOSocket
+      socketManger.socketIOSocket
         ?.on(
           "invite-accepted",
           async ({ prUrl, role }: InviteAcceptedRespone) => {
@@ -71,8 +72,8 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
               return;
             }
             onSetJoin(true);
-            socketManager.socketIOSocket?.emit("share-peer-id", {
-              peerId: socketManager.peerConnection?.id,
+            socketManger.socketIOSocket?.emit("share-peer-id", {
+              peerId: socketManger.peerConnection.id,
             });
           },
         )
@@ -95,8 +96,9 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     }
 
     return () => {
-      socketManager.socketIOSocket
-        ?.off("invite-accepted")
+      if (!isSocketManagerReady) return;
+      SocketManager.getInstance()
+        .socketIOSocket?.off("invite-accepted")
         .off("invite-rejected");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

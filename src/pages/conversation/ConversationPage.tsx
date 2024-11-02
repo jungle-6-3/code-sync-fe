@@ -6,12 +6,18 @@ import useJoinRequestByToast, {
 } from "@/hooks/Toast/useJoinReqeustBy";
 import { useUserDisconnectedToast } from "@/hooks/Toast";
 import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
-import { socketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { SocketManager } from "@/lib/socketManager";
 
 const ConversationPage = () => {
-  const socket = socketManager.socketIOSocket;
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
   const { onToast: onUserDisconnectedToast } = useUserDisconnectedToast();
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
     if (!socket) return;

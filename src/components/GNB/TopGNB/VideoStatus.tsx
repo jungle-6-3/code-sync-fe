@@ -1,14 +1,19 @@
-import { socketManager } from "@/lib/socketManager";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 import { Video, VideoOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBVideoStatus = () => {
   const [videoStatus, toggleVideoStatus] = useReducer((state) => !state, true);
-  const peers = socketManager.peerConnection?.peers;
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const peers = SocketManager.getInstance().peerConnection.peers;
 
   const onVideoToggle = () => {
     toggleVideoStatus();
-    if (!peers) return;
     // TODO: when toggle video, video change other image
     Object.values(peers).forEach((peer) => {
       peer.localStream.getTracks().forEach((track) => {

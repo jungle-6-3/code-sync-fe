@@ -15,7 +15,8 @@ import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNam
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
-import { socketManager } from "@/lib/socketManager";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 
 export const MainFrame = () => {
   const isMessage = chattingRoomStore((state) => state.isMessage);
@@ -31,27 +32,29 @@ export const MainFrame = () => {
     null,
   );
   const bindingRef = useRef<MonacoBinding | null>(null);
-  const provider = socketManager.yjsSocket?.provider;
-  const ydoc = socketManager.yjsSocket?.ydoc;
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+
+  if (!roomId) throw new Error("roomId is required");
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const provider = SocketManager.getInstance().yjsSocket.provider;
+  const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
+
   const initCommitFileList = fileSysyemStore(
     (state) => state.initCommitFileList,
   );
 
   useEffect(() => {
-    if (!provider) return;
-    if (!ydoc) return;
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화
-    if (provider) {
-      initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
-    }
+    initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, ydoc, roomId]);
 
   // 파일 내용 초기화
   useEffect(() => {
     if (!commitFileList || commitFileList.length === 0) return;
-    if (!ydoc) return;
-
     commitFileList.forEach((file) => {
       const ytext = ydoc.getText(`${file.filename}`);
       if (ytext.length === 0) {
@@ -63,8 +66,7 @@ export const MainFrame = () => {
 
   // 에디터 바인딩
   useEffect(() => {
-    if (!provider || !editor || !selectedCommitFile) return;
-    if (!ydoc) return;
+    if (!editor || !selectedCommitFile) return;
 
     // 이전 바인딩 정리
     if (bindingRef.current) {

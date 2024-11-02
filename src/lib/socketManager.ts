@@ -5,23 +5,33 @@ import { Socket } from "socket.io-client";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from 'yjs';
 
-class SocketManager {
+export class SocketManager {
   private static instance: SocketManager;
 
-  public peerConnection: PeerConnection | null = null;
-  public yjsSocket: { ydoc: Y.Doc, provider: WebsocketProvider } | null = null;
-  public socketIOSocket: Socket | null = null;
+  public peerConnection!: PeerConnection
+  public yjsSocket!: { ydoc: Y.Doc, provider: WebsocketProvider };
+  public socketIOSocket!: Socket;
+  initialized: Promise<void>;
 
-  private constructor() { }
+  private constructor({ roomUuid }: { roomUuid: string }) {
+    this.initialized = this.connectAllSockets({ roomUuid });
+  }
 
-  static getInstance(): SocketManager {
+  async ready(): Promise<void> {
+    await this.initialized;
+  }
+
+  static getInstance(roomUuid?: string): SocketManager {
     if (!SocketManager.instance) {
-      SocketManager.instance = new SocketManager();
+      if (!roomUuid) {
+        throw new Error("roomUuid is required to initialize SocketManager");
+      }
+      SocketManager.instance = new SocketManager({ roomUuid });
     }
     return SocketManager.instance;
   }
 
-  async connectAllSockets({ roomUuid }: { roomUuid: string }) {
+  private async connectAllSockets({ roomUuid }: { roomUuid: string }) {
     this.peerConnection = await initializePeerConnection();
     this.yjsSocket = await initializeYjsSocket({ roomUuid });
     this.socketIOSocket = await socketIoSocket.initializeSocket({ roomUuid });
@@ -44,9 +54,5 @@ class SocketManager {
   disconnectAllSockets() {
     this.peerConnection?.peer.disconnect();
     this.peerConnection?.peer.destroy();
-    this.yjsSocket = null;
-    this.socketIOSocket = null;
   }
 }
-
-export const socketManager = SocketManager.getInstance();
