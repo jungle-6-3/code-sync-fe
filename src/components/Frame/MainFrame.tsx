@@ -16,6 +16,9 @@ import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePat
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { yjsStore } from "@/stores/yjs.store";
+import { socketStore } from "@/stores/socket.store";
+import { chattingMessageStore } from "@/stores/chattingMessage.store";
+import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
 export const MainFrame = () => {
   const isMessage = chattingRoomStore((state) => state.isMessage);
@@ -36,6 +39,31 @@ export const MainFrame = () => {
   const initCommitFileList = fileSysyemStore(
     (state) => state.initCommitFileList,
   );
+
+  // 윤민성 수정
+  const socket = socketStore((state) => state.socket);
+  const addMessage = chattingMessageStore((state) => state.addMessage);
+
+  useEffect(() => {
+    if (!socket) return;
+    const onChatting = (msg: {
+      name: string;
+      message: string;
+      email: string;
+      date: string;
+    }) => {
+      try {
+        console.log("yahoo");
+        addMessage(new ChattingSocketResponse(msg));
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    socket.on("chatting", onChatting);
+    return () => {
+      socket.off("chatting", onChatting);
+    };
+  }, [socket, addMessage]);
 
   useEffect(() => {
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화

@@ -3,29 +3,7 @@ import { socketStore } from "@/stores/socket.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-class ChattingSocketResponse {
-  name: string;
-  message: string;
-  email: string;
-  date: Date;
-  constructor({
-    name,
-    message,
-    email,
-    date,
-  }: {
-    name: string;
-    message: string;
-    email: string;
-    date: string;
-  }) {
-    this.name = name;
-    this.message = message;
-    this.email = email;
-    this.date = new Date(date);
-  }
-}
+import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
@@ -33,27 +11,6 @@ export default function ConversationChatting() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
-
-  useEffect(() => {
-    if (!socket) return;
-    const onChatting = (msg: {
-      name: string;
-      message: string;
-      email: string;
-      date: string;
-    }) => {
-      try {
-        addMessage(new ChattingSocketResponse(msg));
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    socket.on("chatting", onChatting);
-    return () => {
-      socket.off("chatting", onChatting);
-    };
-  }, [socket, addMessage]);
 
   // TODO 후에 상대방이 채팅을 보냈을 시에도 내 스크롤은 내려가지않게
   // 또 내가 채팅을 보냈을때도 상대방 스크롤은 내려가지 않게
