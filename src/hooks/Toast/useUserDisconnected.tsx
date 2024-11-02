@@ -4,8 +4,9 @@ import { toast } from "sonner";
 export interface SocketUserDisconnected {
   message: string;
   data: {
-    name: string;
     email: string;
+    name: string;
+    peerId: string;
   };
 }
 

@@ -95,25 +95,3 @@ export const addInviteAcceptedListener = async ({ socket }: AddInviteAcceptedLis
       resolve(false);
     }));
 }
-
-interface UserDisconnectedResponse {
-  message: string;
-  data: {
-    email: string;
-    name: string;
-    peerId: string;
-  }
-}
-
-export const addInitConnectionListener = async ({ socket }: AddInviteAcceptedListenerProps) => {
-  const peers = SocketManager.getInstance().peerConnection.peers;
-  const removeOpponentMediaStream = userMediaStore.getState().removeOpponentMediaStream;
-  return new Promise<boolean>((resolve) => socket
-    .on("uesr-disconnecte", ({ message, data: { name, peerId } }: UserDisconnectedResponse) => {
-      // FIXME: 토스트로 사용자가 나갔다는 것을 만들어야 함.
-      peers[peerId].close();
-      delete peers[peerId];
-      removeOpponentMediaStream();
-      resolve(true);
-    }));
-}
