@@ -6,6 +6,7 @@ import CreateRoomPage from "@/pages/CreateRoomPage";
 import PreviousRoom from "@/pages/PreviousRoom";
 import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
 import RoomSavePage from "@/pages/RoomSavePage";
+import PostDetailPage from "@/pages/RoomDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,14 @@ export const router = createBrowserRouter([
           </UserGuard>
         ),
       },
+      {
+        path: "/room/:postId",
+        element: (
+          <UserGuard>
+            <PostDetailPage />
+          </UserGuard>
+        )
+      }
     ],
   },
 ]);

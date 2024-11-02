@@ -19,12 +19,13 @@ import {
 } from "@/components/ui/table";
 import usePreviousRoomQuery from "@/hooks/Conversation/usePreviousRoomQuery";
 import { Conversation } from "@/apis/conversation/dtos";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PreviousRoom = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   // const [currentPage, setCurrentPage] = useState(1);
   const currentPage = Number(searchParams.get("page")) || 1;
+  const navigate = useNavigate();
 
   const { previousRoom } = usePreviousRoomQuery(currentPage);
   if (!previousRoom) {
@@ -62,10 +63,14 @@ const PreviousRoom = () => {
           <TableBody>
             {previousRoom?.data.conversations.map(
               (conversation: Conversation, index: number) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">
-                    {conversation.title}
-                  </TableCell>
+                <TableRow
+                  className="cursor-pointer hover:bg-gray-300"
+                  key={index}
+                  onClick={() => {
+                    navigate(`/room/${index + 1}`);
+                  }}
+                >
+                  <TableCell>{conversation.title}</TableCell>
                   <TableCell>
                     {new Date(conversation.startedAt).toLocaleString("ko-KR")}
                   </TableCell>
