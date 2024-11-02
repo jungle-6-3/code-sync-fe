@@ -1,13 +1,14 @@
-import { peerStore } from "@/stores/peer.store";
+import { socketManager } from "@/lib/socketManager";
 import { Video, VideoOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBVideoStatus = () => {
   const [videoStatus, toggleVideoStatus] = useReducer((state) => !state, true);
-  const peers = peerStore((state) => state.peers);
+  const peers = socketManager.peerConnection?.peers;
 
   const onVideoToggle = () => {
     toggleVideoStatus();
+    if (!peers) return;
     // TODO: when toggle video, video change other image
     Object.values(peers).forEach((peer) => {
       peer.localStream.getTracks().forEach((track) => {

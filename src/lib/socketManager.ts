@@ -1,4 +1,4 @@
-import { addStreamConnectionAtPeer, initializePeerConnection, PeerConnection } from "@/lib/peer";
+import { addPeerCallListeners, addStreamConnectionAtPeer, addUserDisconnectedListener, initializePeerConnection, PeerConnection } from "@/lib/peer";
 import { socketIoSocket } from "@/lib/socket";
 import { initializeYjsSocket } from "@/lib/yjs";
 import { Socket } from "socket.io-client";
@@ -25,7 +25,20 @@ class SocketManager {
     this.peerConnection = await initializePeerConnection();
     this.yjsSocket = await initializeYjsSocket({ roomUuid });
     this.socketIOSocket = await socketIoSocket.initializeSocket({ roomUuid });
-    addStreamConnectionAtPeer(this.peerConnection.peer, this.peerConnection.id, this.socketIOSocket);
+    addStreamConnectionAtPeer({
+      peer: this.peerConnection.peer,
+      peerId: this.peerConnection.id,
+      socket: this.socketIOSocket,
+      peers: this.peerConnection.peers
+    });
+    addPeerCallListeners({
+      peer: this.peerConnection.peer,
+      peers: this.peerConnection.peers
+    });
+    addUserDisconnectedListener({
+      socket: this.socketIOSocket,
+      peers: this.peerConnection.peers
+    });
   }
 
   disconnectAllSockets() {

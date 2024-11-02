@@ -1,13 +1,14 @@
-import { peerStore } from "@/stores/peer.store";
+import { socketManager } from "@/lib/socketManager";
 import { Mic, MicOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBMicStatus = () => {
   const [micStatus, toggleMicStatus] = useReducer((state) => !state, true);
-  const peers = peerStore((state) => state.peers);
+  const peers = socketManager.peerConnection?.peers;
 
   const onMicToggle = () => {
     toggleMicStatus();
+    if (!peers) return;
     // TODO: when toggle mic, other people know that I'm muted
     Object.values(peers).forEach((peer) => {
       peer.localStream.getTracks().forEach((track) => {

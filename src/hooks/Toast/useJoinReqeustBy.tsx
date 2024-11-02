@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { socketManager } from "@/lib/socketManager";
-import { peerStore } from "@/stores/peer.store";
 import { toast } from "sonner";
 
 export interface SocketJoinRequestBy {
@@ -15,7 +14,7 @@ export interface SocketJoinRequestBy {
 
 const useJoinRequestByToast = () => {
   const socket = socketManager.socketIOSocket;
-  const peerId = peerStore((state) => state.peerId);
+  const peerId = socketManager.peerConnection?.peer.id;
 
   const onInvite = (t: string | number, { data }: SocketJoinRequestBy) => {
     socket?.emit("invite-user", { email: data.participant.email }, () => {
