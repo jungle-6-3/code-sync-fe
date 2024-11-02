@@ -16,12 +16,9 @@ const ConversationPage = () => {
     (state) => state.isSocketManagerReady,
   );
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
-
   const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
-    if (!socket) return;
-
     socket.on("join-request-by", ({ data, message }: SocketJoinRequestBy) => {
       onJoinRequestByToast({ data, message });
     });

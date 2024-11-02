@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
 import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { z } from "zod";
@@ -31,7 +30,6 @@ const CreateRoomPage = () => {
   const setIsCreator = userMediaStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
-  const { setCommitFileList } = fileSysyemStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
@@ -64,17 +62,10 @@ const CreateRoomPage = () => {
       createRoom(
         { githubPrUrl: value.ghPrLink },
         {
-          onSuccess: ({ data }) => {
-            InitializePrData({ owner, prNumber: +prNumber, repo })
-              .then(() => {
-                setIsCreator(true);
-                setIsLoading(false);
-                navigate(`/${data.roomUuid}`);
-              })
-              .catch((e) => {
-                alert(e);
-                setIsLoading(false);
-              });
+          onSuccess: ({ data: { roomUuid } }) => {
+            setIsCreator(true);
+            setIsLoading(false);
+            navigate(`/${roomUuid}`);
           },
           onError: ({ message }) => {
             alert(message);
@@ -87,9 +78,6 @@ const CreateRoomPage = () => {
 
     setIsLoading(false);
   };
-
-  const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
-    setCommitFileList({ owner, prNumber, repo }).catch((e) => alert(e));
 
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">

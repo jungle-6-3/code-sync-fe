@@ -1,4 +1,5 @@
 
+import { addInviteAcceptedListener } from '@/lib/socket';
 import { SocketManager } from '@/lib/socketManager';
 import { create } from 'zustand';
 
@@ -14,8 +15,9 @@ type LifecycleStage =
 interface CommunicationState {
   stage: LifecycleStage;
   isReconnecting: boolean;
-  onReady: () => void;
-  onStaging: (options: { roomUuid: string }) => Promise<SocketManager>;
+  roomUuid?: string;
+  onReady: (roomUuid: string) => void;
+  onStaging: () => Promise<boolean>;
   onWaiting: () => void;
   onRunning: () => void;
   onSaving: () => void;
@@ -23,15 +25,18 @@ interface CommunicationState {
   isSocketManagerReady: boolean;
 }
 
-export const useCommunicationStore = create<CommunicationState>((set) => ({
+export const useCommunicationStore = create<CommunicationState>((set, get) => ({
   stage: 'init',
   isSocketManagerReady: false,
   isReconnecting: false,
-  onReady: () => set({ stage: 'ready' }),
-  onStaging: async ({ roomUuid }: { roomUuid: string }) => {
+  onReady: (roomUuid) => set({ stage: 'ready', roomUuid }),
+  onStaging: async () => {
+    const roomUuid = get().roomUuid;
     await SocketManager.getInstance(roomUuid).ready();
     set({ stage: 'staging', isSocketManagerReady: true });
-    return SocketManager.getInstance();
+    return await addInviteAcceptedListener({
+      socket: SocketManager.getInstance().socketIOSocket,
+    })
   },
   onRunning: () => set({ stage: 'running' }),
   onWaiting: () => set({ stage: 'waiting' }),

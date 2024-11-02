@@ -32,9 +32,15 @@ export class SocketManager {
   }
 
   private async connectAllSockets({ roomUuid }: { roomUuid: string }) {
-    this.peerConnection = await initializePeerConnection();
-    this.yjsSocket = await initializeYjsSocket({ roomUuid });
-    this.socketIOSocket = await socketIoSocket.initializeSocket({ roomUuid });
+    const [peerConnection, yjsSocket, ioSocket] = await Promise.all([
+      await initializePeerConnection(),
+      await initializeYjsSocket({ roomUuid }),
+      await socketIoSocket.initializeSocket({ roomUuid })
+    ])
+    this.peerConnection = peerConnection;
+    this.yjsSocket = yjsSocket;
+    this.socketIOSocket = ioSocket;
+
     addStreamConnectionAtPeer({
       peer: this.peerConnection.peer,
       peerId: this.peerConnection.id,

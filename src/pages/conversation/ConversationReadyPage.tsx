@@ -1,20 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { userMediaStore } from "@/stores/userMedia.store";
-import { fileSysyemStore, prMetaDataStore } from "@/stores/github.store";
 import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
-import { extractGitHubPrDetails } from "@/lib/github";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
-}
-
-interface InviteAcceptedRespone {
-  prUrl: string;
-  role: "creator" | "participant";
 }
 
 const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
@@ -26,11 +19,9 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
   const onStaging = useCommunicationStore((state) => state.onStaging);
-  const roomUuid = window.location.pathname.split("/")[1];
-  const setPrMetaDataInfo = prMetaDataStore((state) => state.setPrMetaData);
-  const setCommitFileList = fileSysyemStore((state) => state.setCommitFileList);
   const isCreator = userMediaStore((state) => state.isCreator);
-  const setIsCreator = userMediaStore((state) => state.setIsCreator);
+  const onReady = useCommunicationStore((state) => state.onReady);
+  const roomUuid = window.location.pathname.split("/")[1];
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
@@ -41,55 +32,24 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     setIsRejected(false);
     setIsLoaded(true);
     try {
-      const socketManger = await onStaging({ roomUuid });
+      const result = await onStaging();
       if (isCreator) {
         return onSetJoin(true);
       }
-      // when the user is not the creator
-      socketManger.socketIOSocket
-        ?.on(
-          "invite-accepted",
-          async ({ prUrl, role }: InviteAcceptedRespone) => {
-            const { owner, repo, prNumber } = extractGitHubPrDetails({
-              ghPrLink: prUrl,
-            });
-            setPrMetaDataInfo({
-              owner,
-              repo,
-              prNumber: +prNumber,
-              prUrl,
-            });
-            if (role === "creator") {
-              await setCommitFileList({ owner, prNumber: +prNumber, repo })
-                .then(() => {
-                  onSetJoin(true);
-                  setIsCreator(true);
-                })
-                .catch((error) => {
-                  alert("Error: " + error);
-                  setIsLoaded(false);
-                });
-              return;
-            }
-            onSetJoin(true);
-            socketManger.socketIOSocket?.emit("share-peer-id", {
-              peerId: socketManger.peerConnection.id,
-            });
-          },
-        )
-        .on("invite-rejected", () => {
-          setIsLoaded(false);
-          setIsRejected(true);
-        });
+      if (result) {
+        return onSetJoin(true);
+      }
+      setIsRejected(true);
+      setIsLoaded(false);
     } catch (error) {
       alert("Error: " + error);
       setIsLoaded(true);
     }
-
     return;
   };
 
   useEffect(() => {
+    onReady(roomUuid);
     if (!isStartVideoWebCam.current) {
       startWebcam({ audio: true, video: true });
       isStartVideoWebCam.current = true;
