@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { socketStore } from "@/stores/socket.store";
-import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
 import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { z } from "zod";
@@ -20,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { LogoutButton } from "@/components/Users/LogoutButton";
 import { extractGitHubPrDetails } from "@/lib/github";
+import { userMediaStore } from "@/stores/userMedia.store";
 
 const createRoomSchema = z.object({
   ghPrLink: z.string().url(),
@@ -28,10 +27,9 @@ const createRoomSchema = z.object({
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const setIsCreator = socketStore((state) => state.setIsCreator);
+  const setIsCreator = userMediaStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
-  const { setCommitFileList } = fileSysyemStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
     resolver: zodResolver(createRoomSchema),
@@ -64,17 +62,10 @@ const CreateRoomPage = () => {
       createRoom(
         { githubPrUrl: value.ghPrLink },
         {
-          onSuccess: ({ data }) => {
-            InitializePrData({ owner, prNumber: +prNumber, repo })
-              .then(() => {
-                setIsCreator(true);
-                setIsLoading(false);
-                navigate(`/${data.roomUuid}`);
-              })
-              .catch((e) => {
-                alert(e);
-                setIsLoading(false);
-              });
+          onSuccess: ({ data: { roomUuid } }) => {
+            setIsCreator(true);
+            setIsLoading(false);
+            navigate(`/${roomUuid}`);
           },
           onError: ({ message }) => {
             alert(message);
@@ -87,9 +78,6 @@ const CreateRoomPage = () => {
 
     setIsLoading(false);
   };
-
-  const InitializePrData = ({ owner, repo, prNumber }: PrMetaDataInfo) =>
-    setCommitFileList({ owner, prNumber, repo }).catch((e) => alert(e));
 
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden overflow-x-hidden">

@@ -1,10 +1,16 @@
-import { peerStore } from "@/stores/peer.store";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 import { Mic, MicOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBMicStatus = () => {
   const [micStatus, toggleMicStatus] = useReducer((state) => !state, true);
-  const peers = peerStore((state) => state.peers);
+  const peers = SocketManager.getInstance().peerConnection.peers;
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+
+  if (!isSocketManagerReady) return null;
 
   const onMicToggle = () => {
     toggleMicStatus();

@@ -15,8 +15,8 @@ import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNam
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
-import { yjsStore } from "@/stores/yjs.store";
-import { socketStore } from "@/stores/socket.store";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
@@ -29,35 +29,33 @@ export const MainFrame = () => {
   const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
   const roomId = window.location.pathname.split("/")[1];
   const selectedTotalFilePath = selectedCommitFile.filename.split("/");
-
+  const addMessage = chattingMessageStore((state) => state.addMessage);
+  const initCommitFileList = fileSysyemStore(
+    (state) => state.initCommitFileList,
+  );
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
   const bindingRef = useRef<MonacoBinding | null>(null);
-  const ydoc = yjsStore((state) => state.ydoc);
-  const provider = yjsStore((state) => state.provider);
-  const initCommitFileList = fileSysyemStore(
-    (state) => state.initCommitFileList,
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
   );
 
-  // 윤민성 수정
-  const socket = socketStore((state) => state.socket);
-  const addMessage = chattingMessageStore((state) => state.addMessage);
+  if (!roomId) throw new Error("roomId is required");
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const provider = SocketManager.getInstance().yjsSocket.provider;
+  const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
+  const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
-    if (!socket) return;
     const onChatting = (msg: {
       name: string;
       message: string;
       email: string;
       date: string;
     }) => {
-      try {
-        console.log("yahoo");
-        addMessage(new ChattingSocketResponse(msg));
-      } catch (e) {
-        console.log(e);
-      }
+      addMessage(new ChattingSocketResponse(msg));
     };
     socket.on("chatting", onChatting);
     return () => {
@@ -67,16 +65,13 @@ export const MainFrame = () => {
 
   useEffect(() => {
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화
-    if (provider) {
-      initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
-    }
+    initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, ydoc, roomId]);
 
   // 파일 내용 초기화
   useEffect(() => {
     if (!commitFileList || commitFileList.length === 0) return;
-
     commitFileList.forEach((file) => {
       const ytext = ydoc.getText(`${file.filename}`);
       if (ytext.length === 0) {
@@ -88,7 +83,7 @@ export const MainFrame = () => {
 
   // 에디터 바인딩
   useEffect(() => {
-    if (!provider || !editor || !selectedCommitFile) return;
+    if (!editor || !selectedCommitFile) return;
 
     // 이전 바인딩 정리
     if (bindingRef.current) {
