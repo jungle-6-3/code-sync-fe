@@ -1,7 +1,22 @@
 import { peerStore } from "@/stores/peer.store";
 import { userMediaStore } from "@/stores/userMedia.store";
-import Peer from "peerjs";
+import Peer, { MediaConnection } from "peerjs";
 import { Socket } from "socket.io-client";
+
+export interface PeerConnection {
+  peer: Peer;
+  id: string;
+  peers: Record<string, MediaConnection>;
+}
+
+export const initializePeerConnection = async () => {
+  return new Promise<PeerConnection>((resolve) => {
+    const peer = new Peer();
+    peer.once("open", (id) => {
+      resolve({ peer, id, peers: {} });
+    });
+  });
+}
 
 interface SocketJoinRequestBy {
   message: string;

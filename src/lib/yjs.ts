@@ -1,6 +1,23 @@
 import { PrChangedFileInfo } from '@/stores/github.store';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
+const YJS_SOCKET = import.meta.env.VITE_YJS_URL || "wss://demos.yjs.dev/ws";
+
+export const initializeYjsSocket = async ({ roomUuid }: { roomUuid: string }) => {
+  return new Promise<{ ydoc: Y.Doc, provider: WebsocketProvider }>((resolve) => {
+    const ydoc = new Y.Doc();
+    const provider = new WebsocketProvider(YJS_SOCKET, roomUuid, ydoc, {
+      connect: true,
+      maxBackoffTime: 2500,
+    });
+    provider.on("status", (event: { status: string }) => {
+      if (event.status === "connected") {
+        resolve({ ydoc, provider });
+      }
+    });
+  });
+}
+
 
 export const initFileStructSync = (ydoc: Y.Doc, provider: WebsocketProvider,
   commitFileList: PrChangedFileInfo[], initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void) => {
