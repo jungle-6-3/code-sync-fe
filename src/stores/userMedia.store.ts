@@ -6,6 +6,8 @@ interface UserMediaState {
 }
 
 interface UserMediaStore {
+  isCreator: boolean;
+  setIsCreator: (isCreator: boolean) => void;
   isUserMediaOn: UserMediaState;
   isShowWebcam: boolean;
   toggleShowSharedWebcam: () => void;
@@ -19,6 +21,8 @@ interface UserMediaStore {
 
 // Create a store for user media (singleton)
 export const userMediaStore = create<UserMediaStore>()((set, get) => ({
+  isCreator: false,
+  setIsCreator: (isCreator) => set({ isCreator }),
   isShowWebcam: false,
   toggleShowSharedWebcam: () =>
     set((state) => ({ isShowWebcam: !state.isShowWebcam })),

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { socketStore } from "@/stores/socket.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { socketManager } from "@/lib/socketManager";
 
 class ChattingSocketResponse {
   name: string;
@@ -29,7 +29,7 @@ class ChattingSocketResponse {
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
-  const socket = socketStore((state) => state.socket);
+  const socket = socketManager.socketIOSocket;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);

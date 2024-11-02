@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { socketStore } from "@/stores/socket.store";
 import { fileSysyemStore, PrMetaDataInfo } from "@/stores/github.store";
 import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
 import { checkValidPullRequest } from "@/apis/pr/pr";
@@ -20,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { LogoutButton } from "@/components/Users/LogoutButton";
 import { extractGitHubPrDetails } from "@/lib/github";
+import { userMediaStore } from "@/stores/userMedia.store";
 
 const createRoomSchema = z.object({
   ghPrLink: z.string().url(),
@@ -28,7 +28,7 @@ const createRoomSchema = z.object({
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const setIsCreator = socketStore((state) => state.setIsCreator);
+  const setIsCreator = userMediaStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
 
   const { setCommitFileList } = fileSysyemStore();

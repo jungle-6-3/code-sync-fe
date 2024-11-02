@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { peerStore } from "@/stores/peer.store";
-import { socketStore } from "@/stores/socket.store";
 import { userMediaStore } from "@/stores/userMedia.store";
+import { socketManager } from "@/lib/socketManager";
 
 interface SocketUserDisconnected {
   message: string;
@@ -17,7 +17,7 @@ export const usePeer = () => {
   const setPeers = peerStore((state) => state.setPeers);
   const peer = peerStore((state) => state.peer);
   const mediaStream = userMediaStore((state) => state.mediaStream);
-  const socket = socketStore((state) => state.socket);
+  const socket = socketManager.socketIOSocket;
 
   useEffect(() => {
     if (!peer) return;

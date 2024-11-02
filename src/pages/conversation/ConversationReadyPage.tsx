@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { peerStore } from "@/stores/peer.store";
-import { socketStore } from "@/stores/socket.store";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { fileSysyemStore, prMetaDataStore } from "@/stores/github.store";
 import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
 import { extractGitHubPrDetails } from "@/lib/github";
-import { addStreamConnectionAtPeer } from "@/lib/peer";
-import { WebsocketProvider } from "y-websocket";
-import { yjsStore } from "@/stores/yjs.store";
+import { useCommunicationStore } from "@/stores/CommunicationState.store";
+import { socketManager } from "@/lib/socketManager";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;
@@ -20,8 +17,6 @@ interface InviteAcceptedRespone {
   role: "creator" | "participant";
 }
 
-const YJS_SOCKET = import.meta.env.VITE_YJS_URL || "wss://demos.yjs.dev/ws";
-
 const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
@@ -30,16 +25,14 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const mediaStream = userMediaStore((state) => state.mediaStream);
   const isUserMediaOn = userMediaStore((state) => state.isUserMediaOn);
   const startWebcam = userMediaStore((state) => state.startWebcam);
-  const socket = socketStore((state) => state.socket);
-  const createPeer = peerStore((state) => state.createPeer);
-  const roomId = window.location.pathname.split("/")[1];
-  const setSocket = socketStore((state) => state.setSocket);
-  const isCreator = socketStore((state) => state.isCreator);
+  const initilaizeSockets = useCommunicationStore(
+    (state) => state.initializeSockets,
+  );
+  const roomUuid = window.location.pathname.split("/")[1];
   const setPrMetaDataInfo = prMetaDataStore((state) => state.setPrMetaData);
   const setCommitFileList = fileSysyemStore((state) => state.setCommitFileList);
-  const setIsCreator = socketStore((state) => state.setIsCreator);
-  const ydoc = yjsStore((state) => state.ydoc);
-  const setProvider = yjsStore((state) => state.setProvider);
+  const isCreator = userMediaStore((state) => state.isCreator);
+  const setIsCreator = userMediaStore((state) => state.setIsCreator);
 
   const onStartConversation = async () => {
     if (isLoaded) return;
@@ -47,27 +40,13 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     setIsRejected(false);
     setIsLoaded(true);
     try {
-      // prepare sockets(peer, socketio, yjs)
-      const [{ id: peerId, peer }, socket] = await Promise.all([
-        createPeer(),
-        setSocket(roomId),
-      ]);
-      const provider = new WebsocketProvider(YJS_SOCKET, roomId, ydoc, {
-        connect: true,
-        maxBackoffTime: 2500,
-      });
-      setProvider(provider);
-
-      // initialize the peer connection
-      // cuz of this work only when the socket and peer on the ready state
-      addStreamConnectionAtPeer(peer, peerId, socket);
-
+      await initilaizeSockets({ roomUuid });
       if (isCreator) {
         return onSetJoin(true);
       }
       // when the user is not the creator
-      socket
-        .on(
+      socketManager.socketIOSocket
+        ?.on(
           "invite-accepted",
           async ({ prUrl, role }: InviteAcceptedRespone) => {
             const { owner, repo, prNumber } = extractGitHubPrDetails({
@@ -92,7 +71,9 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
               return;
             }
             onSetJoin(true);
-            socket?.emit("share-peer-id", { peerId });
+            socketManager.socketIOSocket?.emit("share-peer-id", {
+              peerId: socketManager.peerConnection?.id,
+            });
           },
         )
         .on("invite-rejected", () => {
@@ -114,7 +95,9 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
     }
 
     return () => {
-      socket?.off("invite-accepted").off("invite-rejected");
+      socketManager.socketIOSocket
+        ?.off("invite-accepted")
+        .off("invite-rejected");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
