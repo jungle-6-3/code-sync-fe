@@ -2,35 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-<<<<<<< HEAD
-import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
-
-class ChattingSocketResponse {
-  name: string;
-  message: string;
-  email: string;
-  date: Date;
-  constructor({
-    name,
-    message,
-    email,
-    date,
-  }: {
-    name: string;
-    message: string;
-    email: string;
-    date: string;
-  }) {
-    this.name = name;
-    this.message = message;
-    this.email = email;
-    this.date = new Date(date);
-  }
-}
-=======
-import { ChattingSocketResponse } from "@/apis/conversation/dtos";
->>>>>>> a09472e706ce7b7d45336f26c13146c361a9e95f
+import { SocketManager } from "@/lib/socketManager";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
@@ -41,32 +14,8 @@ export default function ConversationChatting() {
     (state) => state.isSocketManagerReady,
   );
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
-
   const socket = SocketManager.getInstance().socketIOSocket;
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const onChatting = (msg: {
-      name: string;
-      message: string;
-      email: string;
-      date: string;
-    }) => {
-      try {
-        addMessage(new ChattingSocketResponse(msg));
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    socket.on("chatting", onChatting);
-    return () => {
-      socket.off("chatting", onChatting);
-    };
-  }, [socket, addMessage]);
-
-=======
->>>>>>> a09472e706ce7b7d45336f26c13146c361a9e95f
   // TODO 후에 상대방이 채팅을 보냈을 시에도 내 스크롤은 내려가지않게
   // 또 내가 채팅을 보냈을때도 상대방 스크롤은 내려가지 않게
   useEffect(() => {
@@ -75,7 +24,6 @@ export default function ConversationChatting() {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!socket) return;
     try {
       socket.emit(
         "chatting",
