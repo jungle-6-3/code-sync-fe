@@ -17,6 +17,8 @@ import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
+import { chattingMessageStore } from "@/stores/chattingMessage.store";
+import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
 export const MainFrame = () => {
   const isMessage = chattingRoomStore((state) => state.isMessage);
@@ -27,7 +29,10 @@ export const MainFrame = () => {
   const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
   const roomId = window.location.pathname.split("/")[1];
   const selectedTotalFilePath = selectedCommitFile.filename.split("/");
-
+  const addMessage = chattingMessageStore((state) => state.addMessage);
+  const initCommitFileList = fileSysyemStore(
+    (state) => state.initCommitFileList,
+  );
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(
     null,
   );
@@ -41,10 +46,22 @@ export const MainFrame = () => {
 
   const provider = SocketManager.getInstance().yjsSocket.provider;
   const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
+  const socket = SocketManager.getInstance().socketIOSocket;
 
-  const initCommitFileList = fileSysyemStore(
-    (state) => state.initCommitFileList,
-  );
+  useEffect(() => {
+    const onChatting = (msg: {
+      name: string;
+      message: string;
+      email: string;
+      date: string;
+    }) => {
+      addMessage(new ChattingSocketResponse(msg));
+    };
+    socket.on("chatting", onChatting);
+    return () => {
+      socket.off("chatting", onChatting);
+    };
+  }, [socket, addMessage]);
 
   useEffect(() => {
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화

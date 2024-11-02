@@ -33,7 +33,7 @@ export const addPeerCallListeners = ({ peer, peers }: {
         addOpponentMediaStream(remoteStream);
       })
       .on("close", () => {
-        removeOpponentMediaStream(call.remoteStream);
+        removeOpponentMediaStream();
       })
     peers[call.peer] = call;
   });
@@ -89,7 +89,7 @@ export const addStreamConnectionAtPeer = ({ peer, peerId, peers, socket }: {
           addOpponentMediaStream(remoteStream);
         })
         .on("close", () => {
-          removeOpponentMediaStream(call.remoteStream);
+          removeOpponentMediaStream();
         })
 
       peers[remotePeerId] = call;

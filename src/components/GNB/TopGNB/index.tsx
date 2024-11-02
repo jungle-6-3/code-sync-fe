@@ -4,15 +4,18 @@ import TopGNBSharedVideoShowStatus from "@/components/GNB/TopGNB/SharedVideoShow
 import TopGNBVideoStatus from "@/components/GNB/TopGNB/VideoStatus";
 import TopGNBWifiStatus from "@/components/GNB/TopGNB/WifiStatus";
 import { Button } from "@/components/ui/button";
+import { useExit } from "@/hooks/Conversation/useExit";
 
 const TopGNB = () => {
   const urlPath = window.location.href.split("/").at(-1);
+  const { exit } = useExit();
 
   const handleCopyClipBoard = (text: string) => {
     try {
       navigator.clipboard.writeText(text);
       alert("클립보드에 복사되었습니다.");
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_: unknown) {
       alert("클립보드 복사에 실패하였습니다.");
     }
   };
@@ -20,12 +23,16 @@ const TopGNB = () => {
   return (
     <ul className="flex px-4 text-sm text-slate-700">
       <div className="flex flex-1">
-        <button onClick={() => handleCopyClipBoard(`${urlPath}`)}>
+        <button onClick={() => handleCopyClipBoard(window.location.href)}>
           URL: {urlPath}
         </button>
       </div>
       <div className="flex flex-1 items-center justify-center">
-        <Button variant="outline" className="rounded-full px-4 py-0">
+        <Button
+          variant="outline"
+          className="rounded-full px-4 py-0"
+          onClick={exit}
+        >
           종료하기
         </Button>
       </div>

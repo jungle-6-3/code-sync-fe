@@ -1,14 +1,16 @@
 import { Excalidraw } from "@excalidraw/excalidraw";
 import * as Y from "yjs";
-import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { ExcalidrawBinding, yjsToExcalidraw } from "y-excalidraw";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
+import { drawBoardStore } from "@/stores/drawBoard.store";
 
 export const DrawBoard = () => {
-  const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
-  const [binding, setBindings] = useState<ExcalidrawBinding | null>(null);
+  const api = drawBoardStore((state) => state.api);
+  const setApi = drawBoardStore((state) => state.setApi);
+  const binding = drawBoardStore((state) => state.binding);
+  const setBindings = drawBoardStore((state) => state.setBinding);
   const excalidrawRef = useRef(null);
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
@@ -31,25 +33,26 @@ export const DrawBoard = () => {
       colorLight: "#30bced33",
     });
 
-    const binding = new ExcalidrawBinding(
-      yElements,
-      yAssets,
-      api,
-      provider?.awareness,
-      // excalidraw dom is needed to override the undo/redo buttons in the UI as there is no way to override it via props in excalidraw
-      // You might need to pass {trackedOrigins: new Set()} to undomanager depending on whether your provider sets an origin or not
-      {
-        excalidrawDom: excalidrawRef.current,
-        undoManager: new Y.UndoManager(yElements),
-      },
-    );
-    setBindings(binding);
+    if (!binding) {
+      const binding = new ExcalidrawBinding(
+        yElements,
+        yAssets,
+        api,
+        provider?.awareness,
+        // excalidraw dom is needed to override the undo/redo buttons in the UI as there is no way to override it via props in excalidraw
+        // You might need to pass {trackedOrigins: new Set()} to undomanager depending on whether your provider sets an origin or not
+        {
+          excalidrawDom: excalidrawRef.current,
+          undoManager: new Y.UndoManager(yElements),
+        },
+      );
+      setBindings(binding);
+    }
 
     return () => {
-      setBindings(null);
-      binding.destroy();
+      binding?.destroy();
     };
-  }, [api, provider, yElements, yAssets]);
+  }, [api, provider, yElements, yAssets, binding, setBindings]);
 
   const initData = {
     elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
