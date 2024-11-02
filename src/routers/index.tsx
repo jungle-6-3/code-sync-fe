@@ -2,11 +2,11 @@ import LoginPage from "@/pages/LoginPage";
 import { createBrowserRouter } from "react-router-dom";
 import SignUpPage from "@/pages/SignUpPage";
 import ConversationJunctionPage from "@/pages/conversation";
-import CreateRoomPage from "@/pages/CreateRoomPage";
-import PreviousRoom from "@/pages/PreviousRoom";
+import CreateRoomPage from "@/pages/room/CreateRoomPage";
+import PreviousRoom from "@/pages/room/PreviousRoom";
 import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
-import RoomSavePage from "@/pages/RoomSavePage";
-import PostDetailPage from "@/pages/RoomDetailPage";
+import RoomSavePage from "@/pages/room/RoomSavePage";
+import PostDetailPage from "@/pages/room/RoomDetailPage";
 
 export const router = createBrowserRouter([
   {
