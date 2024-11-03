@@ -7,8 +7,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import formLoginSchema from "@/lib/schema/loginSchema";
 import useLoginQuery from "@/hooks/Users/useLoginMutation";
+import { formLoginSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -47,18 +47,18 @@ export default function Login() {
   };
 
   return (
-    <div className="right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+    <div className="flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
       <h1 className="my-8 text-3xl">Login</h1>
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSignIn)}
-          className="w-full max-w-[20rem]"
+          className="flex w-full max-w-[20rem] flex-col gap-4"
         >
           <FormField
             control={form.control}
             name="useremail"
             render={({ field }) => (
-              <FormItem className="my-4">
+              <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
@@ -76,7 +76,7 @@ export default function Login() {
             control={form.control}
             name="userpassword"
             render={({ field }) => (
-              <FormItem className="my-4">
+              <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
