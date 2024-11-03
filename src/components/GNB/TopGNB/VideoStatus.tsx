@@ -1,5 +1,6 @@
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
+import { userMediaStore } from "@/stores/userMedia.store";
 import { Video, VideoOff } from "lucide-react";
 import { useReducer } from "react";
 
@@ -9,6 +10,7 @@ const TopGNBVideoStatus = () => {
     (state) => state.isSocketManagerReady,
   );
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+  const mediaStream = userMediaStore((state) => state.mediaStream);
 
   const peers = SocketManager.getInstance().peerConnection.peers;
 
@@ -21,6 +23,11 @@ const TopGNBVideoStatus = () => {
           track.enabled = !videoStatus;
         }
       });
+    });
+    mediaStream?.getTracks().forEach((track) => {
+      if (track.kind === "video") {
+        track.enabled = !videoStatus;
+      }
     });
   };
 
