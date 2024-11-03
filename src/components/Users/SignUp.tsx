@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import formSignUpSchema from "@/lib/Schema/SignUpSchema";
+import { formSignUpSchema } from "@/lib/schema";
 
 export default function SignUp() {
   const navigate = useNavigate();
