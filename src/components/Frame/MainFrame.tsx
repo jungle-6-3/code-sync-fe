@@ -40,7 +40,6 @@ export const MainFrame = () => {
     (state) => state.initCommitFileList,
   );
 
-  // 윤민성 수정
   const socket = socketStore((state) => state.socket);
   const addMessage = chattingMessageStore((state) => state.addMessage);
 
@@ -53,10 +52,9 @@ export const MainFrame = () => {
       date: string;
     }) => {
       try {
-        console.log("yahoo");
         addMessage(new ChattingSocketResponse(msg));
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     };
     socket.on("chatting", onChatting);
