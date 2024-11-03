@@ -48,6 +48,7 @@ export default function SignUp() {
 
   return (
     <div className="flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+      <h1 className="my-8 text-3xl">Sign Up</h1>
       <div className="my-4 text-gray-600">
         Already a member? &nbsp;
         <Link className="font-light text-sky-600" to="/">

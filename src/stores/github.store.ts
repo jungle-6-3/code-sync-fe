@@ -9,7 +9,7 @@ interface PrInfoProps {
 }
 
 export interface PrMetaDataInfo {
-  prUrl?: string;
+  prUrl: string;
   owner: string;
   repo: string;
   prNumber: number;

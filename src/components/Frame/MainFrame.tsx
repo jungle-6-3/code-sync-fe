@@ -21,7 +21,7 @@ import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
 export const MainFrame = () => {
-  const isMessage = chattingRoomStore((state) => state.isMessage);
+  const leftSection = chattingRoomStore((state) => state.leftSection);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
@@ -105,7 +105,6 @@ export const MainFrame = () => {
     return () => {
       if (bindingRef.current) {
         bindingRef.current.destroy();
-
         bindingRef.current = null;
       }
     };
@@ -121,16 +120,20 @@ export const MainFrame = () => {
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={20}>
-        {isMessage === "folder" ? (
-          <FileTreeComponent />
-        ) : (
-          <ConversationChatting />
-        )}
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={80}>
+    <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
+      {leftSection !== "" && (
+        <>
+          <ResizablePanel defaultSize={20} minSize={20} order={1}>
+            {leftSection === "folder" ? (
+              <FileTreeComponent />
+            ) : (
+              <ConversationChatting />
+            )}
+          </ResizablePanel>
+          <ResizableHandle />
+        </>
+      )}
+      <ResizablePanel defaultSize={80} order={1}>
         {selectedCommitFile.filename !== "" && (
           <>
             <div className="flex w-full overflow-x-scroll border-b">

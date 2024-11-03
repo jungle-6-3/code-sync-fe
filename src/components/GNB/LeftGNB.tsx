@@ -30,10 +30,7 @@ const LeftGNB = () => {
           </button>
         </li>
         <li className="aspect-square">
-          <button
-            className="p-2"
-            onClick={() => setLeftSNBSelection("message")}
-          >
+          <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
             <MessageSquare color="#334155" />
           </button>
         </li>
