@@ -1,17 +1,29 @@
-import {prMetaDataStore } from "@/stores/github.store";
+import { sectionSelectStore } from "@/stores/chattingRoom.store";
+import { prMetaDataStore } from "@/stores/github.store";
+import { Link } from "react-router-dom";
 
 export const BottomGNB = () => {
   const prUrl = prMetaDataStore((state) => state.prMetaData.prUrl);
+  const setBottomSection = sectionSelectStore(
+    (state) => state.setBottomSection,
+  );
+
   return (
-    <div className="bg-blue-400 p-1">
-      <a
-        href={prUrl}
+    <div className="flex justify-between border-t">
+      <Link
+        to={prUrl}
         target="_blank"
-        rel="noopener noreferrer"
-        className="text-white"
+        rel="noreferrer noopener"
+        className="p-1 px-3 text-sm"
       >
         View on GitHub ↗
-      </a>
+      </Link>
+      <button
+        className="p-1 px-3 text-sm"
+        onClick={() => setBottomSection("commit")}
+      >
+        Commit Information
+      </button>
     </div>
   );
 };

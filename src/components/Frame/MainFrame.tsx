@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { fileSysyemStore } from "@/stores/github.store";
-import chattingRoomStore from "@/stores/chattingRoom.store";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import {
@@ -11,17 +10,19 @@ import {
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
-import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
-import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
+import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
+import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
+import { sectionSelectStore } from "@/stores/chattingRoom.store";
 
 export const MainFrame = () => {
-  const isMessage = chattingRoomStore((state) => state.isMessage);
+  const leftSection = sectionSelectStore((state) => state.leftSection);
+  const bottomSection = sectionSelectStore((state) => state.bottomSection);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
@@ -105,7 +106,6 @@ export const MainFrame = () => {
     return () => {
       if (bindingRef.current) {
         bindingRef.current.destroy();
-
         bindingRef.current = null;
       }
     };
@@ -121,16 +121,20 @@ export const MainFrame = () => {
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={20}>
-        {isMessage === false ? (
-          <FileTreeComponent />
-        ) : (
-          <ConversationChatting />
-        )}
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={80}>
+    <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
+      {leftSection !== "" && (
+        <>
+          <ResizablePanel defaultSize={20} order={1} className="min-w-[10rem]">
+            {leftSection === "folder" ? (
+              <FileTreeComponent />
+            ) : (
+              <ConversationChatting />
+            )}
+          </ResizablePanel>
+          <ResizableHandle />
+        </>
+      )}
+      <ResizablePanel defaultSize={80} order={2}>
         {selectedCommitFile.filename !== "" && (
           <>
             <div className="flex w-full overflow-x-scroll border-b">
@@ -158,10 +162,14 @@ export const MainFrame = () => {
               />
             )}
           </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={30}>
-            <PRBottomFileExplorer />
-          </ResizablePanel>
+          {bottomSection !== "" && (
+            <>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={30} className="min-h-[14rem]">
+                <PRBottomFileExplorer />
+              </ResizablePanel>
+            </>
+          )}
         </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>

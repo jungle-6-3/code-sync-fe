@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
@@ -19,10 +19,7 @@ import { SpinIcon } from "@/components/icons";
 import { LogoutButton } from "@/components/Users/LogoutButton";
 import { extractGitHubPrDetails } from "@/lib/github";
 import { userMediaStore } from "@/stores/userMedia.store";
-
-const createRoomSchema = z.object({
-  ghPrLink: z.string().url(),
-});
+import { createRoomSchema } from "@/lib/schema";
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
@@ -37,10 +34,6 @@ const CreateRoomPage = () => {
       ghPrLink: "",
     },
   });
-  useEffect(() => {
-    setIsCreator(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
     const { owner, repo, prNumber } = extractGitHubPrDetails(value);
@@ -58,25 +51,25 @@ const CreateRoomPage = () => {
         return false;
       });
 
-    if (result) {
-      createRoom(
-        { githubPrUrl: value.ghPrLink },
-        {
-          onSuccess: ({ data: { roomUuid } }) => {
-            setIsCreator(true);
-            setIsLoading(false);
-            navigate(`/${roomUuid}`);
-          },
-          onError: ({ message }) => {
-            alert(message);
-            setIsLoading(false);
-          },
-        },
-      );
+    if (!result) {
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(false);
+    createRoom(
+      { githubPrUrl: value.ghPrLink },
+      {
+        onSuccess: ({ data: { roomUuid } }) => {
+          setIsCreator(true);
+          setIsLoading(false);
+          navigate(`/${roomUuid}`);
+        },
+        onError: ({ message }) => {
+          alert(message);
+          setIsLoading(false);
+        },
+      },
+    );
   };
 
   return (
@@ -110,10 +103,8 @@ const CreateRoomPage = () => {
                         {...field}
                         type="url"
                         className={cn(
-                          "w-full rounded-md px-4 py-5 text-lg font-normal",
-                          {
-                            "border border-red-500": isError,
-                          },
+                          "w-full rounded-md px-4 py-5 text-lg font-normal text-black",
+                          { "border border-red-500 text-red-500": isError },
                         )}
                       />
                     </FormControl>
@@ -126,7 +117,7 @@ const CreateRoomPage = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="bg-gray-400" size="lg">
+            <Button type="submit" disabled={!form.formState.isValid} size="lg">
               {isLoading ? <SpinIcon /> : "새 회의 생성하기"}
             </Button>
           </form>
