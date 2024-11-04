@@ -91,11 +91,11 @@ const PrFileExplorer = () => {
   };
 
   return (
-    <div className="overflow-hidden">
-      <div className="border-b bg-gray-50 py-3 pl-3">
+    <div>
+      <div className="w-full border-b bg-gray-50 py-3 pl-3">
         <h3 className="text-sm font-medium">Changed Files</h3>
       </div>
-      {renderTreeNode("src")}
+      <div className="h-[91.2vh] overflow-auto text-sm">{renderTreeNode()}</div>
     </div>
   );
 };

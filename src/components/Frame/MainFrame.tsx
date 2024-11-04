@@ -10,8 +10,8 @@ import {
 import FileTreeComponent from "@/components/File/PrFileExplorer";
 import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
-import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
-import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";
+import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
+import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { SocketManager } from "@/lib/socketManager";
@@ -124,7 +124,12 @@ export const MainFrame = () => {
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
         <>
-          <ResizablePanel defaultSize={20} minSize={20} order={1}>
+          <ResizablePanel
+            defaultSize={20}
+            minSize={20}
+            order={1}
+            className="min-w-[10rem]"
+          >
             {leftSection === "folder" ? (
               <FileTreeComponent />
             ) : (
