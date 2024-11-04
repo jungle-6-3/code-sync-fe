@@ -2,7 +2,8 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import * as Y from "yjs";
 import { ExcalidrawBinding, yjsToExcalidraw } from "y-excalidraw";
 import { useEffect, useRef } from "react";
-import { yjsStore } from "@/stores/yjs.store";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { SocketManager } from "@/lib/socketManager";
 import { drawBoardStore } from "@/stores/drawBoard.store";
 
 export const DrawBoard = () => {
@@ -11,15 +12,21 @@ export const DrawBoard = () => {
   const binding = drawBoardStore((state) => state.binding);
   const setBindings = drawBoardStore((state) => state.setBinding);
   const excalidrawRef = useRef(null);
-  const provider = yjsStore((state) => state.provider);
-  const yElements = yjsStore((state) =>
-    state.ydoc.getArray<Y.Map<unknown>>("elements"),
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
   );
-  const yAssets = yjsStore((state) => state.ydoc.getMap("assets"));
+
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+  const socketManager = SocketManager.getInstance();
+  const provider = socketManager.yjsSocket.provider;
+  const yElements =
+    socketManager.yjsSocket.ydoc.getArray<Y.Map<unknown>>("elements");
+  const yAssets = socketManager.yjsSocket.ydoc.getMap("assets");
 
   useEffect(() => {
     if (!api) return;
     if (!excalidrawRef.current) return;
+    if (yElements === undefined || yAssets === undefined) return;
 
     provider?.awareness.setLocalStateField("user", {
       color: "#30bced",
@@ -48,7 +55,7 @@ export const DrawBoard = () => {
   }, [api, provider, yElements, yAssets, binding, setBindings]);
 
   const initData = {
-    elements: yjsToExcalidraw(yElements),
+    elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
   };
 
   return (

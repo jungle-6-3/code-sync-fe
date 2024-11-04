@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { socketStore } from "@/stores/socket.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { SocketManager } from "@/lib/socketManager";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
-  const socket = socketStore((state) => state.socket);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+  const socket = SocketManager.getInstance().socketIOSocket;
 
   // TODO 후에 상대방이 채팅을 보냈을 시에도 내 스크롤은 내려가지않게
   // 또 내가 채팅을 보냈을때도 상대방 스크롤은 내려가지 않게
@@ -19,7 +24,6 @@ export default function ConversationChatting() {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!socket) return;
     try {
       socket.emit(
         "chatting",

@@ -1,10 +1,16 @@
-import { peerStore } from "@/stores/peer.store";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 import { Video, VideoOff } from "lucide-react";
 import { useReducer } from "react";
 
 const TopGNBVideoStatus = () => {
   const [videoStatus, toggleVideoStatus] = useReducer((state) => !state, true);
-  const peers = peerStore((state) => state.peers);
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  if (!isSocketManagerReady) throw new Error("socketManager is not ready");
+
+  const peers = SocketManager.getInstance().peerConnection.peers;
 
   const onVideoToggle = () => {
     toggleVideoStatus();
