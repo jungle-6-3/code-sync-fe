@@ -26,48 +26,43 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "/room",
+    element: (
+      <UserGuard>
+        <PreviousRoom />
+      </UserGuard>
+    ),
+  },
+  {
+    path: "/room/create",
+    element: (
+      <UserGuard>
+        <CreateRoomPage />
+      </UserGuard>
+    ),
+  },
+  {
+    path: "/room/save",
+    element: (
+      <UserGuard>
+        <RoomSavePage />
+      </UserGuard>
+    ),
+  },
+  {
+    path: "/room/:postId",
+    element: (
+      <UserGuard>
+        <PostDetailPage />
+      </UserGuard>
+    ),
+  },
+  {
     path: "/:conversationId",
     element: (
       <UserGuard>
         <ConversationJunctionPage />
       </UserGuard>
     ),
-  },
-  {
-    path: "/room",
-    children: [
-      {
-        index: true,
-        element: (
-          <UserGuard>
-            <PreviousRoom />
-          </UserGuard>
-        ),
-      },
-      {
-        path: "/room/create",
-        element: (
-          <UserGuard>
-            <CreateRoomPage />
-          </UserGuard>
-        ),
-      },
-      {
-        path: "/room/save",
-        element: (
-          <UserGuard>
-            <RoomSavePage />
-          </UserGuard>
-        ),
-      },
-      {
-        path: "/room/:postId",
-        element: (
-          <UserGuard>
-            <PostDetailPage />
-          </UserGuard>
-        )
-      }
-    ],
   },
 ]);

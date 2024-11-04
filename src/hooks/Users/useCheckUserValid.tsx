@@ -1,7 +1,8 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useCheckUserQuery from "@/hooks/useCheckUserQuery";
 import { SpinIcon } from "@/components/icons";
+import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UserGuardProps {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface UserGuardProps {
 
 export const UserLoginPageGuard = ({ children, fallBack }: UserGuardProps) => {
   const navigate = useNavigate();
-  const { checkUser, isLoading } = useCheckUserQuery();
+  const { checkUser, isError, isLoading } = useCheckUserQuery();
 
   useEffect(() => {
     if (isLoading) return;
@@ -19,7 +20,7 @@ export const UserLoginPageGuard = ({ children, fallBack }: UserGuardProps) => {
       navigate("/room/create");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [checkUser, isError, isLoading]);
 
   if (isLoading) {
     return fallBack && <SpinIcon />;
@@ -31,8 +32,10 @@ export const UserLoginPageGuard = ({ children, fallBack }: UserGuardProps) => {
 export const UserGuard = ({ children, fallBack }: UserGuardProps) => {
   const navigate = useNavigate();
   const { checkUser, isError, isLoading } = useCheckUserQuery();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
+    queryClient.removeQueries({ queryKey: ["userCheck"] });
     if (isLoading) return;
     if (isError || !checkUser) {
       navigate("/");
