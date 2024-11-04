@@ -14,7 +14,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PreviousRoomsPagination from "@/components/PreviousRoom/Pagination";
 
 const PreviousRoom = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const navigate = useNavigate();
 

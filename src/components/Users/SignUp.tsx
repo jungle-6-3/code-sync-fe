@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import formSignUpSchema from "@/lib/schema/signUpSchema";
+import { formSignUpSchema } from "@/lib/schema";
 import useSignUpMutation from "@/hooks/Users/useSignUpMutation";
 
 export default function SignUp() {
@@ -26,10 +26,10 @@ export default function SignUp() {
     },
   });
 
-  const signup = useSignUpMutation();
+  const { mutate: signup } = useSignUpMutation();
 
   const onSignUp = (data: z.infer<typeof formSignUpSchema>) => {
-    signup.mutate(
+    signup(
       {
         name: data.username,
         email: data.useremail,
@@ -47,21 +47,25 @@ export default function SignUp() {
   };
 
   return (
-    <div className="absolute right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
-      <div className="">
-        Already a member?
-        <Link className="text-sky-700" to="/">
+    <div className="flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+      <h1 className="my-8 text-3xl">Sign Up</h1>
+      <div className="my-4 text-gray-600">
+        Already a member? &nbsp;
+        <Link className="font-light text-sky-600" to="/">
           Log In
         </Link>
       </div>
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSignUp)} className="max-w-[200px]">
+        <form
+          onSubmit={form.handleSubmit(onSignUp)}
+          className="flex w-full max-w-[20rem] flex-col gap-4 capitalize"
+        >
           <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Name</FormLabel>
+                <FormLabel>name</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="홍길동" {...field} />
                 </FormControl>
@@ -74,7 +78,7 @@ export default function SignUp() {
             name="useremail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Email</FormLabel>
+                <FormLabel>email</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
@@ -91,7 +95,7 @@ export default function SignUp() {
             name="userpassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">password</FormLabel>
+                <FormLabel>password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
@@ -103,15 +107,9 @@ export default function SignUp() {
               </FormItem>
             )}
           />
-          <div className="flex w-full gap-3 px-5 py-5 [&>*]:flex-1">
-            <Button
-              variant={"destructive"}
-              className="bg-blue-900 font-bold text-white hover:bg-blue-800"
-              type="submit"
-            >
-              Submit
-            </Button>
-          </div>
+          <Button className="mx-8 my-4" type="submit">
+            Submit
+          </Button>
         </form>
       </FormProvider>
     </div>

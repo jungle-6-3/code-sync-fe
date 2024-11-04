@@ -21,16 +21,16 @@ export const PrFileExplororItem = ({
   return (
     <div
       className={cn(
-        "flex cursor-pointer items-center p-2 hover:brightness-90",
+        "flex cursor-pointer items-center justify-between p-2 py-1 hover:brightness-90",
         getFileStatusStyle(itemPath, commitFileList),
-        selectedCommitFile.filename === itemPath && "bg-blue-300",
+        selectedCommitFile.filename === itemPath && "bg-gray-300",
       )}
       style={{ paddingLeft: indentation }}
       onClick={onClick}
     >
-      <span>{itemPath.split("/").at(-1)}</span>
-      <span className="ml-2 text-xs text-gray-500">
-        {commitFileList.find((file) => file.filename === itemPath)?.status}
+      <span className="truncate">{itemPath.split("/").at(-1)}</span>
+      <span className="mx-2 text-xs uppercase">
+        {commitFileList.find((file) => file.filename === itemPath)?.status[0]}
       </span>
     </div>
   );

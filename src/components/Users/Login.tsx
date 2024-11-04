@@ -1,4 +1,3 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -8,9 +7,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import formLoginSchema from "@/lib/schema/loginSchema";
+import { formLoginSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Terminal } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,17 +47,22 @@ export default function Login() {
   };
 
   return (
-    <div className="absolute right-0 flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+    <div className="flex h-full min-w-[28rem] flex-col items-center justify-center rounded-lg bg-white p-8">
+      <h1 className="my-8 text-3xl">Login</h1>
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSignIn)} className="max-w-[200px]">
+        <form
+          onSubmit={form.handleSubmit(onSignIn)}
+          className="flex w-full max-w-[20rem] flex-col gap-4"
+        >
           <FormField
             control={form.control}
             name="useremail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Email</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
+                    className="w-full"
                     type="text"
                     placeholder="jungle@gmail.com"
                     {...field}
@@ -74,7 +77,7 @@ export default function Login() {
             name="userpassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Password</FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
@@ -86,36 +89,17 @@ export default function Login() {
               </FormItem>
             )}
           />
-          <div className="py-5">
-            {!loginValid && (
-              <Alert variant="destructive">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription className="text-">
-                  이메일 또는 비밀번호가 틀렸습니다.
-                </AlertDescription>
-              </Alert>
-            )}
+          <div className="h-6 text-center text-red-500">
+            {!loginValid && "이메일 또는 비밀번호가 틀렸습니다."}
           </div>
-          <div className="flex w-full gap-3 px-5 py-3 [&>*]:flex-1">
-            <Button
-              type="submit"
-              className="bg-blue-900 font-bold text-white hover:bg-blue-800"
-              variant={"destructive"}
-            >
+          <div className="flex flex-col gap-4 px-8">
+            <Button type="submit" variant="ghost">
               로그인
             </Button>
+            <Button asChild>
+              <Link to="/signup">회원가입</Link>
+            </Button>
           </div>
-          <Link to="/signup">
-            <div className="flex w-full gap-3 px-5 [&>*]:flex-1">
-              <Button
-                className="bg-blue-900 font-bold text-white hover:bg-blue-800"
-                variant={"destructive"}
-              >
-                회원가입
-              </Button>
-            </div>
-          </Link>
         </form>
       </FormProvider>
     </div>

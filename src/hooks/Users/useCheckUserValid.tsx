@@ -1,6 +1,5 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SpinIcon } from "@/components/icons";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -10,7 +9,7 @@ interface UserGuardProps {
   whenError?: ReactNode;
 }
 
-export const UserLoginPageGuard = ({ children, fallBack }: UserGuardProps) => {
+export const UserLoginPageGuard = ({ children }: UserGuardProps) => {
   const navigate = useNavigate();
   const { checkUser, isError, isLoading } = useCheckUserQuery();
 
@@ -22,14 +21,10 @@ export const UserLoginPageGuard = ({ children, fallBack }: UserGuardProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkUser, isError, isLoading]);
 
-  if (isLoading) {
-    return fallBack && <SpinIcon />;
-  }
-
   return children;
 };
 
-export const UserGuard = ({ children, fallBack }: UserGuardProps) => {
+export const UserGuard = ({ children }: UserGuardProps) => {
   const navigate = useNavigate();
   const { checkUser, isError, isLoading } = useCheckUserQuery();
   const queryClient = useQueryClient();
@@ -42,10 +37,6 @@ export const UserGuard = ({ children, fallBack }: UserGuardProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkUser, isError, isLoading]);
-
-  if (isLoading) {
-    return fallBack;
-  }
 
   return children;
 };
