@@ -1,6 +1,8 @@
+import { SocketManager } from "@/lib/socketManager";
 import chattingRoomStore from "@/stores/chattingRoom.store";
 import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const LeftGNB = () => {
   const setLeftSNBSelection = chattingRoomStore(
@@ -9,6 +11,8 @@ const LeftGNB = () => {
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
+  const isMessage = chattingRoomStore((state) => state.isMessage);
+  const [messageCount, setMessageCount] = useState(0);
 
   const setNavigate = (filename: string) =>
     setSelectedCommitFile({
@@ -21,6 +25,25 @@ const LeftGNB = () => {
       status: "init",
     });
 
+  const socket = SocketManager.getInstance().socketIOSocket;
+  useEffect(() => {
+    setMessageCount(0);
+  }, [isMessage]);
+
+  useEffect(() => {
+    const countChatting = () => {
+      setMessageCount(messageCount + 1);
+    };
+    socket.on("chatting", countChatting);
+    return () => {
+      socket.off("chatting", countChatting);
+    };
+  }, [socket, messageCount]);
+
+  const onResetCount = () => {
+    setMessageCount(0);
+  };
+
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>
@@ -29,12 +52,14 @@ const LeftGNB = () => {
             <Folder color="#334155" />
           </button>
         </li>
-        <li className="aspect-square">
-          <button
-            className="p-2"
-            onClick={() => setLeftSNBSelection(true)}
-          >
-            <MessageSquare color="#334155" />
+        <li className="relative aspect-square">
+          <button className="p-2" onClick={() => setLeftSNBSelection(true)}>
+            <MessageSquare color="#334155" onClick={onResetCount} />
+            {messageCount > 0 && isMessage === false && (
+              <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                {messageCount}
+              </span>
+            )}
           </button>
         </li>
       </div>
