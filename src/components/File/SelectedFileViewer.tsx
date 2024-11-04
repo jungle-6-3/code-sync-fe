@@ -17,6 +17,9 @@ import {
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
+import { useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import { drawBoardStore } from "@/stores/drawBoard.store";
 
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   selectedCommitFile: PrChangedFileInfo;
@@ -49,6 +52,7 @@ const SelectedFileViewer = ({
   onEditorMount,
   onSplitEditorMount,
 }: SelectedFileViewerProps) => {
+  // DrawBoard 컴포넌트를 항상 마운트된 상태로 유지하되 숨김 처리
   const fileComponent: {
     [key in PrChangedFileStatusInfo["status"]]: React.ReactNode;
   } = {
@@ -69,11 +73,12 @@ const SelectedFileViewer = ({
     init: <InitFile commitFileList={commitFileList} />,
   };
 
+  // MainDrawBoard 파일일 때는 DrawBoard만 렌더링
   if (selectedCommitFile.filename === "MainDrawBoard") {
     return <DrawBoard />;
   }
 
-  return fileComponent[status] || <div>invalue</div>;
+  return fileComponent[status] || <div>invalid</div>;
 };
 
 const RemovedFile = () => {
@@ -106,17 +111,48 @@ const AddedFile = ({ selectedCommitFile, onEditorMount }: FileEditorProps) => {
   );
 };
 
-const ModifiedFile = ({
+export const ModifiedFile = ({
   selectedCommitFile,
   onSplitEditorMount,
 }: FileEditorProps) => {
+  const [showDrawBoard, setShowDrawBoard] = useState(false);
+  const setIsImageAdded = drawBoardStore((state) => state.setIsImageAdded);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  const htmlToImageConvert = () => {
+    if (!elementRef.current) return;
+    toPng(elementRef.current, { cacheBust: false })
+      .then((dataUrl) => {
+        // const link = document.createElement("a");
+        // link.download = "my-image-name.png";
+        // link.href = dataUrl;
+        // link.click();
+        sessionStorage.setItem("image", dataUrl);
+        // console.log("dataUrl", dataUrl);
+        // console.log("sessionstorage getitem", sessionStorage.getItem("image"));
+        setIsImageAdded(true);
+        setShowDrawBoard(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  if (showDrawBoard) return <DrawBoard />;
   return (
-    <CodeSplitEditor
-      language={selectedCommitFile.language}
-      originalValue={selectedCommitFile.beforeContent}
-      modifiedValue={selectedCommitFile.afterContent}
-      onSplitEditorMount={onSplitEditorMount}
-    />
+    <div className="flex h-full w-full">
+      <div ref={elementRef} className="h-full w-full">
+        <CodeSplitEditor
+          language={selectedCommitFile.language}
+          originalValue={selectedCommitFile.beforeContent}
+          modifiedValue={selectedCommitFile.afterContent}
+          onSplitEditorMount={onSplitEditorMount}
+        />
+      </div>
+      <div className="h-[200px] w-[200px]">
+        <button onClick={htmlToImageConvert}>html to image</button>
+      </div>
+    </div>
   );
 };
 
