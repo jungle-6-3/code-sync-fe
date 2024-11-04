@@ -4,7 +4,7 @@ import {
 } from "@/apis/room/dtos";
 import https from "@/lib/https";
 
-const saveMeetingApi = async (roomUuid: string, data: PostSaveMeetingRequest) => {
+const postSaveMeetingApi = async (roomUuid: string, data: PostSaveMeetingRequest) => {
   const response = await https.post<PostSaveMeetingResponse>(
     `/room/save/${roomUuid}`,
     data,
@@ -12,4 +12,4 @@ const saveMeetingApi = async (roomUuid: string, data: PostSaveMeetingRequest) =>
   return response.data;
 };
 
-export default saveMeetingApi;
+export default postSaveMeetingApi;

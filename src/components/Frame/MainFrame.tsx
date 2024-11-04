@@ -126,7 +126,7 @@ export const MainFrame = () => {
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel defaultSize={20}>
-        {isMessage === "folder" ? (
+        {isMessage === false ? (
           <FileTreeComponent />
         ) : (
           <ConversationChatting />

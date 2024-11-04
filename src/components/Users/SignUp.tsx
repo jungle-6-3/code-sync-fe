@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import usePostData from "@/hooks/Users/useSignUpMutation";
 import { z } from "zod";
 import {
   FormControl,
@@ -12,7 +11,8 @@ import {
 } from "@/components/ui/form";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import formSignUpSchema from "@/lib/Schema/SignUpSchema";
+import formSignUpSchema from "@/lib/schema/signUpSchema";
+import useSignUpMutation from "@/hooks/Users/useSignUpMutation";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function SignUp() {
     },
   });
 
-  const { signup } = usePostData();
+  const signup = useSignUpMutation();
 
   const onSignUp = (data: z.infer<typeof formSignUpSchema>) => {
     signup.mutate(

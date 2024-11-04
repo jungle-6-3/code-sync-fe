@@ -3,7 +3,6 @@ import { socketStore } from "@/stores/socket.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");

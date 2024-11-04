@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface MessageStore {
-  isMessage: string;
-  setLeftSNBSelection: (page: string) => void;
+  isMessage: boolean;
+  setLeftSNBSelection: (page: boolean) => void;
 }
 
 const chattingRoomStore = create<MessageStore>((set) => ({
-  isMessage: "folder",
-  setLeftSNBSelection: (page) => set({ isMessage: page }),
+  isMessage: false,
+  setLeftSNBSelection: (page: boolean) => set({ isMessage: page }),
 }));
 
 export default chattingRoomStore;

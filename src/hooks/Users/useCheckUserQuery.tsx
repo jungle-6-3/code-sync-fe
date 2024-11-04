@@ -1,5 +1,5 @@
+import { getCheckUserLogin } from "@/apis/users/checkUserValidApi";
 import { useQuery } from "@tanstack/react-query";
-import checkUserLogin from "@/apis/users/checkUserValidApi";
 
 export default function useCheckUserQuery() {
   const {
@@ -8,8 +8,10 @@ export default function useCheckUserQuery() {
     isLoading,
   } = useQuery({
     queryKey: ["userCheck"],
-    queryFn: checkUserLogin,
+    queryFn: getCheckUserLogin,
     retry: 0,
+    gcTime: 0,
+    staleTime: 0,
   });
   return { checkUser, isError, isLoading };
 }

@@ -25,14 +25,14 @@ const LeftGNB = () => {
     <ul className="flex h-full flex-col justify-between">
       <div>
         <li className="aspect-square">
-          <button className="p-2" onClick={() => setLeftSNBSelection("folder")}>
+          <button className="p-2" onClick={() => setLeftSNBSelection(false)}>
             <Folder color="#334155" />
           </button>
         </li>
         <li className="aspect-square">
           <button
             className="p-2"
-            onClick={() => setLeftSNBSelection("message")}
+            onClick={() => setLeftSNBSelection(true)}
           >
             <MessageSquare color="#334155" />
           </button>

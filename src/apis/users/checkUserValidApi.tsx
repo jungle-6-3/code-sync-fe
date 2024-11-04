@@ -1,9 +1,8 @@
-import { CheckUserLoginResponseDto } from "@/apis/users/dtos";
+import { GetCheckUserLoginResponseDto } from "@/apis/users/dtos";
 import https from "@/lib/https";
 
-const checkUserLogin = async (): Promise<CheckUserLoginResponseDto> => {
-  const response = await https.get<CheckUserLoginResponseDto>("/users/me");
-  return response.data;
-};
-
-export default checkUserLogin;
+export const getCheckUserLogin =
+  async (): Promise<GetCheckUserLoginResponseDto> => {
+    const response = await https.get<GetCheckUserLoginResponseDto>("/users/me");
+    return response.data;
+  };
