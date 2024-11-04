@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { SocketManager } from "@/lib/socketManager";
 import chattingRoomStore from "@/stores/chattingRoom.store";
 import { fileSysyemStore } from "@/stores/github.store";
@@ -56,8 +57,8 @@ const LeftGNB = () => {
           <button className="p-2" onClick={() => setLeftSNBSelection(true)}>
             <MessageSquare color="#334155" onClick={onResetCount} />
             {messageCount > 0 && isMessage === false && (
-              <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                {messageCount}
+              <span className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center text-xs">
+                <Badge className = "flex items-center justify-center h-4 w-4 rounded-full p-0 text-[10px] text-center" variant="destructive">{messageCount}</Badge>
               </span>
             )}
           </button>
