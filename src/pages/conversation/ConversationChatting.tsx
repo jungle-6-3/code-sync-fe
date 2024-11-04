@@ -51,7 +51,7 @@ export default function ConversationChatting() {
         id="chat"
         className="relative flex h-[calc(100vh-8.3rem)] flex-col-reverse overflow-y-auto"
       >
-        <ul className="[&:>]:-order-1 absolute bottom-12 flex w-full flex-1 flex-col">
+        <ul className="[&:>]:-order-1 absolute bottom-0 flex w-full flex-1 flex-col">
           {messages.map((msg, index) => (
             <li
               key={index}

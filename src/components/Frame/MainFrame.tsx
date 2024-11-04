@@ -124,12 +124,7 @@ export const MainFrame = () => {
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
         <>
-          <ResizablePanel
-            defaultSize={20}
-            minSize={20}
-            order={1}
-            className="min-w-[10rem]"
-          >
+          <ResizablePanel defaultSize={20} order={1} className="min-w-[10rem]">
             {leftSection === "folder" ? (
               <FileTreeComponent />
             ) : (
@@ -170,7 +165,7 @@ export const MainFrame = () => {
           {bottomSection !== "" && (
             <>
               <ResizableHandle />
-              <ResizablePanel defaultSize={30}>
+              <ResizablePanel defaultSize={30} className="min-h-[14rem]">
                 <PRBottomFileExplorer />
               </ResizablePanel>
             </>
