@@ -33,12 +33,6 @@ const ConversationPage = () => {
       removeOpponentMediaStream();
       onUserDisconnectedToast(data);
     });
-
-    return () => {
-      // socket.disconnect();
-      socket.off("join-request-by");
-      socket.off("user-disconnected");
-    };
   }, [
     socket,
     onJoinRequestByToast,
