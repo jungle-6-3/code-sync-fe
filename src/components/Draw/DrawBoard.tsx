@@ -21,8 +21,11 @@ export const DrawBoard = () => {
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
-  const isImageAdded = drawBoardStore((state) => state.isImageAdded);
-  const setIsImageAdded = drawBoardStore((state) => state.setIsImageAdded);
+  const isImageAddedInfo = drawBoardStore((state) => state.isAddedImageInfo);
+  const setIsImageAddedInfo = drawBoardStore(
+    (state) => state.setIsAddedImageInfo,
+  );
+  const resetImageAdded = drawBoardStore((state) => state.resetImageAdded);
 
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
   const socketManager = SocketManager.getInstance();
@@ -89,7 +92,7 @@ export const DrawBoard = () => {
   }, []);
 
   useEffect(() => {
-    if (!api || !binding || !isImageAdded) return;
+    if (!api || !binding || !isImageAddedInfo) return;
 
     const timer = setTimeout(() => {
       const currentElements = api.getSceneElements();
@@ -99,7 +102,7 @@ export const DrawBoard = () => {
       api.addFiles([
         {
           id: fileId,
-          dataURL: sessionStorage.getItem('image'),
+          dataURL: sessionStorage.getItem("image"),
           mimeType: "image/png",
           created: Date.now(),
         } as BinaryFileData,
@@ -111,14 +114,15 @@ export const DrawBoard = () => {
         status: "saved" as const,
         scale: [1, 1] as [number, number],
       };
+      console.log("imageElement", isImageAddedInfo);
 
       const imageElement: ExcalidrawImageElement = {
         ...baseImageElement,
         id: `${Date.now()}`,
         x: 100,
         y: 100,
-        width: 200,
-        height: 100,
+        width: isImageAddedInfo.size.width,
+        height: isImageAddedInfo.size.height,
         angle: 0,
         strokeColor: "transparent",
         backgroundColor: "transparent",
@@ -144,11 +148,11 @@ export const DrawBoard = () => {
         elements: [...currentElements, imageElement],
       });
 
-      setIsImageAdded(false);
+      resetImageAdded();
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [api, binding, isImageAdded, setIsImageAdded]);
+  }, [api, binding, isImageAddedInfo, setIsImageAddedInfo]);
 
   const initData = {
     elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),

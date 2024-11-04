@@ -9,7 +9,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
-import SelectedFileViewer from "@/components/File/SelectedFileViewer";
+import SelectedFileViewer from "@/components/File/SelectedFileviewer/index";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileVier/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileVier/PrFilePathViewer";

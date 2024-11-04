@@ -2,6 +2,16 @@ import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { ExcalidrawBinding } from "y-excalidraw";
 import { create } from "zustand";
 
+interface ImageSize {
+  width: number;
+  height: number;
+}
+
+interface IsAddedImageInfo {
+  added: boolean;
+  size: ImageSize;
+}
+
 interface DrawBoardStore {
   api?: ExcalidrawImperativeAPI;
   setApi: (api?: ExcalidrawImperativeAPI) => void;
@@ -9,18 +19,31 @@ interface DrawBoardStore {
   setBinding: (bindings?: ExcalidrawBinding) => void;
   exalidrawDom: HTMLDivElement | null;
   setExalidrawDom: (dom: HTMLDivElement | null) => void;
-  isImageAdded: boolean;
-  setIsImageAdded: (added: boolean) => void;
+  isAddedImageInfo: IsAddedImageInfo;
+  setIsAddedImageInfo: (newImage: IsAddedImageInfo) => void;
+  resetImageAdded: () => void;
 }
 
+const initialImageInfo: IsAddedImageInfo = {
+  added: false,
+  size: {
+    width: 0,
+    height: 0,
+  },
+};
+
 export const drawBoardStore = create<DrawBoardStore>((set, get) => ({
+  api: undefined,
+  binding: undefined,
+  exalidrawDom: null,
+  isAddedImageInfo: initialImageInfo,
+
   setApi: (api) => set({ api }),
   setBinding: (binding) => set({ binding }),
-  exalidrawDom: null,
   setExalidrawDom: (dom) => {
     if (get().exalidrawDom) return;
     set({ exalidrawDom: dom });
   },
-  isImageAdded: false,
-  setIsImageAdded: (added: boolean) => set({ isImageAdded: added }),
+  setIsAddedImageInfo: (newImage) => set({ isAddedImageInfo: newImage }),
+  resetImageAdded: () => set({ isAddedImageInfo: initialImageInfo }),
 }));
