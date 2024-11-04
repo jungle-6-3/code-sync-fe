@@ -14,6 +14,7 @@ import { RemovedFile } from "./RemovedFile";
 import { RenamedFile } from "./RenamedFile";
 import { ModifiedFile } from "./ModifiedFile";
 import { toPng } from "html-to-image";
+import { BlockNote } from "@/components/BlockNoteEditor";
 
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   selectedCommitFile: PrChangedFileInfo;
@@ -124,6 +125,10 @@ const SelectedFileViewer = ({
   // MainDrawBoard 파일일 때는 DrawBoard만 렌더링
   if (selectedCommitFile.filename === "MainDrawBoard") {
     return <DrawBoard />;
+  }
+  // MainDrawBoard 파일일 때는 DrawBoard만 렌더링
+  if (selectedCommitFile.filename === "BlockNote") {
+    return <BlockNote />;
   }
 
   return (

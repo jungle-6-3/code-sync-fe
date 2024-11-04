@@ -40,7 +40,7 @@ const LeftGNB = () => {
       </div>
       <div>
         <li className="aspect-square">
-          <button className="p-2">
+          <button className="p-2" onClick={() => setNavigate("BlockNote")}>
             <NotepadText color="#334155" />
           </button>
         </li>
