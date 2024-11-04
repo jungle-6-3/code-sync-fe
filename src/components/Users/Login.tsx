@@ -7,13 +7,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useLoginQuery from "@/hooks/Users/useLoginMutation";
 import { formLoginSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import useLoginMutation from "@/hooks/Users/useLoginMutation";
 
 export default function Login() {
   const [loginValid, setLoginValid] = useState(true);
@@ -26,7 +26,7 @@ export default function Login() {
       userpassword: "",
     },
   });
-  const { signin } = useLoginQuery();
+  const { signin } = useLoginMutation();
 
   const onSignIn = async (data: z.infer<typeof formLoginSchema>) => {
     signin.mutate(

@@ -1,13 +1,16 @@
-import { PreviousRoomResponseDto } from "@/apis/conversation/dtos";
+import { GetPreviousRoomResponseDto } from "@/apis/conversation/dtos";
 import https from "@/lib/https";
 
-const previousRoomApi = async (
+const getPreviousRoomApi = async (
   currentPage: number,
-): Promise<PreviousRoomResponseDto> => {
-  const response = await https.get<PreviousRoomResponseDto>("/conversations", {
-    params: { page: currentPage },
-  });
+): Promise<GetPreviousRoomResponseDto> => {
+  const response = await https.get<GetPreviousRoomResponseDto>(
+    "/conversations",
+    {
+      params: { page: currentPage },
+    },
+  );
   return response.data;
 };
 
-export default previousRoomApi;
+export default getPreviousRoomApi;

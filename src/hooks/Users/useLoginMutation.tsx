@@ -1,7 +1,7 @@
 import signInFetch from "@/apis/users/loginApi";
 import { useMutation } from "@tanstack/react-query";
 
-export default function useLoginQuery() {
+export default function useLoginMutation() {
   const signin = useMutation({
     mutationFn: signInFetch,
   });

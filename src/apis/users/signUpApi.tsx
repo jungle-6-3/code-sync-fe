@@ -1,8 +1,14 @@
 import https from "@/lib/https";
-import { SignUpRequestUserDto, SignUpResponseUserDto } from "@/apis/users/dtos";
+import {
+  PostSignUpRequestUserDto,
+  PostSignUpResponseUserDto,
+} from "@/apis/users/dtos";
 
-const postSignUp = async (data: SignUpRequestUserDto) => {
-  const response = await https.post<SignUpResponseUserDto>("auth/signUp", data);
+const postSignUp = async (data: PostSignUpRequestUserDto) => {
+  const response = await https.post<PostSignUpResponseUserDto>(
+    "auth/signUp",
+    data,
+  );
   return response.data;
 };
 
