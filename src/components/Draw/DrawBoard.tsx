@@ -73,6 +73,7 @@ export const DrawBoard = () => {
         setBindings(undefined);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isSocketManagerReady,
     api,
@@ -89,7 +90,7 @@ export const DrawBoard = () => {
       setApi(undefined);
       setExcalidrawDom(null);
     };
-  }, []);
+  }, [setApi, setExcalidrawDom]);
 
   useEffect(() => {
     if (!api || !binding || !isImageAddedInfo) return;
@@ -114,7 +115,6 @@ export const DrawBoard = () => {
         status: "saved" as const,
         scale: [1, 1] as [number, number],
       };
-      console.log("imageElement", isImageAddedInfo);
 
       const imageElement: ExcalidrawImageElement = {
         ...baseImageElement,
@@ -152,7 +152,7 @@ export const DrawBoard = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [api, binding, isImageAddedInfo, setIsImageAddedInfo]);
+  }, [api, binding, isImageAddedInfo, resetImageAdded, setIsImageAddedInfo]);
 
   const initData = {
     elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),

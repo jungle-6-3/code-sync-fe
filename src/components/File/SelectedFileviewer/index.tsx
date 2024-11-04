@@ -1,19 +1,19 @@
+import { useEffect, useRef, useState, createContext } from "react";
 import {
   fileSysyemStore,
   PrChangedFileInfo,
   PrChangedFileStatusInfo,
 } from "@/stores/github.store";
+import { drawBoardStore } from "@/stores/drawBoard.store";
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
-import { useEffect, useRef, useState } from "react";
-import { toPng } from "html-to-image";
-import { drawBoardStore } from "@/stores/drawBoard.store";
 import { InitFile } from "@/components/File/SelectedFileviewer/InitFile";
-import { ModifiedFile } from "./ModifiedFile";
+import { AddedFile } from "./AddedFile";
 import { RemovedFile } from "./RemovedFile";
 import { RenamedFile } from "./RenamedFile";
-import { AddedFile } from "./AddedFile";
+import { ModifiedFile } from "./ModifiedFile";
+import { toPng } from "html-to-image";
 
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   selectedCommitFile: PrChangedFileInfo;
@@ -27,6 +27,14 @@ interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
     monaco: Monaco,
   ) => void;
 }
+
+interface BoardContextType {
+  convertToImage: () => void;
+}
+
+export const BoardContext = createContext<BoardContextType>({
+  convertToImage: () => {},
+});
 
 const SelectedFileViewer = ({
   status,
@@ -63,31 +71,34 @@ const SelectedFileViewer = ({
     };
   }, [selectedCommitFile]);
 
-  const htmlToImageConvert = () => {
-    if (!elementRef.current) return;
-    toPng(elementRef.current, { cacheBust: false })
-      .then((dataUrl) => {
-        sessionStorage.setItem("image", dataUrl);
-        setIsImageAddedInfo({
-          added: true,
-          size: {
-            width: size.width,
-            height: size.height,
-          },
+  const contextValue = {
+    convertToImage: () => {
+      if (!elementRef.current) return;
+      toPng(elementRef.current, { cacheBust: false })
+        .then((dataUrl) => {
+          sessionStorage.setItem("image", dataUrl);
+          setIsImageAddedInfo({
+            added: true,
+            size: {
+              width: size.width,
+              height: size.height,
+            },
+          });
+          setSelectedCommitFile({
+            additions: 0,
+            afterContent: "",
+            beforeContent: "",
+            deletions: 0,
+            filename: "MainDrawBoard",
+            language: "",
+            status: "init",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "MainDrawBoard",
-          language: "",
-          status: "init",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    },
+    size,
   };
 
   const fileComponent: {
@@ -116,12 +127,14 @@ const SelectedFileViewer = ({
   }
 
   return (
-    <>
-      <button onClick={htmlToImageConvert}>html to image</button>
-      <div ref={elementRef} className="h-full w-full">
+    <BoardContext.Provider value={contextValue}>
+      <div
+        ref={elementRef}
+        className="flex h-full w-full flex-col items-end justify-center"
+      >
         {fileComponent[status] || <div>invalid</div>}
       </div>
-    </>
+    </BoardContext.Provider>
   );
 };
 
