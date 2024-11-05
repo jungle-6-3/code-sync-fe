@@ -1,39 +1,28 @@
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import ConversationChatting from "@/pages/conversation/ConversationChatting";
+import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
+import { useParams } from "react-router-dom";
 
-export default function PostDetailPage() {
+const PostDetailPage = () => {
+  const { postId } = useParams();
+  if (!postId) throw new Error("postId is required");
+  const { isError, isLoading, roomData } = usePreviousRoomQuery(postId);
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!roomData) {
+    return <div>Not found</div>;
+  }
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <nav className="h-full border-b p-1">
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="h-full w-full rounded-lg border"
-        >
-          <ResizablePanel defaultSize={20} className="h-full w-full">
-            <ConversationChatting />
-          </ResizablePanel>
-
-          <ResizablePanel defaultSize={100} className="h-full w-full">
-            <ResizablePanelGroup direction="vertical" className="h-full w-full">
-              <ResizablePanel defaultSize={50} className="h-full w-full">
-                <div className="flex h-full w-full items-center justify-center p-6">
-                  <span className="font-semibold">Nothion과 비슷한 윅지위</span>
-                </div>
-              </ResizablePanel>
-              <ResizableHandle />
-              <ResizablePanel defaultSize={50} className="h-full w-full">
-                <div className="flex h-full w-full items-center justify-center p-6">
-                  <img src="/exalidraw_test.jpg" alt="test" className = "w-full h-full" />
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </nav>
+      <div className="flex h-full">{/* <MainFrame /> */}</div>
     </div>
   );
-}
+};
+
+export default PostDetailPage;

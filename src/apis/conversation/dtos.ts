@@ -2,7 +2,7 @@ interface UserData {
   email: string;
   name: string;
 }
-export class GetPreviousRoomResponseDto {
+export class GetPreviousRoomsResponseDto {
   success: boolean;
   data: {
     total: number;
@@ -17,6 +17,10 @@ export class GetPreviousRoomResponseDto {
       deleteAt: Date;
       creator: UserData;
       participant: UserData;
+      conversationDatas: {
+        uuid: string;
+        canShared: boolean;
+      }
     }[];
   };
   constructor({ success, data }: {
@@ -32,6 +36,10 @@ export class GetPreviousRoomResponseDto {
         deleteAt: Date;
         creator: UserData;
         participant: UserData;
+        conversationDatas: {
+          uuid: string;
+          canShared: boolean;
+        }
       }[];
     }
   }) {
@@ -49,6 +57,7 @@ export class GetPreviousRoomResponseDto {
         deleteAt: new Date(conversation.deleteAt),
         creator: conversation.creator,
         participant: conversation.participant,
+        conversationDatas: conversation.conversationDatas,
       }))
     };
   }
@@ -76,3 +85,25 @@ export class ChattingSocketResponse {
     this.date = new Date(date);
   }
 }
+
+
+export interface GetPreviousRoomResponseDto {
+  chat: {
+    url: string,
+    isShared: boolean
+  },
+  note: {
+    url: string,
+    isShared: boolean
+  },
+  drawBoard: {
+    url: string,
+    isShared: boolean
+  },
+  voice: {
+    url: string,
+    isShared: boolean
+  },
+  canShared: boolean;
+}
+

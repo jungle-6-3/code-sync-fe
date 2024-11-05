@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import usePreviousRoomQuery from "@/hooks/Conversation/usePreviousRoomQuery";
+import { usePreviousRoomsQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { useSearchParams } from "react-router-dom";
 
 const PAGE_COUNT = 8;
@@ -16,7 +16,7 @@ const PAGE_GROUP_COUNT = 5;
 const PreviousRoomsPagination = () => {
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const { previousRoom, isLoading } = usePreviousRoomQuery(currentPage);
+  const { previousRoom, isLoading } = usePreviousRoomsQuery(currentPage);
 
   if (isLoading) {
     return <div>로딩중...</div>;

@@ -7,15 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { usePreviousRoomsQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { timeDiffString, unixtimeConvertorToKorean } from "@/lib/time";
-import usePreviousRoomQuery from "@/hooks/Conversation/usePreviousRoomQuery";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const PreviousRoomTable = () => {
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const { previousRoom, isLoading } = usePreviousRoomQuery(currentPage);
-
+  const { previousRoom, isLoading } = usePreviousRoomsQuery(currentPage);
   if (isLoading) {
     return <div>로딩중...</div>;
   }
@@ -39,7 +38,7 @@ const PreviousRoomTable = () => {
       </TableHeader>
       <TableBody className="text-center">
         {previousRoom.data.conversations.map((conversation, index) => (
-          <TableRow key={index}>
+          <TableRow key={index} className="hover:bg-white">
             <TableCell className="text-left">{conversation.title}</TableCell>
             <TableCell>
               {timeDiffString(conversation.finishedAt, conversation.startedAt)}
@@ -47,12 +46,20 @@ const PreviousRoomTable = () => {
             <TableCell>
               {unixtimeConvertorToKorean(conversation.finishedAt)}
             </TableCell>
-            <TableCell>기록 URL</TableCell>
-            <TableCell>O</TableCell>
+            <TableCell className="truncate">
+              <Link to={`/s/${conversation.conversationDatas.uuid}`}>
+                {conversation.conversationDatas.uuid}
+              </Link>
+            </TableCell>
+            <TableCell>
+              {conversation.conversationDatas.canShared ? "공개" : "비공개"}
+            </TableCell>
             <TableCell>{conversation.participant.name}</TableCell>
             <TableCell className="flex justify-end gap-4">
               <Button variant="destructive">삭제하기</Button>
-              <Button variant="default">수정하기</Button>
+              <Button variant="default" asChild>
+                <Link to={`/room/${conversation.dataPk}`}>수정하기</Link>
+              </Button>
             </TableCell>
           </TableRow>
         ))}
