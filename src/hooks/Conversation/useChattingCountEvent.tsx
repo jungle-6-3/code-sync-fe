@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const useChattingCountEvent = () => {
   const [messageCount, setMessageCount] = useState(0);
-  const isMessage = sectionSelectStore((state) => state.leftSection);
+  const currentLeftSection = sectionSelectStore((state) => state.leftSection);
 
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
@@ -15,8 +15,8 @@ const useChattingCountEvent = () => {
   const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
-    setMessageCount(0);
-  }, [isMessage]);
+    if (currentLeftSection == "chat") setMessageCount(0);
+  }, [currentLeftSection]);
 
   useEffect(() => {
     const countChatting = () => {
