@@ -4,13 +4,10 @@ import https from "@/lib/https";
 const getPreviousRoomApi = async (
   currentPage: number,
 ): Promise<GetPreviousRoomResponseDto> => {
-  const response = await https.get<GetPreviousRoomResponseDto>(
-    "/conversations",
-    {
-      params: { page: currentPage },
-    },
-  );
-  return response.data;
+  const { data } = await https.get("/conversations", {
+    params: { page: currentPage },
+  });
+  return new GetPreviousRoomResponseDto(data);
 };
 
 export default getPreviousRoomApi;
