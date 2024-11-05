@@ -21,9 +21,10 @@ export const PrFileExplororItem = ({
   return (
     <div
       className={cn(
-        "flex cursor-pointer items-center justify-between p-2 py-1 hover:brightness-90",
+        "flex cursor-pointer items-center justify-between bg-white p-2 py-1 hover:brightness-90",
         getFileStatusStyle(itemPath, commitFileList),
-        selectedCommitFile.filename === itemPath && "bg-gray-300",
+        selectedCommitFile.filename === itemPath &&
+          "bg-gray-300 hover:brightness-100",
       )}
       style={{ paddingLeft: indentation }}
       onClick={onClick}

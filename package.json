@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@blocknote/core": "^0.17.0",
-    "@blocknote/mantine": "^0.17.0",
-    "@blocknote/react": "^0.17.0",
+    "@blocknote/core": "^0.17.1",
+    "@blocknote/mantine": "^0.17.1",
+    "@blocknote/react": "^0.17.1",
     "@excalidraw/excalidraw": "^0.17.6",
     "@hookform/resolvers": "^3.9.0",
     "@monaco-editor/react": "^4.6.0",
@@ -26,6 +26,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.10",
+    "html-to-image": "^1.11.11",
     "lucide-react": "^0.453.0",
     "monaco-editor": "^0.52.0",
     "next-themes": "^0.3.0",
