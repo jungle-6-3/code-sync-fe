@@ -58,7 +58,10 @@ export class SocketManager {
   }
 
   disconnectAllSockets() {
-    this.peerConnection?.peer.disconnect();
-    this.peerConnection?.peer.destroy();
+    this.peerConnection.peer.disconnect();
+    this.peerConnection.peer.destroy();
+    this.socketIOSocket.disconnect();
+    this.yjsSocket.provider.disconnect();
+    this.yjsSocket.ydoc.destroy();
   }
 }

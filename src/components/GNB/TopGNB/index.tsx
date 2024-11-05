@@ -1,14 +1,12 @@
+import ExitButton from "@/components/GNB/TopGNB/ExitButton";
 import TopGNBMicStatus from "@/components/GNB/TopGNB/MicStatus";
 import TopGNBRecordStatus from "@/components/GNB/TopGNB/RecordStatus";
 import TopGNBSharedVideoShowStatus from "@/components/GNB/TopGNB/SharedVideoShowStatus";
 import TopGNBVideoStatus from "@/components/GNB/TopGNB/VideoStatus";
 import TopGNBWifiStatus from "@/components/GNB/TopGNB/WifiStatus";
-import { Button } from "@/components/ui/button";
-import { useExit } from "@/hooks/Conversation/useExit";
 
 const TopGNB = () => {
   const urlPath = window.location.href.split("/").at(-1);
-  const { exit } = useExit();
 
   const handleCopyClipBoard = (text: string) => {
     try {
@@ -28,13 +26,7 @@ const TopGNB = () => {
         </button>
       </div>
       <div className="flex flex-1 items-center justify-center">
-        <Button
-          variant="outline"
-          className="rounded-full px-4 py-0"
-          onClick={exit}
-        >
-          종료하기
-        </Button>
+        <ExitButton />
       </div>
       <div className="flex flex-1 items-center justify-end gap-2">
         <TopGNBWifiStatus />
