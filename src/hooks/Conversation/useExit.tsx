@@ -14,13 +14,7 @@ export const useExit = () => {
         exportWithDarkMode: false,
       },
       files: api.getFiles(),
-    }).then((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.download = "excalidraw.png";
-      a.href = url;
-      a.click();
-    });
+    }).then(() => {});
   };
   return { exit };
 };

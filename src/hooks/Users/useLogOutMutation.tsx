@@ -1,9 +1,9 @@
-import logOutHttps from "@/apis/users/logOutApi";
+import postLogoutHttps from "@/apis/users/logoutApi";
 import { useMutation } from "@tanstack/react-query";
 
-export const useLogOutMutation = () => {
+export const useLogoutMutation = () => {
   return useMutation({
     mutationKey: ["logout"],
-    mutationFn: logOutHttps,
+    mutationFn: postLogoutHttps,
   });
 };

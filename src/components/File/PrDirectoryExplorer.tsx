@@ -17,18 +17,18 @@ export const PrDirectoryExplorer = ({
 }: PrDirectoryExplorerProps) => {
   return (
     <div
-      className="flex cursor-pointer items-center bg-white py-2 pl-2 hover:brightness-90"
+      className="flex cursor-pointer items-center bg-white py-1 pl-2 hover:brightness-90"
       style={{ paddingLeft: indentation + "px" }}
       onClick={onToggle}
     >
       {childItems.length > 0 &&
         (isExpanded ? (
-          <ChevronDown className="mr-1 aspect-square h-4 w-4" />
+          <ChevronDown className="mr-1 aspect-square flex-[0_0_1rem]" />
         ) : (
-          <ChevronRight className="mr-1 aspect-square h-4 w-4" />
+          <ChevronRight className="mr-1 aspect-square flex-[0_0_1rem]" />
         ))}
-      <Folder className="mr-2 aspect-square h-4 w-4" />
-      <span>{currentPath.split("/").pop()}</span>
+      <Folder className="mr-2 aspect-square h-4 w-4 flex-[0_0_0.75rem]" />
+      <span className="truncate">{currentPath.split("/").pop()}</span>
     </div>
   );
 };

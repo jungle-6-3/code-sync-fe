@@ -1,9 +1,9 @@
-import chattingRoomStore from "@/stores/chattingRoom.store";
+import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
 
 const LeftGNB = () => {
-  const setLeftSNBSelection = chattingRoomStore(
+  const setLeftSNBSelection = sectionSelectStore(
     (state) => state.setLeftSNBSelection,
   );
   const setSelectedCommitFile = fileSysyemStore(
@@ -30,10 +30,7 @@ const LeftGNB = () => {
           </button>
         </li>
         <li className="aspect-square">
-          <button
-            className="p-2"
-            onClick={() => setLeftSNBSelection("message")}
-          >
+          <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
             <MessageSquare color="#334155" />
           </button>
         </li>

@@ -1,20 +1,20 @@
-export interface LoginRequestUserDto {
+export interface PostLoginRequestUserDto {
   email: string;
   password: string;
 }
 
-export interface LoginResponseUserDto {
+export interface PostLoginResponseUserDto {
   success: boolean;
   message: string;
 }
 
-export interface SignUpRequestUserDto {
+export interface PostSignUpRequestUserDto {
   name: string;
   email: string;
   password: string;
 }
 
-export interface SignUpResponseUserDto {
+export interface PostSignUpResponseUserDto {
   success: boolean;
   message: string;
 }
@@ -24,13 +24,13 @@ interface UserData {
   name: string;
 }
 
-export interface CheckUserLoginResponseDto {
+export interface GetCheckUserLoginResponseDto {
   success: boolean;
   message: string;
   data: UserData;
 }
 
-export interface LogOutResponseDto {
+export interface PostLogoutResponseDto {
   success: boolean;
   message: string;
 }

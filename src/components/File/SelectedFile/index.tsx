@@ -8,13 +8,13 @@ import { drawBoardStore } from "@/stores/drawBoard.store";
 import { editor } from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
 import { DrawBoard } from "@/components/Draw/DrawBoard";
-import { InitFile } from "@/components/File/SelectedFileviewer/InitFile";
-import { AddedFile } from "./AddedFile";
+import { InitFile } from "@/components/File/SelectedFile/InitFile";
+import { toPng } from "html-to-image";
+import { BlockNote } from "@/components/BlockNote";
 import { RemovedFile } from "./RemovedFile";
 import { RenamedFile } from "./RenamedFile";
+import { AddedFile } from "./AddedFile";
 import { ModifiedFile } from "./ModifiedFile";
-import { toPng } from "html-to-image";
-import { BlockNote } from "@/components/BlockNoteEditor";
 
 interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
   selectedCommitFile: PrChangedFileInfo;
@@ -31,10 +31,15 @@ interface SelectedFileViewerProps extends PrChangedFileStatusInfo {
 
 interface BoardContextType {
   convertToImage: () => void;
+  size: {
+    width: number;
+    height: number;
+  };
 }
 
 export const BoardContext = createContext<BoardContextType>({
   convertToImage: () => {},
+  size: { width: 0, height: 0 },
 });
 
 const SelectedFileViewer = ({

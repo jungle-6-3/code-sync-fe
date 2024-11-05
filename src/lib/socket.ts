@@ -79,7 +79,7 @@ export const addInviteAcceptedListener = async ({ socket }: AddInviteAcceptedLis
         socket.emit("share-peer-id", {
           peerId: SocketManager.getInstance().peerConnection.id,
         });
-        await setCommitFileList({ owner, prNumber: +prNumber, repo })
+        await setCommitFileList({ owner, prNumber: +prNumber, repo, prUrl })
           .then(() => {
             resolve(true);
             setIsCreator(true);

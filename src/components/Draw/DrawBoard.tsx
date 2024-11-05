@@ -158,23 +158,8 @@ export const DrawBoard = () => {
     elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
   };
 
-  useEffect(() => {
-    const printChange = () => {
-      console.log("api?.getSceneElements();", api?.getSceneElements());
-      console.log("api?.getAppState();", api?.getAppState());
-    };
-    api?.onChange(printChange);
-  }, [api]);
-
   return (
     <div ref={(current) => setExcalidrawDom(current)} className="h-full w-full">
-      <button
-        onClick={() => {
-          console.log(api?.getAppState());
-        }}
-      >
-        클릭
-      </button>
       <Excalidraw
         initialData={initData}
         excalidrawAPI={setApi}

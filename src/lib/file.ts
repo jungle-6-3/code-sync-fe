@@ -202,10 +202,10 @@ export const getFileStatusStyle = (
   const fileInfo = fileList.find((file) => file.filename === filePath);
 
   const colors = {
-    added: "bg-green-100",
-    modified: "bg-yellow-100",
-    removed: "bg-red-100",
-    renamed: "bg-blue-100",
+    added: "text-green-700",
+    modified: "text-orange-900",
+    removed: "text-red-700",
+    renamed: "text-blue-700",
     init: "",
   };
 

@@ -1,7 +1,7 @@
 import { CodeEditor } from "@/components/CodeEditor";
-import { FileEditorProps } from "./file";
 import { useContext } from "react";
-import { BoardContext } from "./";
+import { BoardContext } from "@/components/File/SelectedFile/index";
+import { FileEditorProps } from "./file";
 
 export const AddedFile = ({
   selectedCommitFile,

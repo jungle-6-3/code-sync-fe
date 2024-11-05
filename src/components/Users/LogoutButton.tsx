@@ -1,14 +1,16 @@
-import { useLogOutMutation } from "@/hooks/Users/useLogOutMutation";
 import { Button } from "@/components/ui/button";
+import { useLogoutMutation } from "@/hooks/Users/useLogOutMutation";
+import { useNavigate } from "react-router-dom";
 
 export const LogoutButton = () => {
-  const logOut = useLogOutMutation();
+  const { mutate: logout } = useLogoutMutation();
+  const navigate = useNavigate();
 
-  const onLogOut = async () => {
-    logOut.mutate(undefined, {
+  const onLogout = async () => {
+    logout(undefined, {
       onSuccess: () => {
         alert("로그아웃 되었습니다.");
-        location.reload();
+        navigate("/");
       },
       onError: (error) => {
         console.error("logout오류", error);
@@ -16,7 +18,7 @@ export const LogoutButton = () => {
     });
   };
   return (
-    <Button onClick={onLogOut} variant="ghost">
+    <Button onClick={onLogout} variant="ghost">
       로그아웃
     </Button>
   );

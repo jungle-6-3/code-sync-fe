@@ -5,12 +5,14 @@ interface UserData {
 
 export interface Conversation {
   pk: number;
+  // TODO : 추후에 BE가 변경될 때 이야기 하기.
   creatorPk: number;
   participantPk: number;
+  //
   dataPk: number;
   title: string;
-  startedAt: Date;
-  finishedAt: Date;
+  startedAt: string;
+  finishedAt: string;
   deleteAt: Date;
   creator: UserData;
   participant: UserData;
@@ -21,7 +23,7 @@ export interface Data {
   conversations: Conversation[];
 }
 
-export interface PreviousRoomResponseDto {
+export interface GetPreviousRoomResponseDto {
   success: boolean;
   data: Data;
 }

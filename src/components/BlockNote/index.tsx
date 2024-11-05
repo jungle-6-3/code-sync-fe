@@ -5,7 +5,7 @@ import "@blocknote/core/style.css";
 import "@blocknote/react/style.css";
 import "@blocknote/mantine/style.css";
 import { SocketManager } from "@/lib/socketManager";
-import useCheckUserQuery from "@/hooks/useCheckUserQuery";
+import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 
 export function BlockNote() {
   const isSocketManagerReady = useCommunicationStore(

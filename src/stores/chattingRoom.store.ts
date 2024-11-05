@@ -1,13 +1,28 @@
 import { create } from "zustand";
 
-interface MessageStore {
-  isMessage: string;
-  setLeftSNBSelection: (page: string) => void;
+type LeftSection = "folder" | "chat" | "";
+type bottomSection = "commit" | "";
+
+interface SectionSelectStore {
+  leftSection: LeftSection;
+  setLeftSNBSelection: (page: LeftSection) => void;
+  bottomSection: bottomSection;
+  setBottomSection: (page: bottomSection) => void;
 }
 
-const chattingRoomStore = create<MessageStore>((set) => ({
-  isMessage: "folder",
-  setLeftSNBSelection: (page) => set({ isMessage: page }),
+export const sectionSelectStore = create<SectionSelectStore>((set, get) => ({
+  leftSection: "folder",
+  setLeftSNBSelection: (page) => {
+    const prevSection = get().leftSection;
+    set({
+      leftSection: prevSection === page ? "" : page,
+    })
+  },
+  bottomSection: "commit",
+  setBottomSection: (page) => {
+    const prevSection = get().bottomSection;
+    set({
+      bottomSection: prevSection === page ? "" : page,
+    })
+  },
 }));
-
-export default chattingRoomStore;
