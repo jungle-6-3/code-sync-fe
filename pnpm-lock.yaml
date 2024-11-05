@@ -23,15 +23,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.53.1(react@18.3.1))
-      '@liveblocks/client':
-        specifier: ^2.10.2
-        version: 2.10.2
-      '@liveblocks/react':
-        specifier: ^2.10.2
-        version: 2.10.2(react@18.3.1)
-      '@liveblocks/yjs':
-        specifier: ^2.10.2
-        version: 2.10.2(yjs@13.6.20)
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -453,22 +444,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
-
-  '@liveblocks/client@2.10.2':
-    resolution: {integrity: sha512-ckK+FAzuSrALiFEjX74FD0CbrNH4vnwrhOSje4XaoSK+UfRLQlYmKgg856bZcB92/jzEXCluq5cMdTmnFKxnnw==}
-
-  '@liveblocks/core@2.10.2':
-    resolution: {integrity: sha512-j0I7ZPYFxnGrJeUwzVlwW2l2J/BhtvXZ6GfXrrCHSePSwXmFstrOpgy58cFn5g/WxR0TFJh/gH3NNYAd8SdJPw==}
-
-  '@liveblocks/react@2.10.2':
-    resolution: {integrity: sha512-+bvlaxcsiLfeD1axvDRyD1BQEioUFcFnt+qCtkjzc3MGsVx9BgrDNzowpIndwtrRELTD/aZ0ADq4yZwpSQ4hYA==}
-    peerDependencies:
-      react: ^16.14.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-
-  '@liveblocks/yjs@2.10.2':
-    resolution: {integrity: sha512-oZYnMDkt+lxqJVOfdgf1unmwoApkW2+3sE0wPGAs4EhLyBHNGiff0HPzFU8ALkN4TxfjAdWdxrNg+pHgukUi+g==}
-    peerDependencies:
-      yjs: ^13.6.1
 
   '@mantine/core@7.13.3':
     resolution: {integrity: sha512-IV8xSr6rFQefKr2iOEhYYkJ6rZTDEp71qNkAfn90toSNjgT/2bgnqOxXwxqZ3bwo9DyNOAbEDzs1EfdIzln5aA==}
@@ -2250,9 +2225,6 @@ packages:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
 
-  js-base64@3.7.7:
-    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
-
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -3721,26 +3693,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
-
-  '@liveblocks/client@2.10.2':
-    dependencies:
-      '@liveblocks/core': 2.10.2
-
-  '@liveblocks/core@2.10.2': {}
-
-  '@liveblocks/react@2.10.2(react@18.3.1)':
-    dependencies:
-      '@liveblocks/client': 2.10.2
-      '@liveblocks/core': 2.10.2
-      react: 18.3.1
-      use-sync-external-store: 1.2.2(react@18.3.1)
-
-  '@liveblocks/yjs@2.10.2(yjs@13.6.20)':
-    dependencies:
-      '@liveblocks/client': 2.10.2
-      '@liveblocks/core': 2.10.2
-      js-base64: 3.7.7
-      yjs: 13.6.20
 
   '@mantine/core@7.13.3(@mantine/hooks@7.13.3(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -5582,8 +5534,6 @@ snapshots:
       '@pkgjs/parseargs': 0.11.0
 
   jiti@1.21.6: {}
-
-  js-base64@3.7.7: {}
 
   js-tokens@4.0.0: {}
 

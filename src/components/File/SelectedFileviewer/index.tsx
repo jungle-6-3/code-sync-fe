@@ -126,7 +126,7 @@ const SelectedFileViewer = ({
   if (selectedCommitFile.filename === "MainDrawBoard") {
     return <DrawBoard />;
   }
-  // MainDrawBoard 파일일 때는 DrawBoard만 렌더링
+  // BlockNote 파일일 때는 BlockNote 렌더링
   if (selectedCommitFile.filename === "BlockNote") {
     return <BlockNote />;
   }
