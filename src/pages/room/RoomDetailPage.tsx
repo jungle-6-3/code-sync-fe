@@ -3,7 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ConversationChatting from "@/pages/conversation/ConversationChatting";
+import ConversationChatting from "@/components/Conversation/ConversationChatting";
 
 export default function PostDetailPage() {
   return (
@@ -27,7 +27,11 @@ export default function PostDetailPage() {
               <ResizableHandle />
               <ResizablePanel defaultSize={50} className="h-full w-full">
                 <div className="flex h-full w-full items-center justify-center p-6">
-                  <img src="/exalidraw_test.jpg" alt="test" className = "w-full h-full" />
+                  <img
+                    src="/exalidraw_test.jpg"
+                    alt="test"
+                    className="h-full w-full"
+                  />
                 </div>
               </ResizablePanel>
             </ResizablePanelGroup>

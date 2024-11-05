@@ -11,7 +11,7 @@ const LeftGNB = () => {
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
-  const isMessage = sectionSelectStore((state) => state.leftSection);
+  const currentLeftSection = sectionSelectStore((state) => state.leftSection);
 
   const setNavigate = (filename: string) =>
     setSelectedCommitFile({
@@ -37,7 +37,7 @@ const LeftGNB = () => {
         <li className="relative aspect-square">
           <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
             <MessageSquare color="#334155" onClick={onResetCount} />
-            {messageCount > 0 && isMessage === "folder" && (
+            {messageCount > 0 && (
               <span className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center text-xs">
                 <Badge
                   className="flex h-4 w-4 items-center justify-center rounded-full p-0 text-center text-[10px]"
