@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@blocknote/core": "^0.17.0",
-    "@blocknote/mantine": "^0.17.0",
-    "@blocknote/react": "^0.17.0",
+    "@blocknote/core": "^0.17.1",
+    "@blocknote/mantine": "^0.17.1",
+    "@blocknote/react": "^0.17.1",
     "@excalidraw/excalidraw": "^0.17.6",
     "@hookform/resolvers": "^3.9.0",
     "@monaco-editor/react": "^4.6.0",
