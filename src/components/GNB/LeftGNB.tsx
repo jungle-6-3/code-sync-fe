@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+import useChattingCountEvent from "@/hooks/Conversation/useChattingCountEvent";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
@@ -9,6 +11,7 @@ const LeftGNB = () => {
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
+  const currentLeftSection = sectionSelectStore((state) => state.leftSection);
 
   const setNavigate = (filename: string) =>
     setSelectedCommitFile({
@@ -21,6 +24,8 @@ const LeftGNB = () => {
       status: "init",
     });
 
+  const { messageCount, onResetCount } = useChattingCountEvent();
+
   return (
     <ul className="flex h-full flex-col justify-between">
       <div>
@@ -29,9 +34,19 @@ const LeftGNB = () => {
             <Folder color="#334155" />
           </button>
         </li>
-        <li className="aspect-square">
+        <li className="relative aspect-square">
           <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
-            <MessageSquare color="#334155" />
+            <MessageSquare color="#334155" onClick={onResetCount} />
+            {messageCount > 0 && (
+              <span className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center text-xs">
+                <Badge
+                  className="flex h-4 w-4 items-center justify-center rounded-full p-0 text-center text-[10px]"
+                  variant="destructive"
+                >
+                  {messageCount}
+                </Badge>
+              </span>
+            )}
           </button>
         </li>
       </div>

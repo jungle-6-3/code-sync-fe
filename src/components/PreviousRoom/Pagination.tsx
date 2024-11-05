@@ -18,6 +18,7 @@ const PreviousRoomsPagination = ({ data }: { data: Data }) => {
   const paginationCount = Math.ceil(total / PAGE_COUNT);
 
   function onNextPage(page: number) {
+    // TODO: toString()말고도 몇개있음. 나중에 찾아보기(민성)
     setSearchParams({ page: page.toString() });
   }
 
@@ -32,8 +33,7 @@ const PreviousRoomsPagination = ({ data }: { data: Data }) => {
         {Array.from({ length: paginationCount }, (_, index) => (
           <PaginationItem key={index}>
             <PaginationLink
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 onNextPage(index + 1);
               }}
             >
