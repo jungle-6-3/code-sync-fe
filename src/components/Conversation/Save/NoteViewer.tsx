@@ -25,6 +25,7 @@ const ConversationSaveNoteViewer = ({
       editor.replaceBlocks(editor.document, blocks);
     }
     loadInitialHTML();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (

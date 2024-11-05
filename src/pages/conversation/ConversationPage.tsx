@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { MainFrame } from "@/components/Frame/MainFrame";
 import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
-import useJoinRequestByToast, {
-  SocketJoinRequestBy,
-} from "@/hooks/Toast/useJoinReqeustBy";
+import { SocketJoinRequestBy } from "@/hooks/Toast/useJoinReqeustBy";
+import { useJoinRequestByToast } from "@/hooks/Toast";
 import { useUserDisconnectedToast } from "@/hooks/Toast";
 import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
 import { useCommunicationStore } from "@/stores/communicationState.store";
@@ -33,13 +32,12 @@ const ConversationPage = () => {
       removeOpponentMediaStream();
       onUserDisconnectedToast(data);
     });
-  }, [
-    socket,
-    onJoinRequestByToast,
-    onUserDisconnectedToast,
-    peers,
-    removeOpponentMediaStream,
-  ]);
+    return () => {
+      socket.off("join-request-by");
+      socket.off("user-disconnected");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [peers]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
