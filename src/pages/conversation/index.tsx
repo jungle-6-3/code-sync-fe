@@ -17,6 +17,7 @@ const ConversationJunctionPage = () => {
       alert("비정상적인 접근입니다.");
       navigate("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSetJoin = async () => {

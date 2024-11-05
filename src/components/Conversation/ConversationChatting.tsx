@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
+import { PreviewChatting } from "@/pages/conversation/PreviewChatting";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
   const isSocketManagerReady = useCommunicationStore(
@@ -16,14 +18,37 @@ export default function ConversationChatting() {
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
   const socket = SocketManager.getInstance().socketIOSocket;
 
-  // TODO 후에 상대방이 채팅을 보냈을 시에도 내 스크롤은 내려가지않게
-  // 또 내가 채팅을 보냈을때도 상대방 스크롤은 내려가지 않게
+  const [isUserMessage, setIsUserMessage] = useState(false);
+  const [isScrollAtTop, setIsScrollAtTop] = useState(false);
+
+  // 내가 채팅을 보낼시 스크롤을 자동으로 아래로 내리는 로직
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (isUserMessage === true) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setIsUserMessage(false);
+    }
+  }, [isUserMessage]);
+
+  // 스크롤이 위에 있을시 미리보기채팅이 보이게하는 로직
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (!chatContainer) return;
+
+    const handleScroll = () => {
+      const isAtTop = chatContainer.scrollTop === 0;
+      setIsScrollAtTop(isAtTop);
+    };
+
+    chatContainer.addEventListener("scroll", handleScroll);
+
+    return () => {
+      chatContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!message.trim()) return;
     try {
       socket.emit(
         "chatting",
@@ -37,6 +62,7 @@ export default function ConversationChatting() {
           const newDate = new Date(data.date);
           //TODO "나"말고 더 좋은 것으로 바꾸기.
           addMessage({ date: newDate, name: "나", message: message });
+          setIsUserMessage(true);
         },
       );
       setMessage("");
@@ -45,10 +71,14 @@ export default function ConversationChatting() {
     }
   };
 
+  // 미리보기에서 제일 최근 메세지를 가져오는 로직
+  const lastMessage = messages[messages.length - 1];
+
   return (
     <>
       <div
         id="chat"
+        ref={chatContainerRef}
         className="relative flex h-[calc(100vh-8.3rem)] flex-col-reverse overflow-y-auto"
       >
         <ul className="[&:>]:-order-1 absolute bottom-0 flex w-full flex-1 flex-col">
@@ -75,6 +105,7 @@ export default function ConversationChatting() {
           <div ref={messagesEndRef} />
         </ul>
       </div>
+      {!isScrollAtTop && lastMessage && <PreviewChatting user={lastMessage} />}
       <form onSubmit={onSubmit} className="p-2">
         <div className="flex items-center gap-2">
           <Input
