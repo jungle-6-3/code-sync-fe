@@ -81,7 +81,7 @@ const SelectedFileViewer = ({
     convertToImage: () => {
       if (!elementRef.current) return;
       toPng(elementRef.current, { cacheBust: false })
-        .then((dataUrl) => {
+        .then((dataUrl: string) => {
           sessionStorage.setItem("image", dataUrl);
           setIsImageAddedInfo({
             added: true,
@@ -100,7 +100,7 @@ const SelectedFileViewer = ({
             status: "init",
           });
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.log(err);
         });
     },

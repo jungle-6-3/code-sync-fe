@@ -159,7 +159,7 @@ export const DrawBoard = () => {
   };
 
   return (
-    <div ref={(current) => setExcalidrawDom(current)} className="h-full w-full">
+    <div ref={(current) => setExcalidrawDom(current)} className="h-full w-full">gi
       <Excalidraw
         initialData={initData}
         excalidrawAPI={setApi}
