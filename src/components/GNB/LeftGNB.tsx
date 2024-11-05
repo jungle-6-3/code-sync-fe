@@ -1,9 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { SocketManager } from "@/lib/socketManager";
-import chattingRoomStore from "@/stores/chattingRoom.store";
+import useChattingCountEvent from "@/hooks/Conversation/useChattingCountEvent";
+import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
-import { useEffect, useState } from "react";
 
 const LeftGNB = () => {
   const setLeftSNBSelection = sectionSelectStore(
@@ -12,8 +11,7 @@ const LeftGNB = () => {
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
-  const isMessage = chattingRoomStore((state) => state.isMessage);
-  const [messageCount, setMessageCount] = useState(0);
+  const isMessage = sectionSelectStore((state) => state.leftSection);
 
   const setNavigate = (filename: string) =>
     setSelectedCommitFile({
@@ -26,24 +24,7 @@ const LeftGNB = () => {
       status: "init",
     });
 
-  const socket = SocketManager.getInstance().socketIOSocket;
-  useEffect(() => {
-    setMessageCount(0);
-  }, [isMessage]);
-
-  useEffect(() => {
-    const countChatting = () => {
-      setMessageCount(messageCount + 1);
-    };
-    socket.on("chatting", countChatting);
-    return () => {
-      socket.off("chatting", countChatting);
-    };
-  }, [socket, messageCount]);
-
-  const onResetCount = () => {
-    setMessageCount(0);
-  };
+  const { messageCount, onResetCount } = useChattingCountEvent();
 
   return (
     <ul className="flex h-full flex-col justify-between">
@@ -54,11 +35,16 @@ const LeftGNB = () => {
           </button>
         </li>
         <li className="relative aspect-square">
-          <button className="p-2" onClick={() => setLeftSNBSelection(true)}>
+          <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
             <MessageSquare color="#334155" onClick={onResetCount} />
-            {messageCount > 0 && isMessage === false && (
+            {messageCount > 0 && isMessage === "folder" && (
               <span className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center text-xs">
-                <Badge className = "flex items-center justify-center h-4 w-4 rounded-full p-0 text-[10px] text-center" variant="destructive">{messageCount}</Badge>
+                <Badge
+                  className="flex h-4 w-4 items-center justify-center rounded-full p-0 text-center text-[10px]"
+                  variant="destructive"
+                >
+                  {messageCount}
+                </Badge>
               </span>
             )}
           </button>
