@@ -1,4 +1,8 @@
 import { useFetcher } from "@/hooks/useFetcher";
+import { Excalidraw } from "@excalidraw/excalidraw";
+import { toUint8Array } from "js-base64";
+import { yjsToExcalidraw } from "y-excalidraw";
+import * as Y from "yjs";
 
 interface ConversationSaveDrawBoardViewerProps {
   data: {
@@ -8,13 +12,29 @@ interface ConversationSaveDrawBoardViewerProps {
 }
 
 const ConversationSaveDrawBoardViewer = ({
-  data: { isShared, url },
+  data: { url },
 }: ConversationSaveDrawBoardViewerProps) => {
   const { data } = useFetcher({ url });
 
+  if (!data) return null;
+
+  const ydoc = new Y.Doc();
+  const binaryEndcoed = toUint8Array(data.data || "");
+  Y.applyUpdate(ydoc, binaryEndcoed);
+
+  const yElements = ydoc.getArray<Y.Map<unknown>>("elements");
+
   return (
-    <div className="flex h-[400px] items-center justify-center">
-      <p className="text-lg text-gray-400">DrawBoard</p>
+    <div className="h-[calc(100vh-12rem)]">
+      <Excalidraw
+        initialData={{
+          elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
+          appState: {
+            viewModeEnabled: true,
+          },
+        }}
+        theme="light"
+      />
     </div>
   );
 };
