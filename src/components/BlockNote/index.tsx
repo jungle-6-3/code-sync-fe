@@ -23,7 +23,7 @@ export function BlockNote() {
       fragment: yDoc.getXmlFragment("document-store"),
       user: {
         name: checkUser?.data.name || "",
-        color: "rgb(255, 102, 102)",
+        color: "#ffffff",
       },
     },
     animations: false,
