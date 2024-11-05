@@ -1,9 +1,13 @@
-import ConversationSaveHeader from "@/components/Conversation/Save/Header";
+import {
+  ConversationSaveHeader,
+  ConversationSaveTabs,
+} from "@/components/Conversation/Save";
 
 const RoomSavePage = () => {
   return (
-    <div className="py-4">
+    <div className="px-24 pb-6 pt-12">
       <ConversationSaveHeader />
+      <ConversationSaveTabs />
     </div>
   );
 };
