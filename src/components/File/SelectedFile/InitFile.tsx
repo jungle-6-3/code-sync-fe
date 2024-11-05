@@ -18,7 +18,7 @@ export const InitFile = ({
   );
 
   return (
-    <div className="flex w-4/5 flex-col">
+    <div className="m-auto flex w-4/5 flex-col">
       <div className="text-2xl font-semibold">File Changed</div>
       <Table>
         <TableHeader>

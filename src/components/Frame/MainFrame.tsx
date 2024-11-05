@@ -8,7 +8,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
-import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import ConversationChatting from "@/components/Conversation/ConversationChatting";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
@@ -19,6 +18,7 @@ import { useCommunicationStore } from "@/stores/communicationState.store";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
+import SelectedFileViewer from "@/components/File/SelectedFile";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
