@@ -1,20 +1,38 @@
-import { drawBoardStore } from "@/stores/drawBoard.store";
-import { exportToBlob } from "@excalidraw/excalidraw";
+import { SocketManager } from "@/lib/socketManager";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { userMediaStore } from "@/stores/userMedia.store";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useExit = () => {
-  const api = drawBoardStore((state) => state.api);
+  const navigat = useNavigate();
+  const isSocketManagerReady = useCommunicationStore(
+    (state) => state.isSocketManagerReady,
+  );
+  const isCreator = userMediaStore((state) => state.isCreator);
+  const stopWebcam = userMediaStore((state) => state.stopWebcam);
+  const onFinishing = useCommunicationStore((state) => state.onFinishing);
+  if (!isSocketManagerReady) throw new Error("소켓이 준비되지 않았어요.");
+  const socket = SocketManager.getInstance().socketIOSocket;
+
+  useEffect(() => {
+    socket.on("room-closed", () => {
+      stopWebcam({ audio: true, video: true });
+      onFinishing();
+      alert("방을 닫습니다.");
+      navigat("/room/create");
+    });
+    return () => {
+      socket.off("room-closed");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   const exit = () => {
-    if (!confirm("종료하실껀가요?")) return;
-    if (!api) return;
-    exportToBlob({
-      elements: api.getSceneElements(),
-      appState: {
-        ...api.getAppState(),
-        exportWithDarkMode: false,
-      },
-      files: api.getFiles(),
-    }).then(() => {});
+    if (!isCreator) {
+      return;
+    }
+    socket.emit("close-room");
   };
   return { exit };
 };

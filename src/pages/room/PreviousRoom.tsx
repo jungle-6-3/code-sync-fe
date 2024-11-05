@@ -14,17 +14,17 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PreviousRoomsPagination from "@/components/PreviousRoom/Pagination";
 
 const PreviousRoom = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const navigate = useNavigate();
-
   const { previousRoom, isLoading } = usePreviousRoomQuery(currentPage);
+
   if (isLoading) {
-    return <div>로딩 중,,,</div>;
+    return <div>로딩 중...</div>;
   }
 
   if (!previousRoom) {
-    return <div>데이터가 없어요,,</div>;
+    return <div>데이터가 없어요...</div>;
   }
 
   return (
