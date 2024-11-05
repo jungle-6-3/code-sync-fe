@@ -8,7 +8,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
-import SelectedFileViewer from "@/components/File/SelectedFileViewer";
+import SelectedFileViewer from "@/components/File/SelectedFile/index";
 import ConversationChatting from "@/pages/conversation/ConversationChatting";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
