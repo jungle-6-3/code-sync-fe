@@ -16,7 +16,7 @@ const URL = import.meta.env.VITE_WS_URL || "http://localhost:4000";
 export class SocketIoSocket {
   private static instance: SocketIoSocket;
 
-  private constructor() { }
+  private constructor() {}
 
   static getInstance(): SocketIoSocket {
     if (!SocketIoSocket.instance) {
@@ -57,15 +57,17 @@ interface AddInviteAcceptedListenerProps {
   socket: Socket;
 }
 
-export const addInviteAcceptedListener = async ({ socket }: AddInviteAcceptedListenerProps) => {
+export const addInviteAcceptedListener = async ({
+  socket,
+}: AddInviteAcceptedListenerProps) => {
   const setPrMetaDataInfo = prMetaDataStore.getState().setPrMetaData;
   const setIsCreator = userMediaStore.getState().setIsCreator;
   const setCommitFileList = fileSysyemStore.getState().setCommitFileList;
+  const setCommentsList = fileSysyemStore.getState().setCommentsList;
 
-  return new Promise<boolean>((resolve) => socket
-    .on(
-      "invite-accepted",
-      async ({ prUrl, role }: InviteAcceptedRespone) => {
+  return new Promise<boolean>((resolve) =>
+    socket
+      .on("invite-accepted", async ({ prUrl, role }: InviteAcceptedRespone) => {
         const { owner, repo, prNumber } = extractGitHubPrDetails({
           ghPrLink: prUrl,
         });
@@ -81,6 +83,7 @@ export const addInviteAcceptedListener = async ({ socket }: AddInviteAcceptedLis
         });
         await setCommitFileList({ owner, prNumber: +prNumber, repo, prUrl })
           .then(() => {
+            setCommentsList({ owner, prNumber: +prNumber, repo });
             resolve(true);
             setIsCreator(true);
           })
@@ -88,10 +91,10 @@ export const addInviteAcceptedListener = async ({ socket }: AddInviteAcceptedLis
             alert("Error: " + error);
           });
         resolve(true);
-      },
-    )
-    .on("invite-rejected", () => {
-      alert("Invite Rejected");
-      resolve(false);
-    }));
-}
+      })
+      .on("invite-rejected", () => {
+        alert("Invite Rejected");
+        resolve(false);
+      }),
+  );
+};

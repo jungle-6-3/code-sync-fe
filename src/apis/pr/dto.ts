@@ -81,6 +81,20 @@ export interface GitHubFileChangeResponse {
   previous_filename?: string;
 }
 
+export interface GitHubCommentsResponse {
+  path: string;
+  user: {
+    login: string;
+    avatar_url: string;
+  };
+  body: string;
+  created_at: string;
+  updated_at: string | null;
+  original_line: number;
+  id: number;
+  in_reply_to_id?: number;
+}
+
 export interface GetPrDataParams {
   owner: string;
   repo: string;
