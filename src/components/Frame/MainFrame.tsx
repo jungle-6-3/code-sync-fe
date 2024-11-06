@@ -150,7 +150,7 @@ export const MainFrame = () => {
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
             defaultSize={70}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center z-0"
           >
             {selectedCommitFile && (
               <SelectedFileViewer
