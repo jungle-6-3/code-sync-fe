@@ -29,9 +29,6 @@ const ConversationSaveDrawBoardViewer = ({
       <Excalidraw
         initialData={{
           elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
-          appState: {
-            viewModeEnabled: true,
-          },
         }}
         theme="light"
       />

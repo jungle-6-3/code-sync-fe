@@ -1,4 +1,5 @@
 import ConversationSaveDrawBoardViewer from "@/components/Conversation/Save/DrawBoard";
+import ConversationSaveHeader from "@/components/Conversation/Save/Header";
 import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
@@ -22,18 +23,25 @@ const ConversationSaveTabs = () => {
   }
 
   return (
-    <Tabs defaultValue="drawBoard">
-      <TabsList>
-        <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
-        <TabsTrigger value="note">Note</TabsTrigger>
-      </TabsList>
-      <TabsContent value="drawBoard">
-        <ConversationSaveDrawBoardViewer data={roomData.drawBoard} />
-      </TabsContent>
-      <TabsContent value="note">
-        <ConversationSaveNoteViewer data={roomData.note} />
-      </TabsContent>
-    </Tabs>
+    <>
+      <ConversationSaveHeader />
+      <Tabs defaultValue="drawBoard">
+        <TabsList>
+          <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
+          <TabsTrigger value="note">Note</TabsTrigger>
+          <TabsTrigger value="chat">Chat</TabsTrigger>
+        </TabsList>
+        <TabsContent value="drawBoard">
+          <ConversationSaveDrawBoardViewer data={roomData.drawBoard} />
+        </TabsContent>
+        <TabsContent value="note">
+          <ConversationSaveNoteViewer data={roomData.note} />
+        </TabsContent>
+        <TabsContent value="note">
+          <div>Chat</div>
+        </TabsContent>
+      </Tabs>
+    </>
   );
 };
 

@@ -41,3 +41,23 @@ export interface PostSaveMeetingResponse {
   success: boolean;
   message: string;
 }
+
+export interface PatchConversationDatasRequest {
+  chat: {
+    data?: string;
+    isShared?: boolean;
+  },
+  drawBoard: {
+    data?: string;
+    isShared?: boolean;
+  },
+  note: {
+    data?: string;
+    isShared?: boolean;
+  },
+  voice: {
+    data?: string;
+    isShared?: boolean;
+  },
+  canShared?: boolean;
+}
