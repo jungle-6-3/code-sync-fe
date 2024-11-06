@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { chattingMessageStore } from "@/stores/chattingMessage.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
-import { PreviewChatting } from "@/pages/conversation/PreviewChatting";
+import { PreviewChatting } from "@/components/Conversation/PreviewChatting";
+import useChattingScrollEvent from "@/hooks/Conversation/useChattingScrollEvent";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
   const isSocketManagerReady = useCommunicationStore(
@@ -18,33 +17,33 @@ export default function ConversationChatting() {
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
   const socket = SocketManager.getInstance().socketIOSocket;
 
+  const {
+    messagesEndRef,
+    chatContainerRef,
+    isScrollAtBottom,
+    lastMessage,
+    onClickPreview,
+  } = useChattingScrollEvent();
   const [isUserMessage, setIsUserMessage] = useState(false);
-  const [isScrollAtTop, setIsScrollAtTop] = useState(false);
 
-  // 내가 채팅을 보낼시 스크롤을 자동으로 아래로 내리는 로직
   useEffect(() => {
-    if (isUserMessage === true) {
+    // 내가 채팅을 치고 스크롤이 바닥이 아닐 시
+    if (isUserMessage && !isScrollAtBottom) {
+      const chatContainer = chatContainerRef.current;
+      if (!chatContainer) return;
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       setIsUserMessage(false);
     }
-  }, [isUserMessage]);
-
-  // 스크롤이 위에 있을시 미리보기채팅이 보이게하는 로직
-  useEffect(() => {
-    const chatContainer = chatContainerRef.current;
-    if (!chatContainer) return;
-
-    const handleScroll = () => {
-      const isAtTop = chatContainer.scrollTop === 0;
-      setIsScrollAtTop(isAtTop);
-    };
-
-    chatContainer.addEventListener("scroll", handleScroll);
-
-    return () => {
-      chatContainer.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    // 남에게 채팅을 받고 스크롤이 바닥일 시
+    if (isScrollAtBottom && !isUserMessage) {
+      const chatContainer = chatContainerRef.current;
+      if (!chatContainer) return;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current?.scrollHeight;
+      setIsUserMessage(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUserMessage, messages]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,9 +69,6 @@ export default function ConversationChatting() {
       console.error(e);
     }
   };
-
-  // 미리보기에서 제일 최근 메세지를 가져오는 로직
-  const lastMessage = messages[messages.length - 1];
 
   return (
     <>
@@ -105,7 +101,11 @@ export default function ConversationChatting() {
           <div ref={messagesEndRef} />
         </ul>
       </div>
-      {!isScrollAtTop && lastMessage && <PreviewChatting user={lastMessage} />}
+      {!isScrollAtBottom && lastMessage && (
+        <div className="relative bottom-20 flex justify-center">
+          <PreviewChatting user={lastMessage} onClick={onClickPreview} />
+        </div>
+      )}
       <form onSubmit={onSubmit} className="p-2">
         <div className="flex items-center gap-2">
           <Input

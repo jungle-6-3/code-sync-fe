@@ -37,7 +37,7 @@ const LeftGNB = () => {
         <li className="relative aspect-square">
           <button className="p-2" onClick={() => setLeftSNBSelection("chat")}>
             <MessageSquare color="#334155" onClick={onResetCount} />
-            {messageCount > 0 && (
+            {currentLeftSection != "chat" && messageCount > 0 && (
               <span className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center text-xs">
                 <Badge
                   className="flex h-4 w-4 items-center justify-center rounded-full p-0 text-center text-[10px]"
