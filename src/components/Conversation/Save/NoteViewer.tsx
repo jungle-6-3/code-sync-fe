@@ -33,7 +33,7 @@ const ConversationSaveNoteViewer = ({
   });
 
   return (
-    <div className="h-[calc(100vh-12rem)] py-2">
+    <div className="h-[calc(100vh-16rem)] py-2">
       <BlockNoteView editor={editor} sideMenu={true} theme="light" />
     </div>
   );

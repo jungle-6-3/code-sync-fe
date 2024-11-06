@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePreviouseRoomPatchMutate } from "@/hooks/Conversation/usePreviousRoomQuery";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 interface ConversationSaveHeaderProps {
   initialTitle?: string;
@@ -19,12 +19,11 @@ const ConversationSaveHeader = ({
     patchRoom(
       {},
       {
-        onSuccess: () => {
-          navigate("/");
-        },
         onError: () => {
           alert("저장에 실패했습니다.");
-          navigate("/");
+        },
+        onSettled: () => {
+          navigate("/room");
         },
       },
     );
@@ -37,7 +36,9 @@ const ConversationSaveHeader = ({
         <Input defaultValue={initialTitle} />
       </div>
       <div className="flex gap-4">
-        <Button variant="secondary">홈으로</Button>
+        <Button variant="secondary">
+          <Link to="/room">목록으로</Link>
+        </Button>
         <Button onClick={onPatchRoom}>저장하기</Button>
       </div>
     </div>
