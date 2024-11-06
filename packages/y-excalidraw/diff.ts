@@ -1,5 +1,5 @@
 import { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/types/element/types"
-import { moveArrayItem, yjsToExcalidraw } from "./helpers"
+import { moveArrayItem } from "./helpers"
 import { generateKeyBetween, generateNKeysBetween } from 'fractional-indexing';
 import * as Y from 'yjs'
 import { BinaryFileData, BinaryFiles } from "@excalidraw/excalidraw/types/types";
@@ -43,7 +43,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
     }, {})
   }
 
-  for (let newElement of newElements) {
+  for (const newElement of newElements) {
     let oldIndex: number | null = null;
     let oldElement: LastKnownOrderedElement | null = null
     if (opsTracker.idMap[newElement.id]) {
@@ -127,7 +127,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
     // Merge append operations
     if (appendOperations.length > 0) {
       const sortIndexes = generateNKeysBetween(lastKnownElements[lastKnownElements.length - 1]?.pos, null, appendOperations.length)
-      for (let [i, op] of appendOperations.entries()) {
+      for (const [i, op] of appendOperations.entries()) {
         opsTracker.idMap[op.id].pos = sortIndexes[i]
       }
       bulkAppendOperations.push({
@@ -139,7 +139,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
     // Merge continuos delete operations
     // deleteOperations is already sorted i.e items are deleted from left to right
     let lastIndex: number | null = null
-    for (let op of deleteOperations) {
+    for (const op of deleteOperations) {
       if (lastIndex === null || op.index > lastIndex) {
         bulkDeleteOperations.push({
           type: 'bulkDelete',
@@ -160,7 +160,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
     [...updateOperations, ...bulkAppendOperations, ...bulkDeleteOperations, ...moveOperations]
 
   const updatedLastKnownElements = opsTracker.elementIds.map((x) => {
-    const { index, ...rest } = opsTracker.idMap[x]
+    const { ...rest } = opsTracker.idMap[x]
     return rest
   })
 
@@ -175,7 +175,7 @@ export const getDeltaOperationsForAssets = (lastKnownFileIds: Set<string>, files
   const operations: AssetOperation[] = []
 
   const newFields: Set<string> = new Set()
-  for (let fileId in files) {
+  for (const fileId in files) {
     if (!files.hasOwnProperty(fileId)) {
       continue
     }
@@ -185,7 +185,7 @@ export const getDeltaOperationsForAssets = (lastKnownFileIds: Set<string>, files
     }
   }
 
-  for (let fileId in lastKnownFileIds) {
+  for (const fileId in lastKnownFileIds) {
     if (!files.hasOwnProperty(fileId)) {
       operations.push({ type: "delete", id: fileId })
     }
@@ -206,10 +206,10 @@ export const applyElementOperations = (yElements: Y.Array<Y.Map<any>>, operation
   // Also we could have used yMap at top level rather than yArray
   // But yMaps at top level are not very efficient (memory wise). See this comment for more info -> https://discuss.yjs.dev/t/moving-elements-in-lists/92/23
 
-  yElements.doc!.transact(tr => {
+  yElements.doc!.transact(() => {
     const _updateYjsIndexMap = () => {
       for (let i = 0; i < yElements.length; i++) {
-        let item = yElements.get(i).get("el") as ExcalidrawElement
+        const item = yElements.get(i).get("el") as ExcalidrawElement
         idYjsIndexMap[item.id] = i
       }
     }
@@ -219,7 +219,7 @@ export const applyElementOperations = (yElements: Y.Array<Y.Map<any>>, operation
 
     // Apply element operations
     // while adding/updating element, using spread operator and not directly assigning it as when later excalidraw updates the elements, it was affecting the undo-redo feature as it was still refering to the the same object
-    for (let op of operations) {
+    for (const op of operations) {
       switch (op.type) {
         case "update": {
           yElements.get(idYjsIndexMap[op.id]).set("el", { ...op.element })
@@ -262,8 +262,8 @@ export const applyElementOperations = (yElements: Y.Array<Y.Map<any>>, operation
 }
 
 export const applyAssetOperations = (yAssets: Y.Map<any>, operations: AssetOperation[], origin?: ExcalidrawBinding) => {
-  yAssets.doc!.transact(tr => {
-    for (let op of operations) {
+  yAssets.doc!.transact(() => {
+    for (const op of operations) {
       switch (op.type) {
         case "append": {
           yAssets.set(op.id, op.asset)

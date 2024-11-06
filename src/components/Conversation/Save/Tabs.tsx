@@ -4,13 +4,18 @@ import ConversationSaveHeader from "@/components/Conversation/Save/Header";
 import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
-import { Suspense } from "react";
+import { useFetchers } from "@/hooks/useFetcher";
 import { useParams } from "react-router-dom";
 
 const ConversationSaveTabs = () => {
   const { postId } = useParams();
   if (!postId) throw new Error("postId is required");
   const { isError, isLoading, roomData } = usePreviousRoomQuery(postId);
+  const [drawBoardData, noteData, chatData] = useFetchers([
+    roomData.drawBoard.url,
+    roomData.note.url,
+    roomData.chat.url,
+  ]);
 
   if (isError) {
     return <div>Error</div>;
@@ -27,23 +32,21 @@ const ConversationSaveTabs = () => {
   return (
     <>
       <ConversationSaveHeader />
-      <Tabs defaultValue="drawBoard">
+      <Tabs defaultValue="note">
         <TabsList>
-          <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
           <TabsTrigger value="note">Note</TabsTrigger>
+          <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
           <TabsTrigger value="chat">Chat</TabsTrigger>
         </TabsList>
-        <Suspense>
-          <TabsContent value="drawBoard">
-            <ConversationSaveDrawBoardViewer data={roomData.drawBoard} />
-          </TabsContent>
-          <TabsContent value="note">
-            <ConversationSaveNoteViewer data={roomData.note} />
-          </TabsContent>
-          <TabsContent value="chat">
-            <ConversationSaveChatViewer data={roomData.chat} />
-          </TabsContent>
-        </Suspense>
+        <TabsContent value="drawBoard">
+          <ConversationSaveDrawBoardViewer data={drawBoardData.data.data} />
+        </TabsContent>
+        <TabsContent value="note">
+          <ConversationSaveNoteViewer data={noteData.data.data} />
+        </TabsContent>
+        <TabsContent value="chat">
+          <ConversationSaveChatViewer chats={chatData.data.data} />
+        </TabsContent>
       </Tabs>
     </>
   );

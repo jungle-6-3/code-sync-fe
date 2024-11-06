@@ -25,18 +25,6 @@ export interface PostSaveRoomResponse {
   message: string;
 }
 
-export interface PostSaveMeetingRequest {
-  title: string;
-  isNoteShared: boolean;
-  isDrawBoardShared: boolean;
-  isChattingShared: boolean;
-  isVoiceShared: boolean;
-  canShared: boolean;
-  // 아래는 추가 될 수도 아닐 수도,,
-  voiceData: File;
-  noteData: File;
-}
-
 export interface PostSaveMeetingResponse {
   success: boolean;
   message: string;

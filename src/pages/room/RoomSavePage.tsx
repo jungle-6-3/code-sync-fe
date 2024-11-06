@@ -1,4 +1,5 @@
 import { ConversationSaveTabs } from "@/components/Conversation/Save";
+import { Suspense } from "react";
 import { Link } from "react-router-dom";
 
 const RoomSavePage = () => {
@@ -14,7 +15,9 @@ const RoomSavePage = () => {
         </Link>
       </div>
       <div className="px-24 pb-6 pt-6">
-        <ConversationSaveTabs />
+        <Suspense>
+          <ConversationSaveTabs />
+        </Suspense>
       </div>
     </>
   );

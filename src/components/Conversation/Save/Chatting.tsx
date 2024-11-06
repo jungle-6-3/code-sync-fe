@@ -1,24 +1,15 @@
-import { useFetcher } from "@/hooks/useFetcher";
-
 interface ConversationSaveChatViewerProps {
-  data: {
-    url: string;
-    isShared: boolean;
-  };
-}
-
-const ConversationSaveChatViewer = ({
-  data: { url },
-}: ConversationSaveChatViewerProps) => {
-  const { data } = useFetcher({ url });
-  if (!data) return null;
-  const chats = Array.from<{
+  chats: {
     date: string;
     name: string;
     email: string;
     message: string;
-  }>(data.data);
+  }[];
+}
 
+const ConversationSaveChatViewer = ({
+  chats,
+}: ConversationSaveChatViewerProps) => {
   return (
     <div className="h-[calc(100vh-16rem)] py-2">
       <div>

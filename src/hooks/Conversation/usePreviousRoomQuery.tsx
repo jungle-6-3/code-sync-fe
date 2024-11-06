@@ -4,7 +4,7 @@ import {
   getPreviousRoomsApi,
   patchPreviousRoom,
 } from "@/apis/room/previousRoomApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export const usePreviousRoomsQuery = (currentPage: number) => {
   const {
@@ -24,7 +24,7 @@ export const usePreviousRoomQuery = (roomId: string) => {
     data: roomData,
     isError,
     isLoading,
-  } = useQuery({
+  } = useSuspenseQuery({
     queryKey: ["room", roomId],
     queryFn: () => getPreviousRoom(roomId),
   });
