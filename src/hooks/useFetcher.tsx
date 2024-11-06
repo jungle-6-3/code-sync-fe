@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useFetcher = ({ url }: { url: string }) => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: [url],
     queryFn: () => axios.get(url),
-    enabled: !!url,
     gcTime: 0,
     retry: 0,
     refetchIntervalInBackground: false,

@@ -28,7 +28,7 @@ const ConversationSaveDrawBoardViewer = ({
     <div className="h-[calc(100vh-12rem)]">
       <Excalidraw
         initialData={{
-          elements: yjsToExcalidraw(yElements || new Y.Array<Y.Map<unknown>>()),
+          elements: yjsToExcalidraw(yElements),
         }}
         theme="light"
       />

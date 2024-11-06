@@ -2,7 +2,8 @@ import { useFetcher } from "@/hooks/useFetcher";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/mantine/style.css";
-import { useEffect } from "react";
+import { toUint8Array } from "js-base64";
+import * as Y from "yjs";
 
 interface ConversationSaveNoteViewerProps {
   data: {
@@ -15,19 +16,21 @@ const ConversationSaveNoteViewer = ({
   data: { url },
 }: ConversationSaveNoteViewerProps) => {
   const { data } = useFetcher({ url });
+  const ydoc = new Y.Doc();
+  const binaryEndcoed = toUint8Array(data.data);
+  Y.applyUpdate(ydoc, binaryEndcoed);
+
   const editor = useCreateBlockNote({
     animations: false,
+    collaboration: {
+      fragment: ydoc.getXmlFragment("document-store"),
+      provider: null,
+      user: {
+        name: "",
+        color: "#ffffff",
+      },
+    },
   });
-
-  useEffect(() => {
-    async function loadInitialHTML() {
-      if (!data) return;
-      const blocks = await editor.tryParseMarkdownToBlocks(data.data);
-      editor.replaceBlocks(editor.document, blocks);
-    }
-    loadInitialHTML();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   return (
     <div className="h-[calc(100vh-12rem)] py-2">
