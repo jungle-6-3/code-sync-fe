@@ -19,7 +19,7 @@ const ConversationSaveDrawBoardViewer = ({
   if (!data) return null;
 
   const ydoc = new Y.Doc();
-  const binaryEndcoed = toUint8Array(data.data || "");
+  const binaryEndcoed = toUint8Array(data.data);
   Y.applyUpdate(ydoc, binaryEndcoed);
 
   const yElements = ydoc.getArray<Y.Map<unknown>>("elements");

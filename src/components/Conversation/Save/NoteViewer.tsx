@@ -21,7 +21,8 @@ const ConversationSaveNoteViewer = ({
 
   useEffect(() => {
     async function loadInitialHTML() {
-      const blocks = await editor.tryParseMarkdownToBlocks(data?.data || "");
+      if (!data) return;
+      const blocks = await editor.tryParseMarkdownToBlocks(data.data);
       editor.replaceBlocks(editor.document, blocks);
     }
     loadInitialHTML();

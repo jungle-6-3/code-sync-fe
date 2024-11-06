@@ -1,3 +1,4 @@
+import ConversationSaveChatViewer from "@/components/Conversation/Save/Chatting";
 import ConversationSaveDrawBoardViewer from "@/components/Conversation/Save/DrawBoard";
 import ConversationSaveHeader from "@/components/Conversation/Save/Header";
 import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewer";
@@ -37,8 +38,8 @@ const ConversationSaveTabs = () => {
         <TabsContent value="note">
           <ConversationSaveNoteViewer data={roomData.note} />
         </TabsContent>
-        <TabsContent value="note">
-          <div>Chat</div>
+        <TabsContent value="chat">
+          <ConversationSaveChatViewer data={roomData.chat} />
         </TabsContent>
       </Tabs>
     </>
