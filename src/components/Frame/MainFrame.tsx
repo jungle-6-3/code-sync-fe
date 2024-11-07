@@ -8,14 +8,17 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
-import ConversationChatting from "@/components/Conversation/ConversationChatting";
+import ConversationChatting from "@/components/Conversation/useConversationChatting";
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
 import { initFileStructSync } from "@/lib/yjs";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
-import { chattingMessageStore } from "@/stores/chattingMessage.store";
+import {
+  chattingMessageStore,
+  chattingPreviewStore,
+} from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import SelectedFileViewer from "@/components/File/SelectedFile";
@@ -31,6 +34,7 @@ export const MainFrame = () => {
   const roomId = window.location.pathname.split("/")[1];
   const selectedTotalFilePath = selectedCommitFile.filename.split("/");
   const addMessage = chattingMessageStore((state) => state.addMessage);
+  const addPreviewMessage = chattingPreviewStore((state) => state.addMessage);
   const initCommitFileList = fileSysyemStore(
     (state) => state.initCommitFileList,
   );
@@ -49,6 +53,8 @@ export const MainFrame = () => {
   const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
   const socket = SocketManager.getInstance().socketIOSocket;
 
+
+
   useEffect(() => {
     const onChatting = (msg: {
       name: string;
@@ -57,12 +63,13 @@ export const MainFrame = () => {
       date: string;
     }) => {
       addMessage(new ChattingSocketResponse(msg));
+      addPreviewMessage(new ChattingSocketResponse(msg));
     };
     socket.on("chatting", onChatting);
     return () => {
       socket.off("chatting", onChatting);
     };
-  }, [socket, addMessage]);
+  }, [socket, addMessage, addPreviewMessage]);
 
   useEffect(() => {
     // sync 이벤트 핸들러 내부에서 파일 메타데이터 동기화

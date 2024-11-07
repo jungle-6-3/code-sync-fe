@@ -3,7 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ConversationChatting from "@/components/Conversation/ConversationChatting";
+import ConversationChatting from "@/components/Conversation/useConversationChatting";
 
 export default function PostDetailPage() {
   return (

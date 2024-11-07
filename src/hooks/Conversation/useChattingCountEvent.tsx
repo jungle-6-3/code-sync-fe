@@ -1,4 +1,5 @@
 import { SocketManager } from "@/lib/socketManager";
+import { chattingPreviewStore } from "@/stores/chattingMessage.store";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import { useEffect, useState } from "react";
 const useChattingCountEvent = () => {
   const [messageCount, setMessageCount] = useState(0);
   const currentLeftSection = sectionSelectStore((state) => state.leftSection);
+  const clearMessages = chattingPreviewStore((state) => state.clearMessages);
 
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
@@ -20,17 +22,18 @@ const useChattingCountEvent = () => {
 
   useEffect(() => {
     const countChatting = () => {
-      setMessageCount(messageCount + 1);
+      if (currentLeftSection != "chat") setMessageCount(messageCount + 1);
     };
     socket.on("chatting", countChatting);
 
     return () => {
       socket.off("chatting", countChatting);
     };
-  }, [socket, messageCount]);
+  }, [socket, messageCount, currentLeftSection]);
 
   const onResetCount = () => {
     setMessageCount(0);
+    clearMessages();
   };
 
   return { messageCount, onResetCount };

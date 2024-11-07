@@ -1,17 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import axios from "axios";
 
-export const useFetcher = ({ url }: { url: string }) => {
-  return useQuery<{ data: string }>({
-    queryKey: [url],
-    queryFn: () => axios.get(url),
-    enabled: !!url,
+export const useFetchers = (urls: (string | undefined)[]) => {
+  const options = {
     gcTime: 0,
     retry: 0,
     refetchIntervalInBackground: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    refetchInterval: false,
+  };
+  return useSuspenseQueries({
+    queries: urls
+      .filter((url): url is string => !!url)
+      .map((url) => ({
+        queryKey: ["fetcher", url],
+        queryFn: () => axios.get(url),
+        ...options,
+      })),
   });
 };

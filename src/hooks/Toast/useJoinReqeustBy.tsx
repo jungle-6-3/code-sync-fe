@@ -37,7 +37,7 @@ const useJoinRequestByToast = () => {
   const onToast = ({ data, message }: SocketJoinRequestBy) =>
     toast.custom(
       (t) => (
-        <div className="flex w-80 items-center justify-between rounded-lg border bg-white px-4 py-2">
+        <div className="flex w-[23rem] items-center justify-between rounded-lg border bg-white px-4 py-2">
           {`${data.participant.name}의 ${message}`}
           <div className="flex gap-2">
             <Button

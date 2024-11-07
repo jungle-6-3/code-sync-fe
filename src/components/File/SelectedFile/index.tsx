@@ -101,7 +101,7 @@ const SelectedFileViewer = ({
           });
         })
         .catch((err: unknown) => {
-          console.log(err);
+          console.error(err);
         });
     },
     size,
