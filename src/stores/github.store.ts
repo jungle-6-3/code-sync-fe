@@ -15,7 +15,13 @@ interface PrInfoProps {
 }
 
 export interface PrMetaDataInfo {
-  prUrl?: string;
+  prUrl: string;
+  owner: string;
+  repo: string;
+  prNumber: number;
+}
+
+export interface PrCommentMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
@@ -89,7 +95,7 @@ interface fileSysyemPropsStore {
   initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void;
   addClickedFileList: (newFile: PrChangedFileInfo) => void;
   removeClickedFileList: (newFile: PrChangedFileInfo) => void;
-  setCommentsList: (prMetaData: PrMetaDataInfo) => void;
+  setCommentsList: (prMetaData: PrCommentMetaDataInfo) => void;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -294,7 +300,6 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
           repo,
           prNumber,
         });
-        // console.log("response", response);
         response.map((comment) => {
           const uuid = `${comment.path}-${comment.original_line}`;
           if (!commitFileList.get(uuid)) {
@@ -337,7 +342,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
         });
         set({ commentsList: transformList });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     };
     getComments();

@@ -44,7 +44,7 @@ export const PRBottomFileExplorer = () => {
           >
             <AccordionItem value="item-1" className="border-none">
               <AccordionTrigger className="py-3 hover:no-underline">
-                {file as string}
+                {file}
               </AccordionTrigger>
               {findList.map((comment) => (
                 <CommentViewer comments={comment.comments} />
@@ -77,14 +77,10 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
   const firstComment = comments[0];
   const restComments = comments.slice(1);
 
-  useEffect(() => {
-    console.log("", restComments);
-  });
-
   return (
     <AccordionContent className="pt-0">
       <div
-        className="flex items-start gap-3 border-b p-2"
+        className="flex items-start gap-3 border-b border-gray-400 p-2"
         onClick={() => {
           navigateCodeEditor(firstComment.filepath);
         }}
@@ -121,7 +117,7 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
                       {comment.user.login}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">
-                      {comment.body}{" "}
+                      {comment.body}
                       <span className="text-gray-600">
                         [Ln {comment.original_line}]
                       </span>
