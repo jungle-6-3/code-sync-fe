@@ -1,6 +1,12 @@
 import { create } from "zustand";
-import { getFileContent, getPrCommitsData, getPrData } from "@/apis/pr/pr";
+import {
+  getFileContent,
+  getPrCommentsData,
+  getPrCommitsData,
+  getPrData,
+} from "@/apis/pr/pr";
 import { getLanguageFromFileName } from "@/lib/file";
+import { GitHubCommentsResponse } from "@/apis/pr/dto";
 
 interface PrInfoProps {
   userId: string;
@@ -10,6 +16,12 @@ interface PrInfoProps {
 
 export interface PrMetaDataInfo {
   prUrl: string;
+  owner: string;
+  repo: string;
+  prNumber: number;
+}
+
+export interface PrCommentMetaDataInfo {
   owner: string;
   repo: string;
   prNumber: number;
@@ -45,15 +57,45 @@ export interface PrChangedFileInfo extends PrChangedFileStatusInfo {
   beforeContent: string;
 }
 
+export interface PrCommentsListInfo {
+  filepath: string;
+  filename: string;
+  line: number;
+  comments: PrCommentInfo[];
+}
+
+export interface PrCommentUserInfo {
+  login: string;
+  avatar_url: string;
+}
+
+export interface PrCommentDateInfo {
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PrCommentInfo {
+  filepath: string;
+  filename: string;
+  user: PrCommentUserInfo;
+  body: string;
+  date: PrCommentDateInfo;
+  original_line: number;
+  comment_id: number;
+  in_reply_to_id: number | null;
+}
+
 interface fileSysyemPropsStore {
   selectedCommitFile: PrChangedFileInfo;
   commitFileList: PrChangedFileInfo[];
+  commentsList: PrCommentsListInfo[];
   clickedFileList: PrChangedFileInfo[];
   setSelectedCommitFile: (newFile: PrChangedFileInfo) => void;
   setCommitFileList: (prMetaData: PrMetaDataInfo) => Promise<void>;
   initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void;
   addClickedFileList: (newFile: PrChangedFileInfo) => void;
   removeClickedFileList: (newFile: PrChangedFileInfo) => void;
+  setCommentsList: (prMetaData: PrCommentMetaDataInfo) => void;
 }
 
 export const prMetaDataStore = create<prMetaDataPropsStore>()((set) => ({
@@ -114,6 +156,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
     beforeContent: "",
   },
   commitFileList: [],
+  commentsList: [],
   clickedFileList: [],
   setSelectedCommitFile: (newFile) => {
     set((state) => {
@@ -142,14 +185,14 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
           updateClickedFileList.length > 0
             ? updateClickedFileList[updateClickedFileList.length - 1]
             : {
-              filename: "",
-              status: "init" as PrChangedFileStatusInfo["status"],
-              language: "",
-              additions: 0,
-              deletions: 0,
-              afterContent: "",
-              beforeContent: "",
-            };
+                filename: "",
+                status: "init" as PrChangedFileStatusInfo["status"],
+                language: "",
+                additions: 0,
+                deletions: 0,
+                afterContent: "",
+                beforeContent: "",
+              };
         get().setSelectedCommitFile(newSelectedFile);
       }
       return { clickedFileList: updateClickedFileList };
@@ -247,4 +290,61 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
     }
   },
   initCommitFileList: (commitFileList) => set({ commitFileList }),
+
+  setCommentsList: async ({ owner, repo, prNumber }) => {
+    const commitFileList = new Map();
+    const getComments = async () => {
+      try {
+        const response = await getPrCommentsData({
+          owner,
+          repo,
+          prNumber,
+        });
+        response.map((comment) => {
+          const uuid = `${comment.path}-${comment.original_line}`;
+          if (!commitFileList.get(uuid)) {
+            commitFileList.set(uuid, []);
+            commitFileList.get(uuid).push(comment);
+          } else {
+            commitFileList.get(uuid).push(comment);
+          }
+        });
+        const sortedMap = new Map(
+          [...commitFileList.entries()].sort((a, b) => {
+            const aNumber = a[0].split("-")[1];
+            const bNumber = b[0].split("-")[1];
+            return aNumber - bNumber;
+          }),
+        );
+        const transformList = Array.from(sortedMap).map(([key, comments]) => {
+          const [filepath, lineNumber] = key.split("-");
+          const sortedComentList = comments.map(
+            (comment: GitHubCommentsResponse) => ({
+              filepath,
+              filename: comment.path.split("/").at(-1)?.split("-")[0],
+              user: comment.user,
+              body: comment.body,
+              date: {
+                created_at: comment.created_at,
+                updated_at: comment.updated_at,
+              },
+              original_line: comment.original_line,
+              comment_id: comment.id,
+              in_reply_to_id: comment.in_reply_to_id || null,
+            }),
+          );
+          return {
+            filepath,
+            filename: filepath.split("/").at(-1),
+            line: lineNumber,
+            comments: sortedComentList,
+          };
+        });
+        set({ commentsList: transformList });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getComments();
+  },
 }));

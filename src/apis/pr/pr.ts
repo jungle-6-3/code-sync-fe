@@ -2,6 +2,7 @@ import { githubHttps } from "@/lib/github";
 import {
   GetFileDataParams,
   GetPrDataParams,
+  GitHubCommentsResponse,
   GitHubFileChangeResponse,
   GitHubPrResponse,
 } from "./dto";
@@ -24,6 +25,17 @@ export const getPrCommitsData = async ({
 }: GetPrDataParams): Promise<GitHubFileChangeResponse[]> => {
   const response = await githubHttps.get(
     `/repos/${owner}/${repo}/pulls/${prNumber}/files`,
+  );
+  return response.data;
+};
+
+export const getPrCommentsData = async ({
+  owner,
+  repo,
+  prNumber,
+}: GetPrDataParams): Promise<GitHubCommentsResponse[]> => {
+  const response = await githubHttps.get(
+    `/repos/${owner}/${repo}/pulls/${prNumber}/comments`,
   );
   return response.data;
 };
