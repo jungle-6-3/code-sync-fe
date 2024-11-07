@@ -30,6 +30,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
   const opsTracker: OperationTracker = {
     elementIds: lastKnownElements.map((x) => x.id),
     // id map is needed to quickly look up index for the element with a given id
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     idMap: lastKnownElements.reduce((map: any, data, index) => {
       map[data.id] = { id: data.id, version: data.version, pos: data.pos, index }
       return map
@@ -37,6 +38,7 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
   }
 
   const _updateIdIndexLookup = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     opsTracker.idMap = opsTracker.elementIds.reduce((map: any, id, index) => {
       map[id] = { ...opsTracker.idMap[id], index }
       return map
@@ -64,10 +66,10 @@ export const getDeltaOperationsForElements = (lastKnownElements: LastKnownOrdere
     }
     else if (oldElement && newElement.version !== oldElement.version) {
       const op = {
-        id: newElement.id, version: newElement.version, pos: oldElement.pos, index: oldIndex
+        id: newElement.id, version: newElement.version, pos: oldElement.pos, index: oldIndex || 0
       }
       opsTracker.idMap[newElement.id] = op
-      updateOperations.push({ type: 'update', id: op.id, index: op.index, element: newElement })
+      updateOperations.push({ type: 'update', id: op.id, index: op.index || 0, element: newElement })
     }
   }
 

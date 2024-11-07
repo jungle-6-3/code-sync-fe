@@ -63,7 +63,7 @@ export class ExcalidrawBinding {
     );
 
     // Listener for changes made on yElements by remote users
-    const _remoteElementsChangeHandler = (event: Array<Y.YEvent<any>>, txn: Y.Transaction) => {
+    const _remoteElementsChangeHandler = (_: unknown, txn: Y.Transaction) => {
       if (txn.origin === this) {
         return
       }
@@ -109,12 +109,12 @@ export class ExcalidrawBinding {
         updated: number[];
         removed: number[];
       }) => {
-        const states = this.awareness.getStates();
+        const states = this.awareness?.getStates();
 
         const collaborators = new Map(this.collaborators);
         const update = [...added, ...updated];
         for (const id of update) {
-          const state = states.get(id);
+          const state = states?.get(id);
           if (!state) {
             continue;
           }
@@ -132,17 +132,20 @@ export class ExcalidrawBinding {
         for (const id of removed) {
           collaborators.delete(id.toString());
         }
-        collaborators.delete(this.awareness.clientID.toString());
+        collaborators.delete(this.awareness?.clientID?.toString() || "");
         this.api.updateScene({ collaborators });
         this.collaborators = collaborators;
       };
-      this.awareness.on("change", _remoteAwarenessChangeHandler);
+      this.awareness?.on("change", _remoteAwarenessChangeHandler);
       this.subscriptions.push(() => {
-        this.awareness.off("change", _remoteAwarenessChangeHandler);
+        this.awareness?.off("change", _remoteAwarenessChangeHandler);
       });
     }
 
     if (this.undoManager) {
+      if (!excalidrawDom) {
+        throw new Error('excalidrawDom is required for undo/redo setup')
+      }
       this.setupUndoRedo(excalidrawDom)
     }
 
@@ -168,13 +171,13 @@ export class ExcalidrawBinding {
       for (const id of this.awareness.getStates().keys()) {
         const state = this.awareness.getStates().get(id)
         collaborators.set(id.toString(), {
-          pointer: state.pointer,
-          button: state.button,
-          selectedElementIds: state.selectedElementIds,
-          username: state.user?.name,
-          color: state.user?.color,
-          avatarUrl: state.user?.avatarUrl,
-          userState: state.user?.state,
+          pointer: state?.pointer,
+          button: state?.button,
+          selectedElementIds: state?.selectedElementIds,
+          username: state?.user?.name,
+          color: state?.user?.color,
+          avatarUrl: state?.user?.avatarUrl,
+          userState: state?.user?.state,
         });
       }
       this.api.updateScene({ collaborators });
@@ -197,18 +200,18 @@ export class ExcalidrawBinding {
   };
 
   private setupUndoRedo(excalidrawDom: HTMLElement) {
-    this.undoManager.addTrackedOrigin(this)
-    this.subscriptions.push(() => this.undoManager.removeTrackedOrigin(this))
+    this.undoManager?.addTrackedOrigin(this)
+    this.subscriptions.push(() => this.undoManager?.removeTrackedOrigin(this))
 
     // listen for undo/redo keys
-    const _keyPressHandler = (event) => {
+    const _keyPressHandler = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.shiftKey && event.key?.toLocaleLowerCase() === 'z') {
         event.stopPropagation();
-        this.undoManager.redo()
+        this.undoManager?.redo()
       }
       else if (event.ctrlKey && event.key?.toLocaleLowerCase() === 'z') {
         event.stopPropagation();
-        this.undoManager.undo()
+        this.undoManager?.undo()
       }
     }
     excalidrawDom.addEventListener('keydown', _keyPressHandler, { capture: true });
@@ -219,26 +222,26 @@ export class ExcalidrawBinding {
     let undoButton: HTMLButtonElement | null;
     let redoButton: HTMLButtonElement | null;
 
-    const _undoBtnHandler = (event) => {
+    const _undoBtnHandler = (event: MouseEvent) => {
       event.stopImmediatePropagation();
-      this.undoManager.undo()
+      this.undoManager?.undo()
     }
-    const _redoBtnHandler = (event) => {
+    const _redoBtnHandler = (event: MouseEvent) => {
       event.stopImmediatePropagation();
-      this.undoManager.redo()
+      this.undoManager?.redo()
     }
 
     const _resizeListener = () => {
       if (!undoButton || !undoButton.isConnected) {
         undoButton?.removeEventListener('click', _undoBtnHandler)
         undoButton = excalidrawDom.querySelector('[aria-label="Undo"]');  // Assuming new undoButton is added to dom by now
-        undoButton.addEventListener('click', _undoBtnHandler);
+        undoButton?.addEventListener('click', _undoBtnHandler);
       }
 
       if (!redoButton || !redoButton.isConnected) {
         redoButton?.removeEventListener('click', _undoBtnHandler)
         redoButton = excalidrawDom.querySelector('[aria-label="Redo"]');  // Assuming new redoButton is added to dom by now
-        redoButton.addEventListener('click', _redoBtnHandler);
+        redoButton?.addEventListener('click', _redoBtnHandler);
       }
     }
 
