@@ -1,35 +1,51 @@
-import { useFetcher } from "@/hooks/useFetcher";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/mantine/style.css";
+import { toUint8Array } from "js-base64";
+import * as Y from "yjs";
+import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { useEffect } from "react";
 
 interface ConversationSaveNoteViewerProps {
-  data: {
-    url: string;
-    isShared: boolean;
-  };
+  data: string;
 }
 
 const ConversationSaveNoteViewer = ({
-  data: { url },
+  data,
 }: ConversationSaveNoteViewerProps) => {
-  const { data } = useFetcher({ url });
-  const editor = useCreateBlockNote({
-    animations: false,
-  });
+  const note = usePreviousRoomStore((state) => state.note);
+  const setNote = usePreviousRoomStore((state) => state.setNote);
+  const ydoc = usePreviousRoomStore((state) => state.noteYdoc);
+  const yText = ydoc.getXmlFragment("document-store");
 
   useEffect(() => {
-    async function loadInitialHTML() {
-      const blocks = await editor.tryParseMarkdownToBlocks(data?.data || "");
-      editor.replaceBlocks(editor.document, blocks);
+    if (note) {
+      const binaryEncoded = toUint8Array(note);
+      Y.applyUpdate(ydoc, binaryEncoded);
     }
-    loadInitialHTML();
+  }, [note, ydoc]);
+
+  useEffect(() => {
+    if (!note) {
+      setNote(data);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, []);
+
+  const editor = useCreateBlockNote({
+    animations: false,
+    collaboration: {
+      fragment: yText,
+      provider: null,
+      user: {
+        name: "",
+        color: "#ffffff",
+      },
+    },
+  });
 
   return (
-    <div className="h-[calc(100vh-12rem)] py-2">
+    <div className="h-[calc(100vh-16rem)] py-2">
       <BlockNoteView editor={editor} sideMenu={true} theme="light" />
     </div>
   );
