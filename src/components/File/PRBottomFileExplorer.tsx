@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
+import { unixtimeConvertorToKorean } from "@/lib/time";
 
 export const PRBottomFileExplorer = () => {
   const { prInfo } = prInfoStore();
@@ -91,8 +92,20 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
           className="h-6 w-6 rounded-full"
         />
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium">{firstComment.user.login}</div>
-          <div className="mt-1 text-sm text-gray-600">{firstComment.body}</div>
+          <div className="flex items-center">
+            <div className="text-sm font-medium">{firstComment.user.login}</div>
+            <div className="pl-2 text-xs text-gray-500">
+              {unixtimeConvertorToKorean(
+                new Date(firstComment.date.created_at),
+              )}
+            </div>
+          </div>
+          <div className="mt-1 text-sm text-gray-600">
+            {firstComment.body}
+            <span className="pl-1 text-gray-500">
+              [Ln {firstComment.original_line}]
+            </span>
+          </div>
         </div>
       </div>
       {restComments.length > 0 && (
@@ -113,12 +126,19 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
                     className="h-6 w-6 rounded-full"
                   />
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium">
-                      {comment.user.login}
+                    <div className="flex items-center">
+                      <div className="text-sm font-medium">
+                        {comment.user.login}
+                      </div>
+                      <span className="pl-2 text-xs text-gray-500">
+                        {unixtimeConvertorToKorean(
+                          new Date(comment.date.created_at),
+                        )}
+                      </span>
                     </div>
                     <div className="mt-1 text-sm text-gray-600">
                       {comment.body}
-                      <span className="text-gray-600">
+                      <span className="text-gray-500">
                         [Ln {comment.original_line}]
                       </span>
                     </div>
