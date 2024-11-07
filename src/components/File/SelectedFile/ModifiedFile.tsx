@@ -2,6 +2,7 @@ import { CodeSplitEditor } from "@/components/CodeEditor";
 import { useContext } from "react";
 import { FileEditorProps } from "./file";
 import { BoardContext } from ".";
+import { Button } from "@/components/ui/button";
 
 export const ModifiedFile = ({
   selectedCommitFile,
@@ -10,9 +11,13 @@ export const ModifiedFile = ({
   const { convertToImage } = useContext(BoardContext);
   return (
     <>
-      <button onClick={convertToImage} className="p-2 text-pink-500">
-        보여줘 하츄핑!!!!
-      </button>
+      <Button
+        onClick={convertToImage}
+        className="absolute top-20 z-20 py-0 text-sm"
+        variant="ghost"
+      >
+        Editor snapshot
+      </Button>
       <CodeSplitEditor
         language={selectedCommitFile.language}
         originalValue={selectedCommitFile.beforeContent}

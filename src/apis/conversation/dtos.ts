@@ -2,30 +2,65 @@ interface UserData {
   email: string;
   name: string;
 }
-
-export interface Conversation {
-  pk: number;
-  // TODO : 추후에 BE가 변경될 때 이야기 하기.
-  creatorPk: number;
-  participantPk: number;
-  //
-  dataPk: number;
-  title: string;
-  startedAt: string;
-  finishedAt: string;
-  deleteAt: Date;
-  creator: UserData;
-  participant: UserData;
-}
-
-export interface Data {
-  total: number;
-  conversations: Conversation[];
-}
-
-export interface GetPreviousRoomResponseDto {
+export class GetPreviousRoomsResponseDto {
   success: boolean;
-  data: Data;
+  data: {
+    total: number;
+    conversations: {
+      pk: number;
+      creatorPk: number;
+      participantPk: number;
+      dataPk: number;
+      title: string;
+      startedAt: Date;
+      finishedAt: Date;
+      deleteAt: Date;
+      creator: UserData;
+      participant: UserData;
+      conversationDatas: {
+        uuid: string;
+        canShared: boolean;
+      }
+    }[];
+  };
+  constructor({ success, data }: {
+    success: boolean; data: {
+      total: number, conversations: {
+        pk: number;
+        creatorPk: number;
+        participantPk: number;
+        dataPk: number;
+        title: string;
+        startedAt: string;
+        finishedAt: string;
+        deleteAt: Date;
+        creator: UserData;
+        participant: UserData;
+        conversationDatas: {
+          uuid: string;
+          canShared: boolean;
+        }
+      }[];
+    }
+  }) {
+    this.success = success;
+    this.data = {
+      total: data.total,
+      conversations: data.conversations.map(conversation => ({
+        pk: conversation.pk,
+        creatorPk: conversation.creatorPk,
+        participantPk: conversation.participantPk,
+        dataPk: conversation.dataPk,
+        title: conversation.title,
+        startedAt: new Date(conversation.startedAt),
+        finishedAt: new Date(conversation.finishedAt),
+        deleteAt: new Date(conversation.deleteAt),
+        creator: conversation.creator,
+        participant: conversation.participant,
+        conversationDatas: conversation.conversationDatas,
+      }))
+    };
+  }
 }
 
 export class ChattingSocketResponse {
@@ -50,3 +85,25 @@ export class ChattingSocketResponse {
     this.date = new Date(date);
   }
 }
+
+
+export interface GetPreviousRoomResponseDto {
+  chat: {
+    url: string,
+    isShared: boolean
+  },
+  note: {
+    url: string,
+    isShared: boolean
+  },
+  drawBoard: {
+    url: string,
+    isShared: boolean
+  },
+  voice: {
+    url: string,
+    isShared: boolean
+  },
+  canShared: boolean;
+}
+

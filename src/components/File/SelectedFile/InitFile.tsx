@@ -18,11 +18,13 @@ export const InitFile = ({
   );
 
   return (
-    <div className="flex w-4/5 flex-col">
-      <div className="text-2xl font-semibold">File Changed</div>
-      <Table>
+    <div className="relative flex h-[55vh] w-full flex-col justify-center">
+      <div className="mx-auto w-[90%] py-3 text-2xl font-semibold">
+        File Changed
+      </div>
+      <Table className="m-auto w-[90%]">
         <TableHeader>
-          <TableRow className="bg-slate-200 hover:bg-slate-200">
+          <TableRow className="sticky top-0 bg-slate-200 hover:bg-slate-200">
             <TableHead className="w-[200px]">File Name</TableHead>
             <TableHead>language</TableHead>
             <TableHead>status</TableHead>
