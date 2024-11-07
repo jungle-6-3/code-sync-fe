@@ -1,4 +1,12 @@
-import { PreviewChattingProps } from "@/components/Conversation/dto";
+interface User {
+  name: string;
+  message: string;
+}
+
+export interface PreviewChattingProps {
+  user: User;
+  onClick: () => void;
+}
 
 export const PreviewChatting: React.FC<PreviewChattingProps> = ({
   user,
