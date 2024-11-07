@@ -40,7 +40,7 @@ export const PRBottomFileExplorer = () => {
             key={`file-${index}`}
             type="single"
             collapsible
-            className="w-full border-b"
+            className="w-full"
           >
             <AccordionItem value="item-1" className="border-none">
               <AccordionTrigger className="py-3 hover:no-underline">
@@ -76,6 +76,10 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
 
   const firstComment = comments[0];
   const restComments = comments.slice(1);
+
+  useEffect(() => {
+    console.log("", restComments);
+  });
 
   return (
     <AccordionContent className="pt-0">
@@ -117,7 +121,10 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
                       {comment.user.login}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">
-                      {comment.body}
+                      {comment.body}{" "}
+                      <span className="text-gray-600">
+                        [Ln {comment.original_line}]
+                      </span>
                     </div>
                   </div>
                 </div>
