@@ -72,7 +72,12 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
     const findSelecetedFile = commitFileList.find(
       (file) => file.filename === filePath,
     )!;
-    setSelectedCommitFile(findSelecetedFile);
+    if (findSelecetedFile) {
+      setSelectedCommitFile(findSelecetedFile);
+    } else {
+      alert("삭제된 파일의 댓글입니다.");
+      return;
+    }
   };
 
   const firstComment = comments[0];
