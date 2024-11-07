@@ -8,12 +8,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import FileTreeComponent from "@/components/File/PrFileExplorer";
-<<<<<<< HEAD
-import SelectedFileViewer from "@/components/File/SelectedFileViewer";
 import ConversationChatting from "@/components/Conversation/useConversationChatting";
-=======
-import ConversationChatting from "@/components/Conversation/ConversationChatting";
->>>>>>> d99f470f602bcf55f52e3b2ee4d6ab221f38c25b
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";

@@ -6,11 +6,7 @@ import CreateRoomPage from "@/pages/room/CreateRoomPage";
 import PreviousRoom from "@/pages/room/PreviousRoom";
 import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
 import RoomSavePage from "@/pages/room/RoomSavePage";
-<<<<<<< HEAD
-import PostDetailPage from "@/pages/room/RoomDetailPage";
 import HowToUsePage from "@/pages/room/HowToUsePage";
-=======
->>>>>>> d99f470f602bcf55f52e3b2ee4d6ab221f38c25b
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +42,6 @@ export const router = createBrowserRouter([
     ),
   },
   {
-<<<<<<< HEAD
     path: "/room/howtouse",
     element: (
       <UserGuard>
@@ -63,8 +58,6 @@ export const router = createBrowserRouter([
     ),
   },
   {
-=======
->>>>>>> d99f470f602bcf55f52e3b2ee4d6ab221f38c25b
     path: "/room/:postId",
     element: (
       <UserGuard>

@@ -11,6 +11,7 @@ const LeftGNB = () => {
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
+  const currentLeftSection = sectionSelectStore((state) => state.leftSection);
 
   const setNavigate = (filename: string) =>
     setSelectedCommitFile({
