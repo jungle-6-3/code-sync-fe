@@ -26,12 +26,14 @@ export const PRBottomFileExplorer = () => {
   }, [commentsList]);
 
   return (
-    <div className="p-4">
-      <h3 className="font-medium">Commit Information</h3>
-      <p className="mt-2 text-sm">
-        Branch: {prInfo.requireUserInfo.branchName} →{" "}
-        {prInfo.requestUserInfo.branchName}
-      </p>
+    <div className="overflow-auto p-4">
+      <h3 className="font-medium">
+        Commit Information
+        <span className="mt-2 pl-2 text-sm text-gray-600 underline">
+          Branch: {prInfo.requireUserInfo.branchName} →{" "}
+          {prInfo.requestUserInfo.branchName}
+        </span>
+      </h3>
       {Array.from(fileList).map((file, index) => {
         const findList = commentsList.filter(
           (commit) => commit.filename === file,
@@ -41,12 +43,10 @@ export const PRBottomFileExplorer = () => {
             key={`file-${index}`}
             type="single"
             collapsible
-            className="w-full"
+            className="w-full pt-0"
           >
-            <AccordionItem value="item-1" className="border-none">
-              <AccordionTrigger className="py-3 hover:no-underline">
-                {file}
-              </AccordionTrigger>
+            <AccordionItem value="item-1 border-t" className="border-none">
+              <AccordionTrigger className="py-1">{file}</AccordionTrigger>
               {findList.map((comment) => (
                 <CommentViewer comments={comment.comments} />
               ))}
