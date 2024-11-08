@@ -78,18 +78,79 @@ export const MainFrame = () => {
   }, [provider, ydoc, roomId]);
 
   useEffect(() => {
-    if (!editor || !provider || !ydoc || !checkUser)
-      provider?.awareness.setLocalStateField("user", {
-        name: checkUser?.data.name,
-        color: "#30bced",
+    if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    const position = editor.getPosition();
+
+    if (position) {
+      provider.awareness.setLocalStateField("user", {
+        name: checkUser.data.name,
+        color: "#ff6161",
         colorLight: "#30bced33",
+        cursor: {
+          position: {
+            lineNumber: position.lineNumber,
+            column: position.column,
+          },
+          filename: selectedCommitFile.filename,
+        },
+      });
+    }
+
+    provider.awareness.on("change", () => {
+      const statesArray = Array.from(provider.awareness.getStates());
+
+      statesArray.forEach((state) => {
+        const [clientId, clientState] = state;
+        if (clientState?.user) {
+          const styleSheet = document.createElement("style");
+          styleSheet.innerText = `
+            .yRemoteSelectionHead-${clientId}{
+              border: 2px solid ${clientState.user.color};
+              position:relative;
+            }
+            .yRemoteSelectionHead-${clientId}::before {
+              content: '${clientState.user.name}';
+              color: white; 
+              top: -15px;
+              position:absolute;
+              left: -2px;
+              background-color:${clientState.user.color};
+              font-size:12px;
+              padding:4px 4px 2px 2px;
+              border-top-right-radius: 5px;
+              border-bottom-right-radius: 5px;
+              border-top-left-radius:5px;
+            }
+          `;
+          document.head.appendChild(styleSheet);
+        }
       });
 
+      const totalUserInfo = statesArray.filter(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, state]) => state?.user && Object.keys(state).length > 0,
+      );
+
+      if (totalUserInfo.length < 2) return;
+
+      const myId = provider.awareness.clientID;
+      const myInfo = totalUserInfo.find(([id]) => id === myId);
+      const otherInfo = totalUserInfo.find(([id]) => id !== myId);
+
+      if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
+
+      const currentMyCursor = myInfo[1].user.cursor;
+      const otherUserCurrentCursor = otherInfo[1].user.cursor;
+
+      if (currentMyCursor.filename !== otherUserCurrentCursor.filename) {
+        console.log("다른 화면 보는중");
+      }
+    });
+
     return () => {
-      // 사용자 상태 정리
       provider?.awareness.setLocalStateField("user", null);
     };
-  }, [provider, editor, ydoc, checkUser]);
+  }, [provider, editor, ydoc, checkUser, selectedCommitFile.filename]);
 
   // 파일 내용 초기화
   useEffect(() => {
@@ -105,7 +166,7 @@ export const MainFrame = () => {
 
   // 에디터 바인딩
   useEffect(() => {
-    if (!editor || !selectedCommitFile) return;
+    if (!editor || !selectedCommitFile || !provider) return;
 
     // 이전 바인딩 정리
     if (bindingRef.current) {
@@ -123,6 +184,8 @@ export const MainFrame = () => {
       new Set([editor]),
       provider.awareness,
     );
+
+    console.log("bindingRef", bindingRef.current);
 
     return () => {
       if (bindingRef.current) {
