@@ -22,6 +22,7 @@ import {
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import SelectedFileViewer from "@/components/File/SelectedFile";
+import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
@@ -29,9 +30,9 @@ export const MainFrame = () => {
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
+  const roomId = window.location.pathname.split("/")[1];
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
-  const roomId = window.location.pathname.split("/")[1];
   const selectedTotalFilePath = selectedCommitFile.filename.split("/");
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const addPreviewMessage = chattingPreviewStore((state) => state.addMessage);
@@ -49,11 +50,10 @@ export const MainFrame = () => {
   if (!roomId) throw new Error("roomId is required");
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
 
-  const provider = SocketManager.getInstance().yjsSocket.provider;
   const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
   const socket = SocketManager.getInstance().socketIOSocket;
-
-
+  const provider = SocketManager.getInstance().yjsSocket.provider;
+  const { checkUser } = useCheckUserQuery();
 
   useEffect(() => {
     const onChatting = (msg: {
@@ -76,6 +76,20 @@ export const MainFrame = () => {
     initFileStructSync(ydoc, provider, commitFileList, initCommitFileList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, ydoc, roomId]);
+
+  useEffect(() => {
+    if (!editor || !provider || !ydoc || !checkUser)
+      provider?.awareness.setLocalStateField("user", {
+        name: checkUser?.data.name,
+        color: "#30bced",
+        colorLight: "#30bced33",
+      });
+
+    return () => {
+      // 사용자 상태 정리
+      provider?.awareness.setLocalStateField("user", null);
+    };
+  }, [provider, editor, ydoc, checkUser]);
 
   // 파일 내용 초기화
   useEffect(() => {
@@ -157,7 +171,7 @@ export const MainFrame = () => {
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
             defaultSize={70}
-            className="flex items-center justify-center z-0"
+            className="z-0 flex items-center justify-center"
           >
             {selectedCommitFile && (
               <SelectedFileViewer
