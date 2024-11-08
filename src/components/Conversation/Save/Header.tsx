@@ -35,8 +35,11 @@ const ConversationSaveHeader = ({
       onError: () => {
         alert("저장에 실패했습니다.");
       },
+      onSuccess: ({ message }: { message: string }) => {
+        alert(message);
+      },
       onSettled: () => {
-        navigate("/room");
+        navigate(`/room/${postId}`);
       },
     });
   };
