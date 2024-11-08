@@ -26,7 +26,7 @@ export const PRBottomFileExplorer = () => {
   }, [commentsList]);
 
   return (
-    <div className="overflow-auto p-4">
+    <div className="flex h-full flex-col overflow-hidden p-2">
       <h3 className="font-medium">
         Commit Information
         <span className="mt-2 pl-2 text-sm text-gray-600 underline">
@@ -34,26 +34,30 @@ export const PRBottomFileExplorer = () => {
           {prInfo.requestUserInfo.branchName}
         </span>
       </h3>
-      {Array.from(fileList).map((file, index) => {
-        const findList = commentsList.filter(
-          (commit) => commit.filename === file,
-        );
-        return (
-          <Accordion
-            key={`file-${index}`}
-            type="single"
-            collapsible
-            className="w-full pt-0"
-          >
-            <AccordionItem value="item-1 border-t" className="border-none">
-              <AccordionTrigger className="py-1">{file}</AccordionTrigger>
-              {findList.map((comment) => (
-                <CommentViewer comments={comment.comments} />
-              ))}
-            </AccordionItem>
-          </Accordion>
-        );
-      })}
+      <div className="flex-1 overflow-y-auto p-2">
+        {Array.from(fileList).map((file, index) => {
+          const findList = commentsList.filter(
+            (commit) => commit.filename === file,
+          );
+          return (
+            <Accordion
+              key={`file-${index}`}
+              type="single"
+              collapsible
+              className="w-full pt-0"
+            >
+              <AccordionItem value="item-1 border-t" className="border-none">
+                <AccordionTrigger className="flex-row-reverse justify-end gap-2 p-0">
+                  {file}
+                </AccordionTrigger>
+                {findList.map((comment) => (
+                  <CommentViewer comments={comment.comments} />
+                ))}
+              </AccordionItem>
+            </Accordion>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -63,10 +67,12 @@ interface CommentViewerProps {
 }
 
 const CommentViewer = ({ comments }: CommentViewerProps) => {
+  const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
-  const commitFileList = fileSysyemStore((state) => state.commitFileList);
+  const firstComment = comments[0];
+  const restComments = comments.slice(1);
 
   const navigateCodeEditor = (filePath: string) => {
     const findSelecetedFile = commitFileList.find(
@@ -75,18 +81,17 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
     if (findSelecetedFile) {
       setSelectedCommitFile(findSelecetedFile);
     } else {
-      alert("삭제된 파일의 댓글입니다.");
+      alert(
+        "이 댓글은 파일의 이전 버전에 작성된 내용으로, 현재 파일에서는 열 수 없습니다. 최신 변경 사항과 함께 댓글을 확인해주세요.",
+      );
       return;
     }
   };
 
-  const firstComment = comments[0];
-  const restComments = comments.slice(1);
-
   return (
-    <AccordionContent className="pt-0">
+    <AccordionContent className="py-0">
       <div
-        className="flex items-start gap-3 border-b border-gray-400 p-2"
+        className="flex items-start gap-3 pl-4 pt-2"
         onClick={() => {
           navigateCodeEditor(firstComment.filepath);
         }}
@@ -98,26 +103,31 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
         />
         <div className="min-w-0 flex-1">
           <div className="flex items-center">
-            <div className="text-sm font-medium">{firstComment.user.login}</div>
-            <div className="pl-2 text-xs text-gray-500">
+            <div className="text-nowrap text-sm font-medium">
+              {firstComment.user.login}
+            </div>
+            <div className="text-nowrap pl-2 text-xs text-gray-500">
               {unixtimeConvertorToKorean(
                 new Date(firstComment.date.created_at),
               )}
             </div>
-          </div>
-          <div className="mt-1 text-sm text-gray-600">
-            {firstComment.body}
-            <span className="pl-1 text-gray-500">
-              [Ln {firstComment.original_line}]
-            </span>
+            <div className="truncate pl-2 text-sm text-gray-600">
+              {firstComment.body}
+              <span className="pl-1 text-gray-500">
+                [Ln {firstComment.original_line}]
+              </span>
+            </div>
           </div>
         </div>
       </div>
       {restComments.length > 0 && (
         <Accordion type="single" collapsible>
-          <AccordionItem value="replies" className="border-none">
-            <AccordionTrigger className="py-2 pl-11 text-sm text-gray-500 hover:no-underline">
-              {restComments.length}개의 답글
+          <AccordionItem value="replies" className="group border-none">
+            <AccordionTrigger className="group flex-row-reverse justify-end gap-2 border-none py-2 pl-11 text-sm text-gray-500">
+              <span className="group-data-[state=open]:hidden">
+                {restComments.length}개의 답글
+              </span>
+              <span className="hidden group-data-[state=open]:block">닫기</span>
             </AccordionTrigger>
             <AccordionContent className="pb-2 pl-11 pt-0">
               {restComments.map((comment, index) => (
@@ -132,20 +142,20 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center">
-                      <div className="text-sm font-medium">
+                      <div className="text-nowrap text-sm font-medium">
                         {comment.user.login}
                       </div>
-                      <span className="pl-2 text-xs text-gray-500">
+                      <span className="text-nowrap pl-2 text-xs text-gray-500">
                         {unixtimeConvertorToKorean(
                           new Date(comment.date.created_at),
                         )}
                       </span>
-                    </div>
-                    <div className="mt-1 text-sm text-gray-600">
-                      {comment.body}
-                      <span className="text-gray-500">
-                        [Ln {comment.original_line}]
-                      </span>
+                      <div className="truncate pl-2 text-sm text-gray-600">
+                        {comment.body}
+                        <span className="text-gray-500">
+                          [Ln {comment.original_line}]
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
