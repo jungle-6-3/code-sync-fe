@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 
 interface Information {
   email: string;
@@ -6,7 +6,7 @@ interface Information {
   setUserInformation: (email: string, name: string) => void;
 }
 
-const userInformationStore = create<Information>((set) => ({
+const userInformationStore = create<Information>()((set) => ({
   email: "",
   name: "",
   setUserInformation: (email, name) => set({ email, name }),
