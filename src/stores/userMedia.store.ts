@@ -33,7 +33,6 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
   },
   mediaStream: null,
   startWebcam: async ({ audio, video }: UserMediaState) => {
-    console.log(get().mediaStream)
     if (get().mediaStream) {
       get()
         .mediaStream?.getTracks()
