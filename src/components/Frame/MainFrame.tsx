@@ -55,6 +55,13 @@ export const MainFrame = () => {
   const provider = SocketManager.getInstance().yjsSocket.provider;
   const { checkUser } = useCheckUserQuery();
 
+  const otherUserSelectedCommitFile = fileSysyemStore(
+    (state) => state.otherUserSelectedCommitFile,
+  );
+  const setOtherUserSelectedCommitFile = fileSysyemStore(
+    (state) => state.setOtherUserSelectedCommitFile,
+  );
+
   useEffect(() => {
     const onChatting = (msg: {
       name: string;
@@ -138,19 +145,23 @@ export const MainFrame = () => {
       const otherInfo = totalUserInfo.find(([id]) => id !== myId);
 
       if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
-
-      const currentMyCursor = myInfo[1].user.cursor;
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
-
-      if (currentMyCursor.filename !== otherUserCurrentCursor.filename) {
-        console.log("다른 화면 보는중");
-      }
+      if (otherUserSelectedCommitFile !== otherUserCurrentCursor.filename)
+        setOtherUserSelectedCommitFile(otherUserCurrentCursor.filename);
     });
 
     return () => {
       provider?.awareness.setLocalStateField("user", null);
     };
-  }, [provider, editor, ydoc, checkUser, selectedCommitFile.filename]);
+  }, [
+    provider,
+    editor,
+    ydoc,
+    checkUser?.data,
+    selectedCommitFile.filename,
+    otherUserSelectedCommitFile,
+    setOtherUserSelectedCommitFile,
+  ]);
 
   // 파일 내용 초기화
   useEffect(() => {
@@ -184,9 +195,6 @@ export const MainFrame = () => {
       new Set([editor]),
       provider.awareness,
     );
-
-    console.log("bindingRef", bindingRef.current);
-
     return () => {
       if (bindingRef.current) {
         bindingRef.current.destroy();
@@ -221,12 +229,20 @@ export const MainFrame = () => {
       <ResizablePanel defaultSize={80} order={2}>
         {selectedCommitFile.filename !== "" && (
           <>
-            <div className="flex w-full overflow-x-scroll border-b">
-              {clickedFileList.map((file, index) => {
-                return (
-                  <PrFileNameViewer key={index} fileName={file.filename} />
-                );
-              })}
+            <div className="flex items-center justify-between">
+              <div className="flex w-full overflow-x-scroll border-b">
+                {clickedFileList.map((file, index) => {
+                  return (
+                    <PrFileNameViewer key={index} fileName={file.filename} />
+                  );
+                })}
+              </div>
+              {otherUserSelectedCommitFile &&
+                otherUserSelectedCommitFile !== selectedCommitFile.filename && (
+                  <div className="text-nowrap">
+                    상대방이 : {otherUserSelectedCommitFile}을 보는중입니다.
+                  </div>
+                )}
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
           </>
