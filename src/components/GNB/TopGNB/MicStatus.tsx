@@ -1,4 +1,3 @@
-import { useVoiceSave } from "@/hooks/Conversation/useVoiceSave";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { Mic, MicOff } from "lucide-react";
@@ -11,9 +10,6 @@ const TopGNBMicStatus = () => {
     (state) => state.isSocketManagerReady,
   );
   
-  useVoiceSave(micStatus)
-
-
   if (!isSocketManagerReady) return null;
 
   const onMicToggle = () => {

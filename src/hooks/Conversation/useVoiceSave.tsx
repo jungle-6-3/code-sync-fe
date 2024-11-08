@@ -1,10 +1,12 @@
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export const useVoiceSave = (micStatus: boolean) => {
-  const recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)();
+export const useVoiceSave = (recordStatus: boolean) => {
+  const recognition = useRef(
+    new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
+  ).current;
+
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
@@ -16,19 +18,15 @@ export const useVoiceSave = (micStatus: boolean) => {
   recognition.continuous = false; // 실시간 인식
   recognition.interimResults = false; // 결과가 나오는 즉시 표시
 
-  let isRecognizing = false; // 음성 인식 상태를 추적
-  let startTime;
+  const isRecognizing = useRef(false); // 음성 인식 상태를 추적
+  let startTime: number;
 
   // 음성 인식 중 발생하는 이벤트 처리
   recognition.onresult = (event) => {
-    console.log(event);
     let finalTranscript = "";
     let interimTranscript = "";
 
-    console.log(event.results[0][0].transcript);
-
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      console.log(event.results[i].isFinal);
       if (event.results[i].isFinal) {
         finalTranscript += event.results[i][0].transcript;
       } else {
@@ -38,23 +36,15 @@ export const useVoiceSave = (micStatus: boolean) => {
     const voiceText = finalTranscript + interimTranscript;
 
     const messageData = {
-      date: new Date().toISOString(),
+      date: new Date(startTime).toISOString(),
       message: voiceText,
     };
-    console.log("Recognized Text:", messageData);
 
-    socket.emit(
-      "send-voice-text",
-      messageData,
-      (res: { success: boolean; message: string }) => {
-        console.log("서버 응답 메세지:", res.message);
-      },
-    );
+    socket.emit("send-voice-text", messageData);
   };
 
   recognition.onend = () => {
-    console.log("Speech recognition service disconnected");
-    if (isRecognizing && micStatus) {
+    if (isRecognizing.current && recordStatus) {
       recognition.start();
     }
   };
@@ -64,36 +54,35 @@ export const useVoiceSave = (micStatus: boolean) => {
   };
 
   recognition.onspeechstart = () => {
-    console.log("Speech has been detected");
     startTime = Date.now();
-    console.log("음성 인식 시작 시간:", new Date(startTime).toISOString());
-  };
-
-  recognition.onstart = () => {
-    console.log("Speech recognition service has started");
   };
 
   // 음성 인식 시작
   const startRecognition = () => {
-    if (!isRecognizing) {
+    if (!isRecognizing.current) {
       recognition.start();
-      isRecognizing = true;
+      isRecognizing.current = true;
     }
   };
 
   // 음성 인식 중지
   const stopRecognition = () => {
-    if (isRecognizing) {
+    if (isRecognizing.current) {
       recognition.stop();
-      isRecognizing = false;
+      isRecognizing.current = false;
     }
   };
 
   useEffect(() => {
-    if (micStatus) {
+    if (recordStatus) {
       startRecognition();
     } else {
       stopRecognition();
     }
-  }, [micStatus]);
+
+    return () => {
+      stopRecognition();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recordStatus]);
 };

@@ -1,3 +1,4 @@
+import { useVoiceSave } from "@/hooks/Conversation/useVoiceSave";
 import { Circle, Disc2 } from "lucide-react";
 import { useReducer } from "react";
 
@@ -6,6 +7,8 @@ const TopGNBRecordStatus = () => {
     (state) => !state,
     false,
   );
+
+  useVoiceSave(recordStatus);
 
   const onRecordClick = () => {
     toggleRecordStatus();
