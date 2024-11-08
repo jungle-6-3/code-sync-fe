@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useConversationMutation } from "@/hooks/Conversation/useConversationMutation";
@@ -82,7 +82,10 @@ const CreateRoomPage = () => {
           <h1 className="text-2xl font-bold text-gray-500">
             새로운 회의를 생성하고 싶으신가요?
           </h1>
-          <Link to="/room/howtouse" className="underline-offset-3 text-gray-600 underline">
+          <Link
+            to="/room/howtouse"
+            className="underline-offset-3 text-gray-600 underline"
+          >
             사용법을 잘 모르겠어요.
           </Link>
         </div>

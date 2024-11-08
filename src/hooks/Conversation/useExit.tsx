@@ -1,4 +1,5 @@
 import { SocketManager } from "@/lib/socketManager";
+import { resetAllStores } from "@/lib/zustand";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { useEffect } from "react";
@@ -10,16 +11,15 @@ export const useExit = () => {
     (state) => state.isSocketManagerReady,
   );
   const isCreator = userMediaStore((state) => state.isCreator);
-  const stopWebcam = userMediaStore((state) => state.stopWebcam);
   const onFinishing = useCommunicationStore((state) => state.onFinishing);
   if (!isSocketManagerReady) throw new Error("소켓이 준비되지 않았어요.");
   const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
     socket.on("room-closed", () => {
-      stopWebcam({ audio: true, video: true });
       onFinishing();
       alert("방을 닫습니다.");
+      resetAllStores();
       navigat("/room/create");
     });
     return () => {

@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 
 interface UserMediaState {
   audio: boolean;
@@ -14,6 +14,7 @@ interface UserMediaStore {
   mediaStream: MediaStream | null;
   startWebcam: (constraints: UserMediaState) => void;
   stopWebcam: (constraints: UserMediaState) => void;
+  removeWebcam: () => void;
   opponentsMediaStream: MediaStream[];
   addOpponentMediaStream: (mediaStream: MediaStream) => void;
   removeOpponentMediaStream: () => void;
@@ -80,6 +81,10 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
         isUserMediaOn: { video, audio },
       });
     }
+  },
+  removeWebcam: () => {
+    get().mediaStream?.getTracks().forEach((track) => track.stop());
+    set({ mediaStream: null, isUserMediaOn: { video: false, audio: false } });
   },
   opponentsMediaStream: [],
   addOpponentMediaStream: (mediaStream) => {

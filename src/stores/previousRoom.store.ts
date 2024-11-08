@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 import * as Y from "yjs";
 interface PreviousRoomStore {
   drawBoard: string,
