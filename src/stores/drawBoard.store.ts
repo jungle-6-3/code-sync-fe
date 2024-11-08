@@ -1,6 +1,6 @@
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { ExcalidrawBinding } from "y-excalidraw";
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 
 interface ImageSize {
   width: number;
@@ -32,7 +32,7 @@ const initialImageInfo: IsAddedImageInfo = {
   },
 };
 
-export const drawBoardStore = create<DrawBoardStore>((set, get) => ({
+export const drawBoardStore = create<DrawBoardStore>()((set, get) => ({
   api: undefined,
   binding: undefined,
   exalidrawDom: null,
