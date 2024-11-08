@@ -23,9 +23,7 @@ const ConversationSaveHeader = ({
   if (!postId) throw new Error("postId is required");
   const { mutate: patchRoom } = usePreviouseRoomPatchMutate(postId);
   const noteYDoc = usePreviousRoomStore((state) => state.noteYdoc);
-  const setNote = usePreviousRoomStore((state) => state.setNote);
   const drawBoardYDoc = usePreviousRoomStore((state) => state.drawBoardYdoc);
-  const setDrawBoard = usePreviousRoomStore((state) => state.setDrawBoard);
   const navigate = useNavigate();
 
   const onPatchRoom = () => {
@@ -38,8 +36,6 @@ const ConversationSaveHeader = ({
         alert("저장에 실패했습니다.");
       },
       onSettled: () => {
-        setNote("");
-        setDrawBoard("");
         navigate("/room");
       },
     });
@@ -52,7 +48,7 @@ const ConversationSaveHeader = ({
         <Input defaultValue={initialTitle} />
       </div>
       <div className="flex gap-4">
-        <Button variant="secondary">
+        <Button variant="secondary" asChild>
           <Link to="/room">목록으로</Link>
         </Button>
         <Button onClick={onPatchRoom}>저장하기</Button>
