@@ -26,7 +26,7 @@ export const PRBottomFileExplorer = () => {
   }, [commentsList]);
 
   return (
-    <div className="flex flex-col h-full p-2 overflow-hidden">
+    <div className="flex h-full flex-col overflow-hidden p-2">
       <h3 className="font-medium">
         Commit Information
         <span className="mt-2 pl-2 text-sm text-gray-600 underline">
@@ -67,27 +67,26 @@ interface CommentViewerProps {
 }
 
 const CommentViewer = ({ comments }: CommentViewerProps) => {
+  const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const setSelectedCommitFile = fileSysyemStore(
     (state) => state.setSelectedCommitFile,
   );
-  const commitFileList = fileSysyemStore((state) => state.commitFileList);
+  const firstComment = comments[0];
+  const restComments = comments.slice(1);
 
   const navigateCodeEditor = (filePath: string) => {
-    console.log("commitFileList", commitFileList);
     const findSelecetedFile = commitFileList.find(
       (file) => file.filename === filePath,
     )!;
-    console.log("findSelecetedFile", findSelecetedFile);
     if (findSelecetedFile) {
       setSelectedCommitFile(findSelecetedFile);
     } else {
-      alert("삭제된 파일의 댓글입니다.");
+      alert(
+        "이 댓글은 파일의 이전 버전에 작성된 내용으로, 현재 파일에서는 열 수 없습니다. 최신 변경 사항과 함께 댓글을 확인해주세요.",
+      );
       return;
     }
   };
-
-  const firstComment = comments[0];
-  const restComments = comments.slice(1);
 
   return (
     <AccordionContent className="py-0">
