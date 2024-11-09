@@ -17,26 +17,20 @@ const ConversationSaveChatViewer = ({
   chats,
   voice,
 }: ConversationSaveChatViewerProps) => {
-  const updateChats = chats.map(chat => ({
-    ...chat,
-    status: "chat"
-  }));
-  
-  const updateVoice = voice.map(voice => ({
-    ...voice,
-    status: "voice"
-  }))
-
-  const chatting = updateChats.concat(updateVoice);
-
+  const chatting = [
+    ...chats.map((c) => ({...c, status: "chat"})),
+    ...voice.map((v) => ({...v, status: "voice"})),
+  ]
 
   const sortedChatting = [...chatting].sort(function (a, b) {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
-  })
-  // console.log(sortedChatting);
-  const chattingData = sortedChatting.map(chat => ({
+  });
+
+  const chattingData = sortedChatting.map((chat) => ({
     ...chat,
-    date: new Date(chat.date).toLocaleString("ko-KR", {timeZone: "Asia/Seoul"})
+    date: new Date(chat.date).toLocaleString("ko-KR", {
+      timeZone: "Asia/Seoul",
+    }),
   }));
 
   return (
@@ -47,8 +41,10 @@ const ConversationSaveChatViewer = ({
             {chattingData.map((chat) => (
               <li
                 key={chat.date}
-                className={`my-1 flex items-end px-2 justify-center ${
-                  chat.status === "voice" ? "ml-auto" : "mr-auto"
+                className={`m-auto my-1 w-fit px-2 ${
+                  chat.status === "voice"
+                    ? "translate-x-1/2"
+                    : "-translate-x-1/2"
                 }`}
               >
                 <div
