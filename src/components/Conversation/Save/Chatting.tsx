@@ -18,9 +18,9 @@ const ConversationSaveChatViewer = ({
   voice,
 }: ConversationSaveChatViewerProps) => {
   const chatting = [
-    ...chats.map((c) => ({...c, status: "chat"})),
-    ...voice.map((v) => ({...v, status: "voice"})),
-  ]
+    ...chats.map((c) => ({ ...c, status: "chat" })),
+    ...voice.map((v) => ({ ...v, status: "voice" })),
+  ];
 
   const sortedChatting = [...chatting].sort(function (a, b) {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -34,33 +34,38 @@ const ConversationSaveChatViewer = ({
   }));
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       <div className="w-full">
+        <div className="flex w-full items-center justify-center space-x-40">
+          <h1 className="mb-4 text-center text-2xl font-bold">Chatting</h1>
+          <h1 className="mb-4 text-center text-2xl font-bold">Voice Text</h1>
+        </div>
         <div className="h-[calc(100vh-16rem)] py-2">
-          <ul className="[&:>]:-order-1 bottom-0 flex w-full flex-1 flex-col">
-            {chattingData.map((chat) => (
-              <li
-                key={chat.date}
-                className={`m-auto my-1 w-fit px-2 ${
-                  chat.status === "voice"
-                    ? "translate-x-1/2"
-                    : "-translate-x-1/2"
-                }`}
-              >
+          {chattingData.map((chat) => (
+            <div
+              key={chat.date}
+              className={`mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px] ${
+                chat.status === "voice" ? "translate-x-1/2" : "-translate-x-1/2"
+              }`}
+            >
+              <div className="flex p-3">
                 <div
-                  className={`max-w-xs rounded-lg p-2 ${
+                  className={`mr-3 flex h-8 w-8 items-center justify-center rounded-full font-bold ${
                     chat.name === chats[0].name
-                      ? "bg-black text-white"
-                      : "bg-gray-300 text-black"
+                      ? "bg-gray-300 text-black"
+                      : "bg-black text-white"
                   }`}
                 >
-                  <span className="text-xs font-bold">{chat.name}</span>
-                  <p className="text-sm">{chat.message}</p>
-                  <p className="text-xs">{chat.date}</p>
+                  {chat.name[0]}
                 </div>
-              </li>
-            ))}
-          </ul>
+                <div className="flex-1 text-sm text-gray-700">
+                  <p className="font-semibold text-gray-900">{chat.name}</p>
+                  <p className="truncate">{chat.message}</p>
+                  <p className="truncate text-xs">{chat.date}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
