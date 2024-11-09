@@ -107,6 +107,15 @@ export const MainFrame = () => {
           filename: selectedCommitFile.filename,
         },
       });
+    } else {
+      provider.awareness.setLocalStateField("user", {
+        name: checkUser.data.name,
+        color: "#ff6161",
+        colorLight: "#30bced33",
+        cursor: {
+          filename: selectedCommitFile.filename,
+        },
+      });
     }
 
     return () => {
@@ -119,7 +128,7 @@ export const MainFrame = () => {
     provider.awareness.on("change", () => {
       // if (selectedCommitFile.filename !== otherUserSelectedCommitFile) return
       const statesArray = Array.from(provider.awareness.getStates());
-
+      console.log("statesArray", statesArray);
       statesArray.forEach((state) => {
         const [clientId, clientState] = state;
         if (clientState?.user) {
@@ -224,10 +233,37 @@ export const MainFrame = () => {
 
   const navigateToOtherUserFile = () => {
     if (!otherUserSelectedCommitFile) return;
-    const findFile = commitFileList.find(
-      (file) => file.filename === otherUserSelectedCommitFile,
-    )!;
-    setSelectedCommitFile(findFile);
+    switch (otherUserSelectedCommitFile) {
+      case "MainDrawBoard":
+        setSelectedCommitFile({
+          additions: 0,
+          afterContent: "",
+          beforeContent: "",
+          deletions: 0,
+          filename: "MainDrawBoard",
+          language: "",
+          status: "init",
+        });
+        break;
+      case "BlockNote":
+        setSelectedCommitFile({
+          additions: 0,
+          afterContent: "",
+          beforeContent: "",
+          deletions: 0,
+          filename: "BlockNote",
+          language: "",
+          status: "init",
+        });
+        break;
+      default: {
+        const findFile = commitFileList.find(
+          (file) => file.filename === otherUserSelectedCommitFile,
+        )!;
+        setSelectedCommitFile(findFile);
+        break;
+      }
+    }
   };
 
   return (
