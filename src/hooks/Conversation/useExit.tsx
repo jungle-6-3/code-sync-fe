@@ -1,5 +1,4 @@
 import { SocketManager } from "@/lib/socketManager";
-import { resetAllStores } from "@/lib/zustand";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { useEffect } from "react";
@@ -19,7 +18,6 @@ export const useExit = () => {
     socket.on("room-closed", () => {
       onFinishing();
       alert("방을 닫습니다.");
-      resetAllStores();
       navigat("/room/create");
     });
     return () => {

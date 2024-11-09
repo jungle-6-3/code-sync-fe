@@ -22,6 +22,7 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   const isCreator = userMediaStore((state) => state.isCreator);
   const onReady = useCommunicationStore((state) => state.onReady);
   const roomUuid = window.location.pathname.split("/")[1];
+  const resetAllStores = useCommunicationStore((state) => state.onFinishing);
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
@@ -49,6 +50,7 @@ const ConversationReadyPage = ({ onSetJoin }: ConversationReadyPageProps) => {
   };
 
   useEffect(() => {
+    resetAllStores();
     onReady(roomUuid);
     if (!isStartVideoWebCam.current) {
       startWebcam({ audio: true, video: true });

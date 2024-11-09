@@ -53,8 +53,6 @@ export const MainFrame = () => {
   const ydoc = SocketManager.getInstance().yjsSocket.ydoc;
   const socket = SocketManager.getInstance().socketIOSocket;
 
-
-
   useEffect(() => {
     const onChatting = (msg: {
       name: string;
@@ -157,7 +155,7 @@ export const MainFrame = () => {
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
             defaultSize={70}
-            className="flex items-center justify-center z-0"
+            className="z-0 flex items-center justify-center"
           >
             {selectedCommitFile && (
               <SelectedFileViewer
