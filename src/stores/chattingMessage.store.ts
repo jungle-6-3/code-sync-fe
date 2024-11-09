@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 
 interface Chatting {
   date: Date;
@@ -17,7 +17,7 @@ interface ChattingPreviewStore {
   clearMessages: () => void;
 }
 
-export const chattingMessageStore = create<ChattingStore>((set) => ({
+export const chattingMessageStore = create<ChattingStore>()((set) => ({
   messages: [],
   addMessage: ({ date, name, message }: Chatting) =>
     set((state) => ({
@@ -25,9 +25,11 @@ export const chattingMessageStore = create<ChattingStore>((set) => ({
     })),
 }));
 
-export const chattingPreviewStore = create<ChattingPreviewStore>((set) => ({
+export const chattingPreviewStore = create<ChattingPreviewStore>()((set) => ({
   messages: [],
-  addMessage: ({ date, name, message }: Chatting) => set({messages: [{date, name, message}],
-  }),
+  addMessage: ({ date, name, message }: Chatting) =>
+    set({
+      messages: [{ date, name, message }],
+    }),
   clearMessages: () => set({ messages: [] }),
 }));

@@ -3,12 +3,14 @@ import { ConversationCam } from "@/components/WebCam";
 import ConversationPage from "@/pages/conversation/ConversationPage";
 import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 
 const ConversationJunctionPage = () => {
   const [isJoin, setIsJoin] = useState(false);
   const constraintsRef = useRef(null);
   const { conversationId } = useParams();
   const navigate = useNavigate();
+  const onFinishing = useCommunicationStore((state) => state.onFinishing);
 
   useEffect(() => {
     const regex =
@@ -17,6 +19,9 @@ const ConversationJunctionPage = () => {
       alert("비정상적인 접근입니다.");
       navigate("/");
     }
+    return () => {
+      onFinishing();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

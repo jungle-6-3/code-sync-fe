@@ -1,7 +1,8 @@
 
 import { addInviteAcceptedListener } from '@/lib/socket';
 import { SocketManager } from '@/lib/socketManager';
-import { create } from 'zustand';
+import { create } from "@/lib/zustand";
+import { userMediaStore } from '@/stores/userMedia.store';
 
 type LifecycleStage =
   | 'init' // 방 생성하기: 방 생성 및 고유 ID, 사용자 정보 초기화
@@ -25,7 +26,7 @@ interface CommunicationState {
   isSocketManagerReady: boolean;
 }
 
-export const useCommunicationStore = create<CommunicationState>((set, get) => ({
+export const useCommunicationStore = create<CommunicationState>()((set, get) => ({
   stage: 'init',
   isSocketManagerReady: false,
   isReconnecting: false,
@@ -42,7 +43,12 @@ export const useCommunicationStore = create<CommunicationState>((set, get) => ({
   onWaiting: () => set({ stage: 'waiting' }),
   onSaving: () => set({ stage: 'saving' }),
   onFinishing: () => {
-    SocketManager.getInstance().disconnectAllSockets();
+    if (get().isSocketManagerReady) {
+      SocketManager.getInstance().disconnectAllSockets();
+    }
     set({ stage: 'finishing', isSocketManagerReady: false });
+    userMediaStore.getState().removeWebcam();
+
+    set({ stage: 'init', isSocketManagerReady: false });
   },
 }));

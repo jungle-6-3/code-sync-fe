@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 
 type LeftSection = "folder" | "chat" | "";
 type bottomSection = "commit" | "";
@@ -10,7 +10,7 @@ interface SectionSelectStore {
   setBottomSection: (page: bottomSection) => void;
 }
 
-export const sectionSelectStore = create<SectionSelectStore>((set, get) => ({
+export const sectionSelectStore = create<SectionSelectStore>()((set, get) => ({
   leftSection: "folder",
   setLeftSNBSelection: (page) => {
     const prevSection = get().leftSection;

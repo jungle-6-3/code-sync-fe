@@ -1,10 +1,10 @@
 import { BlockNoteView } from "@blocknote/mantine";
-import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteEditor } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { toUint8Array } from "js-base64";
 import * as Y from "yjs";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
-import { useEffect } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 
 interface ConversationSaveNoteViewerProps {
   data: string;
@@ -16,33 +16,45 @@ const ConversationSaveNoteViewer = ({
   const note = usePreviousRoomStore((state) => state.note);
   const setNote = usePreviousRoomStore((state) => state.setNote);
   const ydoc = usePreviousRoomStore((state) => state.noteYdoc);
-  const yText = ydoc.getXmlFragment("document-store");
+  const [forceUpdateCount, forceUpdate] = useReducer((x) => x + 1, 0);
+  const editor = useMemo(
+    () =>
+      BlockNoteEditor.create({
+        animations: false,
+        collaboration: {
+          fragment: ydoc.getXmlFragment("document-store"),
+          provider: null,
+          user: {
+            name: "",
+            color: "#ffffff",
+          },
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [forceUpdateCount],
+  );
 
   useEffect(() => {
-    if (note) {
+    const initNoteUpdate = (_: Uint8Array, keys: string) => {
+      if (keys === "server") forceUpdate();
+    };
+    if (note.length !== 0) {
       const binaryEncoded = toUint8Array(note);
-      Y.applyUpdate(ydoc, binaryEncoded);
+      ydoc.on("update", initNoteUpdate);
+      Y.applyUpdate(ydoc, binaryEncoded, "server");
     }
-  }, [note, ydoc]);
+    return () => {
+      ydoc.off("update", initNoteUpdate);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [note]);
 
   useEffect(() => {
-    if (!note) {
+    if (note.length === 0) {
       setNote(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const editor = useCreateBlockNote({
-    animations: false,
-    collaboration: {
-      fragment: yText,
-      provider: null,
-      user: {
-        name: "",
-        color: "#ffffff",
-      },
-    },
-  });
 
   return (
     <div className="h-[calc(100vh-16rem)] py-2">
