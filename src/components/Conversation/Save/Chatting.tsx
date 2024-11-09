@@ -17,44 +17,54 @@ const ConversationSaveChatViewer = ({
   chats,
   voice,
 }: ConversationSaveChatViewerProps) => {
+  const updateChats = chats.map(chat => ({
+    ...chat,
+    status: "chat"
+  }));
+  
+  const updateVoice = voice.map(voice => ({
+    ...voice,
+    status: "voice"
+  }))
+
+  const chatting = updateChats.concat(updateVoice);
+
+
+  const sortedChatting = [...chatting].sort(function (a, b) {
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  })
+  // console.log(sortedChatting);
+  const chattingData = sortedChatting.map(chat => ({
+    ...chat,
+    date: new Date(chat.date).toLocaleString("ko-KR", {timeZone: "Asia/Seoul"})
+  }));
+
   return (
     <div className="flex h-screen">
-      <div className="w-1/2">
-        <div className="h-[calc(100vh-16rem)] w-40 py-2">
-          <div>
-            {chats.map((chat) => {
-              return (
-                <div key={chat.date} className="flex gap-4 py-1">
-                  <div className="flex w-1/12 items-center justify-center rounded border">
-                    {chat.name}
-                  </div>
-                  <div className="w-11/12 rounded border px-4 py-1">
-                    {chat.message}
-                    <div>{chat.date}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="w-1/2">
+      <div className="w-full">
         <div className="h-[calc(100vh-16rem)] py-2">
-          <div>
-            {voice.map((voice) => {
-              return (
-                <div key={voice.date} className="flex gap-4 py-1">
-                  <div className="flex w-1/12 items-center justify-center rounded border">
-                    {voice.name}
-                  </div>
-                  <div className="w-11/12 rounded border px-4 py-1">
-                    {voice.message}
-                    <div>{voice.date}</div>
-                  </div>
+          <ul className="[&:>]:-order-1 bottom-0 flex w-full flex-1 flex-col">
+            {chattingData.map((chat) => (
+              <li
+                key={chat.date}
+                className={`my-1 flex items-end px-2 justify-center ${
+                  chat.status === "voice" ? "ml-auto" : "mr-auto"
+                }`}
+              >
+                <div
+                  className={`max-w-xs rounded-lg p-2 ${
+                    chat.name === chats[0].name
+                      ? "bg-black text-white"
+                      : "bg-gray-300 text-black"
+                  }`}
+                >
+                  <span className="text-xs font-bold">{chat.name}</span>
+                  <p className="text-sm">{chat.message}</p>
+                  <p className="text-xs">{chat.date}</p>
                 </div>
-              );
-            })}
-          </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
