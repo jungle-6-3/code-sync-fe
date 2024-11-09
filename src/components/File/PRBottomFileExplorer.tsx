@@ -50,8 +50,8 @@ export const PRBottomFileExplorer = () => {
                 <AccordionTrigger className="flex-row-reverse justify-end gap-2 p-0">
                   {file}
                 </AccordionTrigger>
-                {findList.map((comment) => (
-                  <CommentViewer comments={comment.comments} />
+                {findList.map((comment, index) => (
+                  <CommentViewer key={index} comments={comment.comments} />
                 ))}
               </AccordionItem>
             </Accordion>

@@ -35,21 +35,6 @@ export const DrawBoard = () => {
   const yAssets = socketManager.yjsSocket.ydoc.getMap("assets");
 
   useEffect(() => {
-    if (!api) return;
-    if (yElements === undefined || yAssets === undefined) return;
-
-    provider?.awareness.setLocalStateField("user", {
-      color: "#30bced",
-      colorLight: "#30bced33",
-    });
-
-    return () => {
-      // 사용자 상태 정리
-      provider?.awareness.setLocalStateField("user", null);
-    };
-  }, [api, provider, yElements, yAssets, binding, setBindings]);
-
-  useEffect(() => {
     let newBinding: ExcalidrawBinding | null = null;
 
     if (isSocketManagerReady && !binding && api && excalidrawDom) {

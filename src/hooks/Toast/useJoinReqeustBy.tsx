@@ -20,12 +20,9 @@ const useJoinRequestByToast = () => {
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
 
   const socket = SocketManager.getInstance().socketIOSocket;
-  const peerId = SocketManager.getInstance().peerConnection.id;
 
   const onInvite = (t: string | number, { data }: SocketJoinRequestBy) => {
-    socket.emit("invite-user", { email: data.participant.email }, () => {
-      socket.emit("share-peer-id", { peerId });
-    });
+    socket.emit("invite-user", { email: data.participant.email });
     toast.dismiss(t);
   };
 
