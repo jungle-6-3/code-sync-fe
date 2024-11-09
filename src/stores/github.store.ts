@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "@/lib/zustand";
 import {
   getFileContent,
   getPrCommentsData,
@@ -191,14 +191,14 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
           updateClickedFileList.length > 0
             ? updateClickedFileList[updateClickedFileList.length - 1]
             : {
-                filename: "",
-                status: "init" as PrChangedFileStatusInfo["status"],
-                language: "",
-                additions: 0,
-                deletions: 0,
-                afterContent: "",
-                beforeContent: "",
-              };
+              filename: "",
+              status: "init" as PrChangedFileStatusInfo["status"],
+              language: "",
+              additions: 0,
+              deletions: 0,
+              afterContent: "",
+              beforeContent: "",
+            };
         get().setSelectedCommitFile(newSelectedFile);
       }
       return { clickedFileList: updateClickedFileList };

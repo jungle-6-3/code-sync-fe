@@ -105,7 +105,7 @@ export default function ConversationChatting() {
         <div className="relative bottom-20 flex justify-center">
           <PreviewChatting user={lastMessage} onClick={onClickPreview} />
         </div>
-      )} 
+      )}
       <form onSubmit={onSubmit} className="p-2">
         <div className="flex items-center gap-2">
           <Input

@@ -17,28 +17,31 @@ const ConversationSaveDrawBoardViewer = ({
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const drawBoard = usePreviousRoomStore((state) => state.drawBoard);
   const setDrawBoard = usePreviousRoomStore((state) => state.setDrawBoard);
-
   const [binding, setBinding] = useState<ExcalidrawBinding | null>(null);
   const ydoc = usePreviousRoomStore((state) => state.drawBoardYdoc);
   const yElements = ydoc.getArray<Y.Map<unknown>>("elements");
   const yAssets = ydoc.getMap("assets");
 
   useEffect(() => {
-    if (!api || !exalidrawDomRef.current) return;
+    if (!api) return;
     const newBinding = new ExcalidrawBinding(yElements, yAssets, api);
     setBinding(newBinding);
+    return () => {
+      newBinding.destroy();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]);
 
   useEffect(() => {
-    if (drawBoard) {
+    if (drawBoard.length !== 0) {
       const binaryEncoded = toUint8Array(drawBoard);
       Y.applyUpdate(ydoc, binaryEncoded);
     }
-  }, [ydoc, drawBoard]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawBoard]);
 
   useEffect(() => {
-    if (!drawBoard) {
+    if (drawBoard.length === 0) {
       setDrawBoard(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

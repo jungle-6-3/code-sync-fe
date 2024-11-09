@@ -5,29 +5,30 @@ import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewe
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { useFetchers } from "@/hooks/useFetcher";
+import { usePreviousRoomStore } from "@/stores/previousRoom.store";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import * as Y from "yjs";
 
 const ConversationSaveTabs = () => {
   const { postId } = useParams();
   if (!postId) throw new Error("postId is required");
-  const { isError, isLoading, roomData } = usePreviousRoomQuery(postId);
+  const { roomData } = usePreviousRoomQuery(postId);
+  const setNoteYdoc = usePreviousRoomStore((state) => state.setNoteYdoc);
+  const setDrawBoardYdoc = usePreviousRoomStore(
+    (state) => state.setDrawBoardYdoc,
+  );
   const [drawBoardData, noteData, chatData] = useFetchers([
     roomData.drawBoard.url,
     roomData.note.url,
     roomData.chat.url,
   ]);
 
-  if (isError) {
-    return <div>Error</div>;
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!roomData) {
-    return <div>Not found</div>;
-  }
+  useEffect(() => {
+    setNoteYdoc(new Y.Doc());
+    setDrawBoardYdoc(new Y.Doc());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

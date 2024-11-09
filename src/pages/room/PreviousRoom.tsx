@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 import PreviousRoomTable from "@/components/PreviousRoom/Table";
 import PreviousRoomsPagination from "@/components/PreviousRoom/Pagination";
+import { useEffect } from "react";
+import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 
 const PreviousRoom = () => {
+  useEffect(() => {
+    const initPreviouseRoomState = usePreviousRoomStore.getInitialState();
+    usePreviousRoomStore.setState(initPreviouseRoomState, true);
+  }, []);
+
   return (
     <>
       <div className="h-24 py-8">
