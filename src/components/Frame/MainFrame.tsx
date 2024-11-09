@@ -30,6 +30,9 @@ export const MainFrame = () => {
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
   );
+  const setSelectedCommitFile = fileSysyemStore(
+    (state) => state.setSelectedCommitFile,
+  );
   const roomId = window.location.pathname.split("/")[1];
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
   const clickedFileList = fileSysyemStore((state) => state.clickedFileList);
@@ -212,6 +215,14 @@ export const MainFrame = () => {
     setEditor(modifiedEditor);
   };
 
+  const navigateToOtherUserFile = () => {
+    if (!otherUserSelectedCommitFile) return;
+    const findFile = commitFileList.find(
+      (file) => file.filename === otherUserSelectedCommitFile,
+    )!;
+    setSelectedCommitFile(findFile);
+  };
+
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
@@ -239,9 +250,9 @@ export const MainFrame = () => {
               </div>
               {otherUserSelectedCommitFile &&
                 otherUserSelectedCommitFile !== selectedCommitFile.filename && (
-                  <div className="text-nowrap">
-                    상대방이 : {otherUserSelectedCommitFile}을 보는중입니다.
-                  </div>
+                  <button className="text-nowrap text-sm mr-5" onClick={navigateToOtherUserFile}>
+                    Sync View
+                  </button>
                 )}
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
