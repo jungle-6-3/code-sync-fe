@@ -9,7 +9,7 @@ const TopGNBMicStatus = () => {
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
-
+  
   if (!isSocketManagerReady) return null;
 
   const onMicToggle = () => {
