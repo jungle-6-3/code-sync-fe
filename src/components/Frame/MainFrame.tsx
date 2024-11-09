@@ -90,7 +90,10 @@ export const MainFrame = () => {
   useEffect(() => {
     if (!editor || !provider || !ydoc || !checkUser?.data) return;
     const position = editor.getPosition();
-
+    const cursorStyles = document.querySelectorAll(
+      '[class*="yRemoteSelectionHead-"]',
+    );
+    cursorStyles.forEach((style) => style.remove());
     if (position) {
       provider.awareness.setLocalStateField("user", {
         name: checkUser.data.name,
@@ -106,7 +109,15 @@ export const MainFrame = () => {
       });
     }
 
+    return () => {
+      provider?.awareness.setLocalStateField("user", null);
+    };
+  }, [provider, editor, ydoc, checkUser?.data, selectedCommitFile.filename]);
+
+  useEffect(() => {
+    if (!editor || !provider || !ydoc || !checkUser?.data) return;
     provider.awareness.on("change", () => {
+      // if (selectedCommitFile.filename !== otherUserSelectedCommitFile) return
       const statesArray = Array.from(provider.awareness.getStates());
 
       statesArray.forEach((state) => {
@@ -152,10 +163,6 @@ export const MainFrame = () => {
       if (otherUserSelectedCommitFile !== otherUserCurrentCursor.filename)
         setOtherUserSelectedCommitFile(otherUserCurrentCursor.filename);
     });
-
-    return () => {
-      provider?.awareness.setLocalStateField("user", null);
-    };
   }, [
     provider,
     editor,
@@ -250,7 +257,10 @@ export const MainFrame = () => {
               </div>
               {otherUserSelectedCommitFile &&
                 otherUserSelectedCommitFile !== selectedCommitFile.filename && (
-                  <button className="text-nowrap text-sm mr-5" onClick={navigateToOtherUserFile}>
+                  <button
+                    className="mr-5 text-nowrap text-sm"
+                    onClick={navigateToOtherUserFile}
+                  >
                     Sync View
                   </button>
                 )}
