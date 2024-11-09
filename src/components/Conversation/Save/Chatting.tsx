@@ -5,9 +5,6 @@ interface ConversationSaveChatViewerProps {
     email: string;
     message: string;
   }[];
-}
-
-interface ConversationSaveVoiceViewerProps {
   voice: {
     date: string;
     name: string;
@@ -16,10 +13,10 @@ interface ConversationSaveVoiceViewerProps {
   }[];
 }
 
-const ConversationSaveChatViewer = (
-  { chats }: ConversationSaveChatViewerProps,
-  { voice }: ConversationSaveVoiceViewerProps,
-) => {
+const ConversationSaveChatViewer = ({
+  chats,
+  voice,
+}: ConversationSaveChatViewerProps) => {
   return (
     <div className="flex h-screen">
       <div className="w-1/2">
@@ -42,7 +39,23 @@ const ConversationSaveChatViewer = (
         </div>
       </div>
       <div className="w-1/2">
-
+        <div className="h-[calc(100vh-16rem)] py-2">
+          <div>
+            {voice.map((voice) => {
+              return (
+                <div key={voice.date} className="flex gap-4 py-1">
+                  <div className="flex w-1/12 items-center justify-center rounded border">
+                    {voice.name}
+                  </div>
+                  <div className="w-11/12 rounded border px-4 py-1">
+                    {voice.message}
+                    <div>{voice.date}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

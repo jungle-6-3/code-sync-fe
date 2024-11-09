@@ -2,7 +2,6 @@ import ConversationSaveChatViewer from "@/components/Conversation/Save/Chatting"
 import ConversationSaveDrawBoardViewer from "@/components/Conversation/Save/DrawBoard";
 import ConversationSaveHeader from "@/components/Conversation/Save/Header";
 import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewer";
-import ConversationSaveVoiceViewer from "@/components/Conversation/Save/VoiceChatting";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { useFetchers } from "@/hooks/useFetcher";
@@ -48,7 +47,10 @@ const ConversationSaveTabs = () => {
           <ConversationSaveNoteViewer data={noteData.data.data} />
         </TabsContent>
         <TabsContent value="chat">
-          <ConversationSaveChatViewer chats={chatData.data.data} voice ={voiceData.data.data} />
+          <ConversationSaveChatViewer
+            chats={chatData.data.data}
+            voice={voiceData.data.data.voiceChats}
+          />
         </TabsContent>
       </Tabs>
     </>
