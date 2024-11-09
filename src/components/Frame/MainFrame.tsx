@@ -126,9 +126,7 @@ export const MainFrame = () => {
   useEffect(() => {
     if (!editor || !provider || !ydoc || !checkUser?.data) return;
     provider.awareness.on("change", () => {
-      // if (selectedCommitFile.filename !== otherUserSelectedCommitFile) return
       const statesArray = Array.from(provider.awareness.getStates());
-      console.log("statesArray", statesArray);
       statesArray.forEach((state) => {
         const [clientId, clientState] = state;
         if (clientState?.user) {
