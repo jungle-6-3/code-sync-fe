@@ -2,7 +2,7 @@ import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { useEffect, useRef } from "react";
 
-export const useVoiceSave = (recordStatus: boolean) => {
+export const useVoiceSave = (recordStatus: boolean, language: "ko-KR" | "en-US" = "ko-KR") => {
   const recognition = useRef(
     new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
   ).current;
@@ -14,9 +14,9 @@ export const useVoiceSave = (recordStatus: boolean) => {
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
   const socket = SocketManager.getInstance().socketIOSocket;
 
-  recognition.lang = "ko-KR"; // 한국어 인식
-  recognition.continuous = false; // 실시간 인식
-  recognition.interimResults = false; // 결과가 나오는 즉시 표시
+  recognition.lang = language;
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
   const isRecognizing = useRef(false); // 음성 인식 상태를 추적
   let startTime: number;
@@ -44,8 +44,10 @@ export const useVoiceSave = (recordStatus: boolean) => {
   };
 
   recognition.onend = () => {
-    if (isRecognizing.current && recordStatus) {
-      recognition.start();
+    isRecognizing.current = false;
+    if (!recordStatus) {
+      // recordStatus가 true가 아니면 다시 시작
+      startRecognition();
     }
   };
 
@@ -60,8 +62,12 @@ export const useVoiceSave = (recordStatus: boolean) => {
   // 음성 인식 시작
   const startRecognition = () => {
     if (!isRecognizing.current) {
-      recognition.start();
-      isRecognizing.current = true;
+      try {
+        recognition.start();
+        isRecognizing.current = true;
+      } catch (error) {
+        console.error("Failed to start recognition:", error);
+      }
     }
   };
 
@@ -75,9 +81,9 @@ export const useVoiceSave = (recordStatus: boolean) => {
 
   useEffect(() => {
     if (recordStatus) {
-      startRecognition();
-    } else {
       stopRecognition();
+    } else {
+      startRecognition();
     }
 
     return () => {
