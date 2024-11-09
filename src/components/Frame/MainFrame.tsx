@@ -12,7 +12,7 @@ import ConversationChatting from "@/components/Conversation/useConversationChatt
 import { PrFileNameViewer } from "@/components/File/PrSelectedFileViewer/PrFileNameViewer";
 import { PrFilePathViewer } from "@/components/File/PrSelectedFileViewer/PrFilePathViewer";
 import { PRBottomFileExplorer } from "@/components/File/PRBottomFileExplorer";
-import { initFileStructSync } from "@/lib/yjs";
+import { initFileStructSync, RemoteCursorIndicator } from "@/lib/yjs";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import {
@@ -65,6 +65,13 @@ export const MainFrame = () => {
     (state) => state.setOtherUserSelectedCommitFile,
   );
 
+  const removeAllCursorStle = () => {
+    const cursorStyles = document.querySelectorAll(
+      '[class*="yRemoteSelectionHead-"]',
+    );
+    cursorStyles.forEach((style) => style.remove());
+  };
+
   useEffect(() => {
     const onChatting = (msg: {
       name: string;
@@ -89,34 +96,17 @@ export const MainFrame = () => {
 
   useEffect(() => {
     if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    removeAllCursorStle();
     const position = editor.getPosition();
-    const cursorStyles = document.querySelectorAll(
-      '[class*="yRemoteSelectionHead-"]',
-    );
-    cursorStyles.forEach((style) => style.remove());
-    if (position) {
-      provider.awareness.setLocalStateField("user", {
-        name: checkUser.data.name,
-        color: "#ff6161",
-        colorLight: "#30bced33",
-        cursor: {
-          position: {
-            lineNumber: position.lineNumber,
-            column: position.column,
-          },
-          filename: selectedCommitFile.filename,
-        },
-      });
-    } else {
-      provider.awareness.setLocalStateField("user", {
-        name: checkUser.data.name,
-        color: "#ff6161",
-        colorLight: "#30bced33",
-        cursor: {
-          filename: selectedCommitFile.filename,
-        },
-      });
-    }
+    provider.awareness.setLocalStateField("user", {
+      name: checkUser.data.name,
+      color: "#ff6161",
+      colorLight: "#30bced33",
+      cursor: {
+        position: position ?? null,
+        filename: selectedCommitFile.filename,
+      },
+    });
 
     return () => {
       provider?.awareness.setLocalStateField("user", null);
@@ -125,31 +115,17 @@ export const MainFrame = () => {
 
   useEffect(() => {
     if (!editor || !provider || !ydoc || !checkUser?.data) return;
-    provider.awareness.on("change", () => {
+    removeAllCursorStle();
+    const handleAwarnessChange = () => {
       const statesArray = Array.from(provider.awareness.getStates());
       statesArray.forEach((state) => {
         const [clientId, clientState] = state;
         if (clientState?.user) {
           const styleSheet = document.createElement("style");
-          styleSheet.innerText = `
-            .yRemoteSelectionHead-${clientId}{
-              border: 2px solid ${clientState.user.color};
-              position:relative;
-            }
-            .yRemoteSelectionHead-${clientId}::before {
-              content: '${clientState.user.name}';
-              color: white; 
-              top: -15px;
-              position:absolute;
-              left: -2px;
-              background-color:${clientState.user.color};
-              font-size:12px;
-              padding:4px 4px 2px 2px;
-              border-top-right-radius: 5px;
-              border-bottom-right-radius: 5px;
-              border-top-left-radius:5px;
-            }
-          `;
+          styleSheet.innerText = RemoteCursorIndicator(
+            clientId,
+            clientState.user,
+          );
           document.head.appendChild(styleSheet);
         }
       });
@@ -169,7 +145,12 @@ export const MainFrame = () => {
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
       if (otherUserSelectedCommitFile !== otherUserCurrentCursor.filename)
         setOtherUserSelectedCommitFile(otherUserCurrentCursor.filename);
-    });
+    };
+    provider.awareness.on("change", handleAwarnessChange);
+    return () => {
+      removeAllCursorStle();
+      provider.awareness.off("change", handleAwarnessChange);
+    };
   }, [
     provider,
     editor,
@@ -179,6 +160,10 @@ export const MainFrame = () => {
     otherUserSelectedCommitFile,
     setOtherUserSelectedCommitFile,
   ]);
+
+  useEffect(() => {
+    removeAllCursorStle();
+  }, [selectedCommitFile.filename]);
 
   // 파일 내용 초기화
   useEffect(() => {
