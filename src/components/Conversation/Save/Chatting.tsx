@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface ConversationSaveChatViewerProps {
   chats: {
     date: string;
@@ -22,7 +24,7 @@ const ConversationSaveChatViewer = ({
     ...voice.map((v) => ({ ...v, status: "voice" })),
   ];
 
-  const sortedChatting = [...chatting].sort(function (a, b) {
+  const sortedChatting = [...chatting].sort((a, b) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
   });
 
@@ -37,24 +39,28 @@ const ConversationSaveChatViewer = ({
     <div className="flex">
       <div className="w-full">
         <div className="flex w-full items-center justify-center space-x-40">
-          <h1 className="mb-4 text-center text-2xl font-bold">Chatting</h1>
-          <h1 className="mb-4 text-center text-2xl font-bold">Voice Text</h1>
+          <p className="mb-4 text-center text-2xl font-bold">Chatting</p>
+          <p className="mb-4 text-center text-2xl font-bold">Voice Text</p>
         </div>
         <div className="h-[calc(100vh-16rem)] py-2">
-          {chattingData.map((chat) => (
+          {chattingData.map((chat, index) => (
             <div
-              key={chat.date}
-              className={`mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px] ${
-                chat.status === "voice" ? "translate-x-1/2" : "-translate-x-1/2"
-              }`}
+              key={`${chat.date}-${index}`}
+              className={cn(
+                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px]",
+                chat.status === "voice"
+                  ? "translate-x-1/2"
+                  : "-translate-x-1/2",
+              )}
             >
               <div className="flex p-3">
                 <div
-                  className={`mr-3 flex h-8 w-8 items-center justify-center rounded-full font-bold ${
+                  className={cn(
+                    "mr-3 flex h-8 w-8 items-center justify-center rounded-full font-bold",
                     chat.name === chats[0].name
                       ? "bg-gray-300 text-black"
-                      : "bg-black text-white"
-                  }`}
+                      : "bg-black text-white",
+                  )}
                 >
                   {chat.name[0]}
                 </div>
