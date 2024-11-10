@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
+import { PrFileExplororItem } from "@/components/File/PrFileExplorerItem";
+import { PrDirectoryExplorer } from "@/components/File/PrDirectoryExplorer";
 import { getDirectoryContents, getRootItems } from "@/lib/file";
-import { PrFileExplororItem } from "./PrFileExplorerItem";
-import { PrDirectoryExplorer } from "./PrDirectoryExplorer";
 
 const PrFileExplorer = () => {
   const { commitFileList, setSelectedCommitFile, selectedCommitFile } =

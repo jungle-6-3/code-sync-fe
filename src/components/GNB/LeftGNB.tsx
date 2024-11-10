@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import useChattingCountEvent from "@/hooks/Conversation/useChattingCountEvent";
-import { sectionSelectStore } from "@/stores/chattingRoom.store";
-import { fileSysyemStore } from "@/stores/github.store";
 import { Folder, MessageSquare, NotepadText, SquarePen } from "lucide-react";
+import useChattingCountEvent from "@/hooks/Conversation/useChattingCountEvent";
+import { fileSysyemStore } from "@/stores/github.store";
+import { sectionSelectStore } from "@/stores/chattingRoom.store";
 
 const LeftGNB = () => {
   const setLeftSNBSelection = sectionSelectStore(

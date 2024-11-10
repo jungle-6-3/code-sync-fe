@@ -5,12 +5,12 @@ import {
   getPrCommitsData,
   getPrData,
 } from "@/apis/pr/pr";
+import { GitHubCommentsResponse } from "@/apis/pr/dto";
 import {
   getLanguageFromFileName,
   getNextSelectedFile,
   removeFileFromList,
 } from "@/lib/file";
-import { GitHubCommentsResponse } from "@/apis/pr/dto";
 
 interface PrInfoProps {
   userId: string;

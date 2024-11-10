@@ -83,7 +83,9 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
     }
   },
   removeWebcam: () => {
-    get().mediaStream?.getTracks().forEach((track) => track.stop());
+    get()
+      .mediaStream?.getTracks()
+      .forEach((track) => track.stop());
     set({ mediaStream: null, isUserMediaOn: { video: false, audio: false } });
   },
   opponentsMediaStream: [],
@@ -100,6 +102,6 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
     });
   },
   removeOpponentMediaStream: () => {
-    set(({ opponentsMediaStream: [] }));
+    set({ opponentsMediaStream: [] });
   },
 }));

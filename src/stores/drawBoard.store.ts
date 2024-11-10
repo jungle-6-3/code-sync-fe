@@ -1,6 +1,6 @@
-import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
-import { ExcalidrawBinding } from "y-excalidraw";
 import { create } from "@/lib/zustand";
+import { ExcalidrawBinding } from "y-excalidraw";
+import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 
 interface ImageSize {
   width: number;

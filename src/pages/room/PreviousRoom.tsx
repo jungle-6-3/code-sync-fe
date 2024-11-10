@@ -1,7 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import PreviousRoomTable from "@/components/PreviousRoom/Table";
 import PreviousRoomsPagination from "@/components/PreviousRoom/Pagination";
-import { useEffect } from "react";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 
 const PreviousRoom = () => {
