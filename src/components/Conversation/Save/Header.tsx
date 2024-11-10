@@ -61,8 +61,8 @@ const ConversationSaveHeader = ({
         <Input defaultValue={initialTitle} />
       </div>
       <div className="flex gap-4">
-        <div className="text-lg font-bold">
-          {canShared ? "public" : "private"}
+        <div className="my-2 text-sm font-light">
+          {canShared ? "공개" : "비공개"}
         </div>
         <Switch
           className="my-2"
