@@ -1,26 +1,35 @@
-import { PrChangedFileInfo } from '@/stores/github.store';
-import { WebsocketProvider } from 'y-websocket';
-import * as Y from 'yjs';
+import { PrChangedFileInfo } from "@/stores/github.store";
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
 const YJS_SOCKET = import.meta.env.VITE_YJS_URL || "wss://demos.yjs.dev/ws";
 
-export const initializeYjsSocket = async ({ roomUuid }: { roomUuid: string }) => {
-  return new Promise<{ ydoc: Y.Doc, provider: WebsocketProvider }>((resolve) => {
-    const ydoc = new Y.Doc();
-    const provider = new WebsocketProvider(YJS_SOCKET, roomUuid, ydoc, {
-      connect: true,
-      maxBackoffTime: 2500,
-    });
-    provider.on("status", (event: { status: string }) => {
-      if (event.status === "connected") {
-        resolve({ ydoc, provider });
-      }
-    });
-  });
-}
+export const initializeYjsSocket = async ({
+  roomUuid,
+}: {
+  roomUuid: string;
+}) => {
+  return new Promise<{ ydoc: Y.Doc; provider: WebsocketProvider }>(
+    (resolve) => {
+      const ydoc = new Y.Doc();
+      const provider = new WebsocketProvider(YJS_SOCKET, roomUuid, ydoc, {
+        connect: true,
+        maxBackoffTime: 2500,
+      });
+      provider.on("status", (event: { status: string }) => {
+        if (event.status === "connected") {
+          resolve({ ydoc, provider });
+        }
+      });
+    },
+  );
+};
 
-
-export const initFileStructSync = (ydoc: Y.Doc, provider: WebsocketProvider,
-  commitFileList: PrChangedFileInfo[], initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void) => {
+export const initFileStructSync = (
+  ydoc: Y.Doc,
+  provider: WebsocketProvider,
+  commitFileList: PrChangedFileInfo[],
+  initCommitFileList: (commitFileList: PrChangedFileInfo[]) => void,
+) => {
   const fileMetadata = ydoc.getArray<PrChangedFileInfo>("fileMetadata");
   provider.on("sync", (isSynced: boolean) => {
     if (isSynced) {
@@ -60,4 +69,32 @@ export const initFileStructSync = (ydoc: Y.Doc, provider: WebsocketProvider,
       }
     }
   });
-}
+};
+
+export const RemoteCursorIndicator = (
+  clientId: number,
+  user: {
+    name: string;
+    color: string;
+  },
+) => {
+  return `
+  .yRemoteSelectionHead-${clientId} {
+    border: 2px solid ${user.color};
+    position: relative;
+  }
+  .yRemoteSelectionHead-${clientId}::before {
+    content: '${user.name}';
+    color: white;
+    top: -15px;
+    position: absolute;
+    left: -2px;
+    background-color: ${user.color};
+    font-size: 12px;
+    padding: 4px 4px 2px 2px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+`;
+};
