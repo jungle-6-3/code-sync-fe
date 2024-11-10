@@ -22,6 +22,9 @@ jobs:
           echo VITE_WS_URL=${{ secrets.VITE_WS_URL }} >> .env
           echo VITE_PR_URL=${{ secrets.VITE_PR_URL }} >> .env
           echo VITE_YJS_URL=${{ secrets.VITE_YJS_URL }} >> .env
+          echo VITE_RTC_ICE=${{ secrets.VITE_RTC_ICE }} >> .env
+          echo VITE_ICE_USER=${{ secrets.VITE_ICE_USER }} >> .env
+          echo VITE_ICE_PASS=${{ secrets.VITE_ICE_PASS }} >> .env
           cat .env
 
       - name: run deploy
