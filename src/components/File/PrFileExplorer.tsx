@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fileSysyemStore, PrChangedFileInfo } from "@/stores/github.store";
 import { getDirectoryContents, getRootItems } from "@/lib/file";
 import { PrFileExplororItem } from "./PrFileExplorerItem";
 import { PrDirectoryExplorer } from "./PrDirectoryExplorer";
 
 const PrFileExplorer = () => {
-  const { commitFileList, setSelectedCommitFile } = fileSysyemStore();
+  const { commitFileList, setSelectedCommitFile, selectedCommitFile } =
+    fileSysyemStore();
   const [expandedPaths, setExpandedPaths] = useState([""]);
 
   const toggleDirectoryExpansion = (directoryPath: string) => {
@@ -23,6 +24,19 @@ const PrFileExplorer = () => {
     const fileInfo = fileList.find((file) => file.filename === filePath);
     if (fileInfo) setSelectedCommitFile(fileInfo);
   };
+
+  useEffect(() => {
+    if (selectedCommitFile?.filename) {
+      const paths = selectedCommitFile.filename.split("/");
+      let currentPath = "";
+      const newPaths = paths.slice(0, -1).map((path) => {
+        currentPath = currentPath ? `${currentPath}/${path}` : path;
+        return currentPath;
+      });
+
+      setExpandedPaths((prev) => [...new Set([...prev, ...newPaths])]);
+    }
+  }, [selectedCommitFile]);
 
   const renderTreeNode = (currentPath: string = "", depth: number = 0) => {
     const childItems =
