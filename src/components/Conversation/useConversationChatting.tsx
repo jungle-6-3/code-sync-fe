@@ -6,6 +6,7 @@ import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
 import { PreviewChatting } from "@/components/Conversation/PreviewChatting";
 import useChattingScrollEvent from "@/hooks/Conversation/useChattingScrollEvent";
+import { cn } from "@/lib/utils";
 
 export default function ConversationChatting() {
   const [message, setMessage] = useState("");
@@ -81,16 +82,18 @@ export default function ConversationChatting() {
           {messages.map((msg, index) => (
             <li
               key={index}
-              className={`flex items-end px-2 ${
-                msg.name === "나" ? "justify-end" : "justify-start"
-              } my-1`}
+              className={cn([
+                "my-1 flex items-end px-2",
+                msg.name === "나" ? "justify-end" : "justify-start",
+              ])}
             >
               <div
-                className={`max-w-xs rounded-lg p-2 ${
+                className={cn([
+                  "max-w-xs rounded-lg p-2",
                   msg.name === "나"
                     ? "bg-blue-500 text-white"
-                    : "bg-gray-300 text-black"
-                }`}
+                    : "bg-gray-300 text-black",
+                ])}
               >
                 <span className="text-xs font-bold">{msg.name}</span>
                 <p className="text-sm">{msg.message}</p>
