@@ -9,7 +9,7 @@ export default function SignUpPage() {
           to="/"
           className="absolute left-12 top-12 flex items-center gap-4 p-4"
         >
-          <img src="/favicon.png" alt="facivon" />
+          <img src="/favicon.png" alt="facivon" loading="lazy" />
           <div className="text-xl text-blue-100">Code-Sync</div>
         </Link>
       </div>
