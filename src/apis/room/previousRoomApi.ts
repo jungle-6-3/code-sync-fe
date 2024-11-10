@@ -21,6 +21,11 @@ export const getPreviousRoom = async (
 export const patchPreviousRoom = async (
   dataPk: string, body: PatchConversationDatasRequest
 ) => {
-  const { data } = await https.patch(`/conversation-datas/${dataPk}`, body);
+  const { data } = await https.patch(`/conversations/${dataPk}`, body);
+  return data;
+}
+
+export const getSharedPreviouseRoom = async (shardId: string) => {
+  const { data } = await https.get(`/conversations/share/${shardId}`);
   return data;
 }
