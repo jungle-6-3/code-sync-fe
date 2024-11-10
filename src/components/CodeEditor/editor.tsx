@@ -1,6 +1,8 @@
-import Editor from "@monaco-editor/react";
-import { type Monaco } from "@monaco-editor/react";
+import { lazy } from "react";
 import { editor } from "monaco-editor";
+import { type Monaco } from "@monaco-editor/react";
+
+const Editor = lazy(() => import("@monaco-editor/react"));
 
 interface CodeEditorProps {
   language: string;
