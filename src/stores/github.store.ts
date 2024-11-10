@@ -5,7 +5,11 @@ import {
   getPrCommitsData,
   getPrData,
 } from "@/apis/pr/pr";
-import { getLanguageFromFileName } from "@/lib/file";
+import {
+  getLanguageFromFileName,
+  getNextSelectedFile,
+  removeFileFromList,
+} from "@/lib/file";
 import { GitHubCommentsResponse } from "@/apis/pr/dto";
 
 interface PrInfoProps {
@@ -147,16 +151,18 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     }),
 }));
 
+const DEFAULT_FILE: PrChangedFileInfo = {
+  filename: "",
+  status: "init",
+  language: "",
+  additions: 0,
+  deletions: 0,
+  afterContent: "",
+  beforeContent: "",
+};
+
 export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
-  selectedCommitFile: {
-    filename: "",
-    status: "init",
-    language: "",
-    additions: 0,
-    deletions: 0,
-    afterContent: "",
-    beforeContent: "",
-  },
+  selectedCommitFile: DEFAULT_FILE,
   otherUserSelectedCommitFile: "",
   commitFileList: [],
   commentsList: [],
@@ -183,23 +189,16 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
     })),
   removeClickedFileList: (removeFile) =>
     set((state) => {
-      const updateClickedFileList = state.clickedFileList.filter(
-        (file) => file.filename !== removeFile.filename,
+      const updateClickedFileList = removeFileFromList(
+        state.clickedFileList,
+        removeFile,
       );
-      if (state.selectedCommitFile.filename === removeFile.filename) {
-        const newSelectedFile =
-          updateClickedFileList.length > 0
-            ? updateClickedFileList[updateClickedFileList.length - 1]
-            : {
-              filename: "",
-              status: "init" as PrChangedFileStatusInfo["status"],
-              language: "",
-              additions: 0,
-              deletions: 0,
-              afterContent: "",
-              beforeContent: "",
-            };
-        get().setSelectedCommitFile(newSelectedFile);
+      const isCurrentFileCanRemoved =
+        state.selectedCommitFile.filename === removeFile.filename;
+      if (isCurrentFileCanRemoved) {
+        get().setSelectedCommitFile(
+          getNextSelectedFile(updateClickedFileList, DEFAULT_FILE),
+        );
       }
       return { clickedFileList: updateClickedFileList };
     }),

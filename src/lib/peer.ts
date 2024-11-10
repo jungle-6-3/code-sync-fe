@@ -10,7 +10,15 @@ export interface PeerConnection {
 
 export const initializePeerConnection = async () => {
   return new Promise<PeerConnection>((resolve) => {
-    const peer = new Peer();
+    const peer = new Peer({
+      config: {
+        'iceServers': [
+          { url: import.meta.env.VITE_RTC_ICE, username: import.meta.env.VITE_ICE_USER, credential: import.meta.env.VITE_ICE_PASS },
+          { url: 'stun:stun.l.google.com:19302' },
+          { url: 'stun:stun1.l.google.com:19302' },
+        ],
+      }
+    });
     peer.once("open", (id) => {
       resolve({ peer, id, peers: {} });
     });
