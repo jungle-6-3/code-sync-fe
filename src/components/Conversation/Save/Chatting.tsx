@@ -46,21 +46,21 @@ const ConversationSaveChatViewer = ({
           {chattingData.map((chat, index) => (
             <div
               key={`${chat.date}-${index}`}
-              className={cn([
+              className={cn(
                 "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px]",
                 chat.status === "voice"
                   ? "translate-x-1/2"
                   : "-translate-x-1/2",
-              ])}
+              )}
             >
               <div className="flex p-3">
                 <div
-                  className={cn([
+                  className={cn(
                     "mr-3 flex h-8 w-8 items-center justify-center rounded-full font-bold",
                     chat.name === chats[0].name
                       ? "bg-gray-300 text-black"
                       : "bg-black text-white",
-                  ])}
+                  )}
                 >
                   {chat.name[0]}
                 </div>
