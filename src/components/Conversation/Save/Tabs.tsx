@@ -18,6 +18,7 @@ const ConversationSaveTabs = () => {
   const setDrawBoardYdoc = usePreviousRoomStore(
     (state) => state.setDrawBoardYdoc,
   );
+  const setCanShared = usePreviousRoomStore((state) => state.setCanShared);
   const [drawBoardData, noteData, chatData, voiceData] = useFetchers([
     roomData.drawBoard.url,
     roomData.note.url,
@@ -28,8 +29,9 @@ const ConversationSaveTabs = () => {
   useEffect(() => {
     setNoteYdoc(new Y.Doc());
     setDrawBoardYdoc(new Y.Doc());
+    setCanShared(roomData.canShared);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [postId]);
 
   return (
     <>
