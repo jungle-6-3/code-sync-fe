@@ -147,16 +147,18 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     }),
 }));
 
+const DEFAULT_FILE: PrChangedFileInfo = {
+  filename: "",
+  status: "init",
+  language: "",
+  additions: 0,
+  deletions: 0,
+  afterContent: "",
+  beforeContent: "",
+};
+
 export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
-  selectedCommitFile: {
-    filename: "",
-    status: "init",
-    language: "",
-    additions: 0,
-    deletions: 0,
-    afterContent: "",
-    beforeContent: "",
-  },
+  selectedCommitFile: DEFAULT_FILE,
   otherUserSelectedCommitFile: "",
   commitFileList: [],
   commentsList: [],
@@ -190,15 +192,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
         const newSelectedFile =
           updateClickedFileList.length > 0
             ? updateClickedFileList[updateClickedFileList.length - 1]
-            : {
-              filename: "",
-              status: "init" as PrChangedFileStatusInfo["status"],
-              language: "",
-              additions: 0,
-              deletions: 0,
-              afterContent: "",
-              beforeContent: "",
-            };
+            : DEFAULT_FILE;
         get().setSelectedCommitFile(newSelectedFile);
       }
       return { clickedFileList: updateClickedFileList };

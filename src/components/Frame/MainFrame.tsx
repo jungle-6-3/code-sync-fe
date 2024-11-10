@@ -141,8 +141,12 @@ export const MainFrame = () => {
 
       if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
-      if (otherUserSelectedCommitFile !== otherUserCurrentCursor.current_file_path)
-        setOtherUserSelectedCommitFile(otherUserCurrentCursor.current_file_path);
+      if (
+        otherUserSelectedCommitFile !== otherUserCurrentCursor.current_file_path
+      )
+        setOtherUserSelectedCommitFile(
+          otherUserCurrentCursor.current_file_path,
+        );
     };
     provider.awareness.on("change", handleAwarnessChange);
     return () => {
