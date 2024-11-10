@@ -97,14 +97,12 @@ export const MainFrame = () => {
   useEffect(() => {
     if (!editor || !provider || !ydoc || !checkUser?.data) return;
     removeAllCursorStle();
-    const position = editor.getPosition();
     provider.awareness.setLocalStateField("user", {
       name: checkUser.data.name,
       color: "#ff6161",
       colorLight: "#30bced33",
       cursor: {
-        position: position ?? null,
-        filename: selectedCommitFile.filename,
+        current_file_path: selectedCommitFile.filename,
       },
     });
 
@@ -143,8 +141,8 @@ export const MainFrame = () => {
 
       if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
-      if (otherUserSelectedCommitFile !== otherUserCurrentCursor.filename)
-        setOtherUserSelectedCommitFile(otherUserCurrentCursor.filename);
+      if (otherUserSelectedCommitFile !== otherUserCurrentCursor.current_file_path)
+        setOtherUserSelectedCommitFile(otherUserCurrentCursor.current_file_path);
     };
     provider.awareness.on("change", handleAwarnessChange);
     return () => {
