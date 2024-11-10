@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { fromUint8Array } from "js-base64";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Y from "yjs";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ConversationSaveHeaderProps {
   initialTitle?: string;
@@ -31,14 +32,16 @@ const ConversationSaveHeader = ({
   const { mutate: patchRoom } = usePreviouseRoomPatchMutate(postId);
   const noteYDoc = usePreviousRoomStore((state) => state.noteYdoc);
   const drawBoardYDoc = usePreviousRoomStore((state) => state.drawBoardYdoc);
-  const canShared = usePreviousRoomStore((state) => state.canShared);
   const setCanShared = usePreviousRoomStore((state) => state.setCanShared);
+  const canShared = usePreviousRoomStore((state) => state.canShared);
   const navigate = useNavigate();
+  const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
+  const queryClient = useQueryClient();
 
   const onPatchRoom = () => {
     const body: BodyType = {
-      note: { data: ydocToBase64(noteYDoc), isShared: true },
-      drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: true },
+      note: { data: ydocToBase64(noteYDoc), isShared: false },
+      drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: drawIsShared },
       canShared: canShared,
     };
     patchRoom(body, {
@@ -49,6 +52,7 @@ const ConversationSaveHeader = ({
         alert(message);
       },
       onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ["room", postId] });
         navigate(`/room/${postId}`);
       },
     });

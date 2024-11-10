@@ -1,3 +1,4 @@
+import { Switch } from "@/components/ui/switch";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
@@ -21,6 +22,10 @@ const ConversationSaveDrawBoardViewer = ({
   const ydoc = usePreviousRoomStore((state) => state.drawBoardYdoc);
   const yElements = ydoc.getArray<Y.Map<unknown>>("elements");
   const yAssets = ydoc.getMap("assets");
+  const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
+  const setDrawIsShared = usePreviousRoomStore(
+    (state) => state.setDrawIsShared,
+  );
 
   useEffect(() => {
     if (!api) return;
@@ -41,6 +46,10 @@ const ConversationSaveDrawBoardViewer = ({
   }, [drawBoard]);
 
   useEffect(() => {
+    console.log(drawIsShared)
+  }, [drawIsShared])
+
+  useEffect(() => {
     if (drawBoard.length === 0) {
       setDrawBoard(data);
     }
@@ -48,18 +57,24 @@ const ConversationSaveDrawBoardViewer = ({
   }, []);
 
   return (
-    <div className="h-[calc(100vh-16rem)] w-full" ref={exalidrawDomRef}>
-      <Excalidraw
-        initialData={{
-          elements: yjsToExcalidraw(yElements),
-        }}
-        onPointerUpdate={(payload) =>
-          binding && binding.onPointerUpdate(payload)
-        }
-        excalidrawAPI={setApi}
-        theme="light"
-      />
-    </div>
+    <>
+      <div className="mx-10 flex justify-end gap-4">
+        {drawIsShared ? "공개" : "비공개"}
+        <Switch checked={drawIsShared} onCheckedChange={setDrawIsShared} />
+      </div>
+      <div className="h-[calc(100vh-16rem)] w-full" ref={exalidrawDomRef}>
+        <Excalidraw
+          initialData={{
+            elements: yjsToExcalidraw(yElements),
+          }}
+          onPointerUpdate={(payload) =>
+            binding && binding.onPointerUpdate(payload)
+          }
+          excalidrawAPI={setApi}
+          theme="light"
+        />
+      </div>
+    </>
   );
 };
 

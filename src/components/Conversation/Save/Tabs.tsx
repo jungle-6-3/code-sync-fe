@@ -15,8 +15,20 @@ const ConversationSaveTabs = () => {
   if (!postId) throw new Error("postId is required");
   const { roomData } = usePreviousRoomQuery(postId);
   const setNoteYdoc = usePreviousRoomStore((state) => state.setNoteYdoc);
+  const setNoteIsShared = usePreviousRoomStore(
+    (state) => state.setNoteIsShared,
+  );
   const setDrawBoardYdoc = usePreviousRoomStore(
     (state) => state.setDrawBoardYdoc,
+  );
+  const setDrawIsShared = usePreviousRoomStore(
+    (state) => state.setDrawIsShared,
+  );
+  const setVoiceIsShared = usePreviousRoomStore(
+    (state) => state.setVoiceIsShared,
+  );
+  const setChatIsShared = usePreviousRoomStore(
+    (state) => state.setChatIsShared,
   );
   const setCanShared = usePreviousRoomStore((state) => state.setCanShared);
   const [drawBoardData, noteData, chatData, voiceData] = useFetchers([
@@ -30,6 +42,11 @@ const ConversationSaveTabs = () => {
     setNoteYdoc(new Y.Doc());
     setDrawBoardYdoc(new Y.Doc());
     setCanShared(roomData.canShared);
+    setChatIsShared(roomData.chat.isShared);
+    setDrawIsShared(roomData.drawBoard.isShared);
+    setNoteIsShared(roomData.note.isShared);
+    setVoiceIsShared(roomData.voice.isShared);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
