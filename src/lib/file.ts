@@ -239,3 +239,14 @@ export const getDirectoryContents = (
   // 폴더를 먼저, 그 다음 파일을 반환
   return [...folders.sort(), ...files.sort()];
 };
+
+export const removeFileFromList = (
+  fileList: PrChangedFileInfo[],
+  removeFile: PrChangedFileInfo,
+) => {
+  return fileList.filter((file) => file.filename !== removeFile.filename);
+};
+
+export const getNextSelectedFile = (fileList:PrChangedFileInfo[],defaultFile:PrChangedFileInfo) => {
+  return fileList.length > 0 ? fileList[fileList.length -1] : defaultFile
+}

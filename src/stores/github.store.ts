@@ -5,7 +5,11 @@ import {
   getPrCommitsData,
   getPrData,
 } from "@/apis/pr/pr";
-import { getLanguageFromFileName } from "@/lib/file";
+import {
+  getLanguageFromFileName,
+  getNextSelectedFile,
+  removeFileFromList,
+} from "@/lib/file";
 import { GitHubCommentsResponse } from "@/apis/pr/dto";
 
 interface PrInfoProps {
@@ -185,15 +189,16 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
     })),
   removeClickedFileList: (removeFile) =>
     set((state) => {
-      const updateClickedFileList = state.clickedFileList.filter(
-        (file) => file.filename !== removeFile.filename,
+      const updateClickedFileList = removeFileFromList(
+        state.clickedFileList,
+        removeFile,
       );
-      if (state.selectedCommitFile.filename === removeFile.filename) {
-        const newSelectedFile =
-          updateClickedFileList.length > 0
-            ? updateClickedFileList[updateClickedFileList.length - 1]
-            : DEFAULT_FILE;
-        get().setSelectedCommitFile(newSelectedFile);
+      const isCurrentFileCanRemoved =
+        state.selectedCommitFile.filename === removeFile.filename;
+      if (isCurrentFileCanRemoved) {
+        get().setSelectedCommitFile(
+          getNextSelectedFile(updateClickedFileList, DEFAULT_FILE),
+        );
       }
       return { clickedFileList: updateClickedFileList };
     }),
