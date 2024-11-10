@@ -46,7 +46,7 @@ const ConversationSaveDrawBoardViewer = ({
   }, [drawBoard]);
 
   useEffect(() => {
-    console.log(drawIsShared)
+    console.log("스토어로 변경된 애: ", drawIsShared)
   }, [drawIsShared])
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const ConversationSaveDrawBoardViewer = ({
 
   return (
     <>
-      <div className="mx-10 flex justify-end gap-4">
+      <div className="mx-10 flex justify-end gap-4 text-sm font-light">
         {drawIsShared ? "공개" : "비공개"}
         <Switch checked={drawIsShared} onCheckedChange={setDrawIsShared} />
       </div>

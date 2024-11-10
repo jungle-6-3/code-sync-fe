@@ -33,7 +33,7 @@ export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
   setDrawBoard: (drawBoard) => set({ drawBoard }),
   drawBoardYdoc: new Y.Doc(),
   setDrawBoardYdoc: (drawBoardYdoc) => set({ drawBoardYdoc }),
-  drawIsShared: true,
+  drawIsShared: false,
   setDrawIsShared: (drawIsShared) => set({ drawIsShared }),
 
   note: "",

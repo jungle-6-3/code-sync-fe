@@ -39,11 +39,13 @@ const ConversationSaveHeader = ({
   const queryClient = useQueryClient();
 
   const onPatchRoom = () => {
+    console.log("서버에 보내는 애: ", drawIsShared)
     const body: BodyType = {
       note: { data: ydocToBase64(noteYDoc), isShared: false },
       drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: drawIsShared },
       canShared: canShared,
     };
+    console.log("마지막: ", drawIsShared);
     patchRoom(body, {
       onError: () => {
         alert("저장에 실패했습니다.");
@@ -53,6 +55,7 @@ const ConversationSaveHeader = ({
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: ["room", postId] });
+        console.log("cache delete: ", drawIsShared);
         navigate(`/room/${postId}`);
       },
     });

@@ -46,7 +46,7 @@ const ConversationSaveTabs = () => {
     setDrawIsShared(roomData.drawBoard.isShared);
     setNoteIsShared(roomData.note.isShared);
     setVoiceIsShared(roomData.voice.isShared);
-
+    console.log("server: ", roomData.drawBoard.isShared)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
