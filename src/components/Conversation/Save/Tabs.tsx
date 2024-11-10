@@ -18,10 +18,11 @@ const ConversationSaveTabs = () => {
   const setDrawBoardYdoc = usePreviousRoomStore(
     (state) => state.setDrawBoardYdoc,
   );
-  const [drawBoardData, noteData, chatData] = useFetchers([
+  const [drawBoardData, noteData, chatData, voiceData] = useFetchers([
     roomData.drawBoard.url,
     roomData.note.url,
     roomData.chat.url,
+    roomData.voice.url,
   ]);
 
   useEffect(() => {
@@ -46,7 +47,10 @@ const ConversationSaveTabs = () => {
           <ConversationSaveNoteViewer data={noteData.data.data} />
         </TabsContent>
         <TabsContent value="chat">
-          <ConversationSaveChatViewer chats={chatData.data.data} />
+          <ConversationSaveChatViewer
+            chats={chatData.data.data}
+            voice={voiceData.data.data.voiceChats}
+          />
         </TabsContent>
       </Tabs>
     </>
