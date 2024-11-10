@@ -99,6 +99,7 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
         <img
           src={firstComment.user.avatar_url}
           alt=""
+          loading="lazy"
           className="h-6 w-6 rounded-full"
         />
         <div className="min-w-0 flex-1">
@@ -138,6 +139,7 @@ const CommentViewer = ({ comments }: CommentViewerProps) => {
                   <img
                     src={comment.user.avatar_url}
                     alt=""
+                    loading="lazy"
                     className="h-6 w-6 rounded-full"
                   />
                   <div className="min-w-0 flex-1">
