@@ -11,6 +11,8 @@ interface PreviousRoomStore {
   setNoteYdoc: (noteYdoc: Y.Doc) => void,
   voice: string,
   setVoice: (voice: string) => void,
+  canShared: boolean,
+  setCanShared: (canShared: boolean) => void,
 }
 
 export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
@@ -24,4 +26,6 @@ export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
   setNoteYdoc: (noteYdoc) => set({ noteYdoc }),
   voice: "",
   setVoice: (voice) => set({ voice }),
+  canShared: false,
+  setCanShared: (canShared) => set({ canShared }),
 }));
