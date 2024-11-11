@@ -37,8 +37,8 @@ const ConversationSaveHeader = () => {
   const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
   const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
   const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
-  const titleBefore = usePreviousRoomStore((state) => state.title);
-  const setTitleBefore = usePreviousRoomStore((state) => state.setTitle);
+  const title = usePreviousRoomStore((state) => state.title);
+  const setTitle = usePreviousRoomStore((state) => state.setTitle);
 
   const onPatchRoom = () => {
     const body: BodyType = {
@@ -47,7 +47,7 @@ const ConversationSaveHeader = () => {
       chat: { isShared: chatIsShared },
       voice: { isShared: voiceIsShared },
       canShared: canShared,
-      title: titleBefore,
+      title: title,
     };
     patchRoom(body, {
       onError: () => {
@@ -68,8 +68,8 @@ const ConversationSaveHeader = () => {
       <div className="flex items-center">
         <span className="min-w-12 text-lg">제목: </span>
         <Input
-          onChange={(e) => setTitleBefore(e.target.value)}
-          value={titleBefore}
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
         />
       </div>
       <div className="flex gap-4">
