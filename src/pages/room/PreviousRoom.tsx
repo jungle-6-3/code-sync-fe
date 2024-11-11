@@ -14,7 +14,7 @@ const PreviousRoom = () => {
     <>
       <div className="h-24 py-8">
         <Link to="/room/create" className="ml-12 flex items-center gap-4 p-4">
-          <img src="/favicon.png" alt="facivon" className="h-8 w-8" loading="lazy"/>
+          <img src="/favicon.png" alt="facivon" className="h-8 w-8" />
           <div className="text-lg">Code-Sync</div>
         </Link>
       </div>
