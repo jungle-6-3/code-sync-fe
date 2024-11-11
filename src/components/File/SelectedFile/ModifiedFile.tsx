@@ -1,5 +1,5 @@
 import { CodeSplitEditor } from "@/components/CodeEditor";
-import { Suspense, useContext } from "react";
+import { useContext } from "react";
 import { FileEditorProps } from "./file";
 import { BoardContext } from ".";
 import { Button } from "@/components/ui/button";
@@ -18,14 +18,12 @@ export const ModifiedFile = ({
       >
         Editor snapshot
       </Button>
-      <Suspense>
-        <CodeSplitEditor
-          language={selectedCommitFile.language}
-          originalValue={selectedCommitFile.beforeContent}
-          modifiedValue={selectedCommitFile.afterContent}
-          onSplitEditorMount={onSplitEditorMount}
-        />
-      </Suspense>
+      <CodeSplitEditor
+        language={selectedCommitFile.language}
+        originalValue={selectedCommitFile.beforeContent}
+        modifiedValue={selectedCommitFile.afterContent}
+        onSplitEditorMount={onSplitEditorMount}
+      />
     </>
   );
 };
