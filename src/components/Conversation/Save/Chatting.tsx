@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 
 interface ConversationSaveChatViewerProps {
-  chats: {
+  chats?: {
     date: string;
     name: string;
     email: string;
     message: string;
   }[];
-  voice: {
+  voice?: {
     date: string;
     name: string;
     email: string;
@@ -20,8 +20,8 @@ const ConversationSaveChatViewer = ({
   voice,
 }: ConversationSaveChatViewerProps) => {
   const chatting = [
-    ...chats.map((c) => ({ ...c, status: "chat" })),
-    ...voice.map((v) => ({ ...v, status: "voice" })),
+    ...(chats ?? []).map((c) => ({ ...c, status: "chat" })),
+    ...(voice ?? []).map((v) => ({ ...v, status: "voice" })),
   ];
 
   const sortedChatting = [...chatting].sort((a, b) => {
@@ -57,7 +57,7 @@ const ConversationSaveChatViewer = ({
                 <div
                   className={cn(
                     "mr-3 flex h-8 w-8 items-center justify-center rounded-full font-bold",
-                    chat.name === chats[0].name
+                    chats && chats.length > 0 && chat.name === chats[0].name
                       ? "bg-gray-300 text-black"
                       : "bg-black text-white",
                   )}

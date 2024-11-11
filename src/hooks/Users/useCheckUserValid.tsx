@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 
@@ -20,7 +20,7 @@ export const UserLoginPageGuard = ({ children }: UserGuardProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkUser, isError]);
 
-  return children;
+  return <Suspense>{children}</Suspense>;
 };
 
 export const UserGuard = ({ children }: UserGuardProps) => {
@@ -35,5 +35,5 @@ export const UserGuard = ({ children }: UserGuardProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkUser, isError]);
 
-  return children;
+  return <Suspense>{children}</Suspense>;
 };
