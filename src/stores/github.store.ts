@@ -151,7 +151,7 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     }),
 }));
 
-const DEFAULT_FILE: PrChangedFileInfo = {
+export const DEFAULT_FILE: PrChangedFileInfo = {
   filename: "",
   status: "init",
   language: "",

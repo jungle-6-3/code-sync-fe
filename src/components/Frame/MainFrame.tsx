@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { fileSysyemStore } from "@/stores/github.store";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
@@ -21,8 +21,11 @@ import {
 } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
-import SelectedFileViewer from "@/components/File/SelectedFile";
+import SelectedFileViewer, {
+  BoardContext,
+} from "@/components/File/SelectedFile";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
+import { Button } from "@/components/ui/button";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
@@ -250,6 +253,7 @@ export const MainFrame = () => {
       }
     }
   };
+  const { convertToImage } = useContext(BoardContext);
 
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
@@ -267,7 +271,7 @@ export const MainFrame = () => {
       )}
       <ResizablePanel defaultSize={80} order={2}>
         {selectedCommitFile.filename !== "" && (
-          <>
+          <div className="relative">
             <div className="flex items-center justify-between">
               <div className="flex w-full overflow-x-scroll border-b">
                 {clickedFileList.map((file, index) => {
@@ -276,23 +280,35 @@ export const MainFrame = () => {
                   );
                 })}
               </div>
-              {otherUserSelectedCommitFile &&
-                otherUserSelectedCommitFile !== selectedCommitFile.filename && (
-                  <button
-                    className="mr-5 text-nowrap text-sm"
-                    onClick={navigateToOtherUserFile}
-                  >
-                    Sync View
-                  </button>
-                )}
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
-          </>
+            <div className="absolute right-0 top-9 z-[100]">
+              {otherUserSelectedCommitFile &&
+                otherUserSelectedCommitFile !== selectedCommitFile.filename && (
+                  <Button
+                    className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                    onClick={navigateToOtherUserFile}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    화면 동기화
+                  </Button>
+                )}
+              <Button
+                onClick={convertToImage}
+                className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                size="sm"
+                variant="ghost"
+              >
+                코드 이미지로 추출
+              </Button>
+            </div>
+          </div>
         )}
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
             defaultSize={70}
-            className="z-0 flex items-center justify-center"
+            className="relative z-0 flex items-center justify-center"
           >
             {selectedCommitFile && (
               <SelectedFileViewer

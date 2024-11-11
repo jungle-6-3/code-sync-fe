@@ -149,6 +149,40 @@ const fileExtensionsToLanguage: LanguageMapping = {
   yml: "yaml",
 };
 
+export const ADDITIONAL_FILES: {
+  DEFAULT_FILE: PrChangedFileInfo;
+  MainDrawBoard: PrChangedFileInfo;
+  BlockNote: PrChangedFileInfo;
+} = {
+  DEFAULT_FILE: {
+    filename: "",
+    status: "init",
+    language: "",
+    additions: 0,
+    deletions: 0,
+    afterContent: "",
+    beforeContent: "",
+  },
+  MainDrawBoard: {
+    additions: 0,
+    afterContent: "",
+    beforeContent: "",
+    deletions: 0,
+    filename: "MainDrawBoard",
+    language: "",
+    status: "init",
+  },
+  BlockNote: {
+    additions: 0,
+    afterContent: "",
+    beforeContent: "",
+    deletions: 0,
+    filename: "BlockNote",
+    language: "",
+    status: "init",
+  },
+};
+
 export const getLanguageFromFileName = (fileName: string): string => {
   const extension = fileName.toLowerCase().split(".").pop() || "";
   return fileExtensionsToLanguage[extension] || "plaintext";
@@ -247,6 +281,9 @@ export const removeFileFromList = (
   return fileList.filter((file) => file.filename !== removeFile.filename);
 };
 
-export const getNextSelectedFile = (fileList:PrChangedFileInfo[],defaultFile:PrChangedFileInfo) => {
-  return fileList.length > 0 ? fileList[fileList.length -1] : defaultFile
-}
+export const getNextSelectedFile = (
+  fileList: PrChangedFileInfo[],
+  defaultFile: PrChangedFileInfo,
+) => {
+  return fileList.length > 0 ? fileList[fileList.length - 1] : defaultFile;
+};

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { CopyIcon } from "lucide-react";
 
 const TopGNBCopyUrl = () => {
@@ -14,13 +15,14 @@ const TopGNBCopyUrl = () => {
   };
 
   return (
-    <button
+    <Button
       onClick={() => handleCopyClipBoard(window.location.href)}
-      className="flex items-center"
+      variant="ghost"
+      className="truncate p-0 text-left rtl:direction-normal"
     >
-      <span className="mr-3"> URL: {urlPath}</span>
-      <CopyIcon />
-    </button>
+      <span className="truncate"> {`URL: ${urlPath}`}</span>
+      <CopyIcon size="16" />
+    </Button>
   );
 };
 

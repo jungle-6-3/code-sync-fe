@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { userMediaStore } from "@/stores/userMedia.store";
@@ -34,13 +35,13 @@ const TopGNBVideoStatus = () => {
   return (
     <li>
       {videoStatus ? (
-        <button onClick={onVideoToggle}>
+        <Button onClick={onVideoToggle} variant="ghost" className="p-0">
           <Video color="#334155" size={16} />
-        </button>
+        </Button>
       ) : (
-        <button onClick={onVideoToggle}>
+        <Button onClick={onVideoToggle} variant="ghost" className="p-0">
           <VideoOff color="#334155" size={16} />
-        </button>
+        </Button>
       )}
     </li>
   );
