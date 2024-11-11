@@ -20,7 +20,6 @@ export const usePreviousRoomsQuery = (currentPage: number) => {
 };
 
 export const usePreviousRoomQuery = (roomId: string) => {
-
   const {
     data: roomData,
     isError,

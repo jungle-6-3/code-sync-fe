@@ -8,10 +8,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Y from "yjs";
 import { useQueryClient } from "@tanstack/react-query";
 
-interface ConversationSaveHeaderProps {
-  initialTitle?: string;
-}
-
 const ydocToBase64 = (ydoc: Y.Doc) => {
   const documentState = Y.encodeStateAsUpdate(ydoc);
   const base64Encoded = fromUint8Array(documentState);
@@ -24,11 +20,10 @@ interface BodyType {
   chat: { isShared: boolean };
   voice: { isShared: boolean };
   canShared: boolean;
+  title: string;
 }
 
-const ConversationSaveHeader = ({
-  initialTitle,
-}: ConversationSaveHeaderProps) => {
+const ConversationSaveHeader = () => {
   const { postId } = useParams();
   if (!postId) throw new Error("postId is required");
   const { mutate: patchRoom } = usePreviouseRoomPatchMutate(postId);
@@ -42,6 +37,8 @@ const ConversationSaveHeader = ({
   const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
   const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
   const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
+  const titleBefore = usePreviousRoomStore((state) => state.title);
+  const setTitleBefore = usePreviousRoomStore((state) => state.setTitle);
 
   const onPatchRoom = () => {
     const body: BodyType = {
@@ -50,6 +47,7 @@ const ConversationSaveHeader = ({
       chat: { isShared: chatIsShared },
       voice: { isShared: voiceIsShared },
       canShared: canShared,
+      title: titleBefore,
     };
     patchRoom(body, {
       onError: () => {
@@ -69,7 +67,10 @@ const ConversationSaveHeader = ({
     <div className="flex justify-between pb-6">
       <div className="flex items-center">
         <span className="min-w-12 text-lg">제목: </span>
-        <Input defaultValue={initialTitle} />
+        <Input
+          onChange={(e) => setTitleBefore(e.target.value)}
+          value={titleBefore}
+        />
       </div>
       <div className="flex gap-4">
         <div className="my-2 text-sm font-light">

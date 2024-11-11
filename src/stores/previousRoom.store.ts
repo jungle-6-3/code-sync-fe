@@ -9,6 +9,9 @@ interface Chatting {
 }
 
 interface PreviousRoomStore {
+  title: string;
+  setTitle: (title: string) => void;
+
   drawBoard: string;
   setDrawBoard: (drawBoard: string) => void;
   drawBoardYdoc: Y.Doc;
@@ -38,6 +41,9 @@ interface PreviousRoomStore {
 }
 
 export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
+  title: "",
+  setTitle: (title) => set({ title }),
+
   drawBoard: "",
   setDrawBoard: (drawBoard) => set({ drawBoard }),
   drawBoardYdoc: new Y.Doc(),

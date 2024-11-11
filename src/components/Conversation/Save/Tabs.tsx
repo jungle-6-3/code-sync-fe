@@ -30,6 +30,7 @@ const ConversationSaveTabs = () => {
   const setChatIsShared = usePreviousRoomStore(
     (state) => state.setChatIsShared,
   );
+  const setTitle = usePreviousRoomStore((state) => state.setTitle);
   const setCanShared = usePreviousRoomStore((state) => state.setCanShared);
   const [drawBoardData, noteData, chatData, voiceData] = useFetchers([
     roomData.drawBoard.url,
@@ -46,6 +47,7 @@ const ConversationSaveTabs = () => {
     setDrawIsShared(roomData.drawBoard.isShared);
     setNoteIsShared(roomData.note.isShared);
     setVoiceIsShared(roomData.voice.isShared);
+    setTitle(roomData.title);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
