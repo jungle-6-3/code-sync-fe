@@ -89,14 +89,14 @@ const ConversationChatting = () => {
             >
               <div
                 className={cn(
-                  "max-w-xs rounded-lg p-2",
+                  "inline-block max-w-[75%] rounded-lg p-2",
                   msg.name === "나"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-300 text-black",
                 )}
               >
                 <span className="text-xs font-bold">{msg.name}</span>
-                <p className="text-sm">{msg.message}</p>
+                <p className="break-words text-sm">{msg.message}</p>
                 <p className="text-xs">{msg.date.toLocaleTimeString()}</p>
               </div>
             </li>
