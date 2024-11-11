@@ -21,6 +21,8 @@ const ydocToBase64 = (ydoc: Y.Doc) => {
 interface BodyType {
   note: { data: string; isShared: boolean };
   drawBoard: { data: string; isShared: boolean };
+  chat: { isShared: boolean };
+  voice: { isShared: boolean };
   canShared: boolean;
 }
 
@@ -37,15 +39,18 @@ const ConversationSaveHeader = ({
   const navigate = useNavigate();
   const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
   const queryClient = useQueryClient();
+  const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
+  const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
+  const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
 
   const onPatchRoom = () => {
-    console.log("서버에 보내는 애: ", drawIsShared)
     const body: BodyType = {
-      note: { data: ydocToBase64(noteYDoc), isShared: false },
+      note: { data: ydocToBase64(noteYDoc), isShared: noteIsShared },
       drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: drawIsShared },
+      chat: { isShared: chatIsShared },
+      voice: { isShared: voiceIsShared },
       canShared: canShared,
     };
-    console.log("마지막: ", drawIsShared);
     patchRoom(body, {
       onError: () => {
         alert("저장에 실패했습니다.");
@@ -55,7 +60,6 @@ const ConversationSaveHeader = ({
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: ["room", postId] });
-        console.log("cache delete: ", drawIsShared);
         navigate(`/room/${postId}`);
       },
     });

@@ -1,6 +1,13 @@
 import { create } from "@/lib/zustand";
 import * as Y from "yjs";
 
+interface Chatting {
+  date: string;
+  name: string;
+  message: string;
+  email: string;
+}
+
 interface PreviousRoomStore {
   drawBoard: string;
   setDrawBoard: (drawBoard: string) => void;
@@ -16,11 +23,13 @@ interface PreviousRoomStore {
   noteIsShared: boolean;
   setNoteIsShared: (noteIsShared: boolean) => void;
 
+  chat: Chatting[];
+  setChat: (chat: Chatting[]) => void;
   chatIsShared: boolean;
   setChatIsShared: (chatIsShared: boolean) => void;
 
-  voice: string;
-  setVoice: (voice: string) => void;
+  voice: Chatting[];
+  setVoice: (voice: Chatting[]) => void;
   voiceIsShared: boolean;
   setVoiceIsShared: (voiceIsShared: boolean) => void;
 
@@ -43,11 +52,13 @@ export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
   noteIsShared: true,
   setNoteIsShared: (noteIsShared) => set({ noteIsShared }),
 
+  chat: [],
+  setChat: (chat: Chatting[]) => set({ chat }),
   chatIsShared: true,
-  setChatIsShared: (chatIsShared) => set({chatIsShared}),
+  setChatIsShared: (chatIsShared) => set({ chatIsShared }),
 
-  voice: "",
-  setVoice: (voice) => set({ voice }),
+  voice: [],
+  setVoice: (voice: Chatting[]) => set({ voice }),
   voiceIsShared: true,
   setVoiceIsShared: (voiceIsShared) => set({ voiceIsShared }),
 

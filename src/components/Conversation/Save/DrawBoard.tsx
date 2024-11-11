@@ -46,10 +46,6 @@ const ConversationSaveDrawBoardViewer = ({
   }, [drawBoard]);
 
   useEffect(() => {
-    console.log("스토어로 변경된 애: ", drawIsShared)
-  }, [drawIsShared])
-
-  useEffect(() => {
     if (drawBoard.length === 0) {
       setDrawBoard(data);
     }
