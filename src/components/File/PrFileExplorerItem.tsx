@@ -1,5 +1,5 @@
-import { getFileStatusStyle } from "@/lib/file";
 import { cn } from "@/lib/utils";
+import { getFileStatusStyle } from "@/lib/file";
 import { fileSysyemStore } from "@/stores/github.store";
 
 interface PrFileExplorerItemProps {

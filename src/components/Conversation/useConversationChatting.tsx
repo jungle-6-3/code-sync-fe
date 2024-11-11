@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { chattingMessageStore } from "@/stores/chattingMessage.store";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCommunicationStore } from "@/stores/communicationState.store";
-import { SocketManager } from "@/lib/socketManager";
+import { Button } from "@/components/ui/button";
 import { PreviewChatting } from "@/components/Conversation/PreviewChatting";
 import useChattingScrollEvent from "@/hooks/Conversation/useChattingScrollEvent";
+import { chattingMessageStore } from "@/stores/chattingMessage.store";
+import { useCommunicationStore } from "@/stores/communicationState.store";
+import { SocketManager } from "@/lib/socketManager";
 import { cn } from "@/lib/utils";
 
-export default function ConversationChatting() {
+const ConversationChatting = () => {
   const [message, setMessage] = useState("");
   const addMessage = chattingMessageStore((state) => state.addMessage);
   const messages = chattingMessageStore((state) => state.messages);
@@ -122,4 +122,6 @@ export default function ConversationChatting() {
       </form>
     </>
   );
-}
+};
+
+export default ConversationChatting;

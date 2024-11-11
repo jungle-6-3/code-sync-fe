@@ -1,5 +1,5 @@
-import SignUp from "@/components/Users/SignUp";
 import { Link } from "react-router-dom";
+import SignUp from "@/components/Users/SignUp";
 
 export default function SignUpPage() {
   return (

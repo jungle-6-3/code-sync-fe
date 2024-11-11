@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ConversationCam } from "@/components/WebCam";
 import ConversationPage from "@/pages/conversation/ConversationPage";
 import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
-import { useNavigate, useParams } from "react-router-dom";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 
 const ConversationJunctionPage = () => {

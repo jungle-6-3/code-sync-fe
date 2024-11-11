@@ -1,5 +1,5 @@
-import { CodeEditor } from "@/components/CodeEditor";
 import { useContext } from "react";
+import { CodeEditor } from "@/components/CodeEditor";
 import { BoardContext } from "@/components/File/SelectedFile/index";
 import { FileEditorProps } from "./file";
 

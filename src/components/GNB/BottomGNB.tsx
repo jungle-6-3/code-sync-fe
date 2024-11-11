@@ -2,7 +2,7 @@ import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import { prMetaDataStore } from "@/stores/github.store";
 import { Link } from "react-router-dom";
 
-export const BottomGNB = () => {
+const BottomGNB = () => {
   const prUrl = prMetaDataStore((state) => state.prMetaData.prUrl);
   const setBottomSection = sectionSelectStore(
     (state) => state.setBottomSection,
@@ -27,3 +27,5 @@ export const BottomGNB = () => {
     </div>
   );
 };
+
+export default BottomGNB;

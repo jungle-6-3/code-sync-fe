@@ -4,6 +4,7 @@ const HowToUsePage = () => {
       src="/Code-Sync.png"
       alt="How to use Code-Sync"
       className="h-full w-screen object-cover"
+      loading="lazy"
     />
   );
 };

@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { MainFrame } from "@/components/Frame/MainFrame";
-import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
 import { SocketJoinRequestBy } from "@/hooks/Toast/useJoinReqeustBy";
 import { useJoinRequestByToast } from "@/hooks/Toast";
 import { useUserDisconnectedToast } from "@/hooks/Toast";
@@ -8,6 +6,8 @@ import { SocketUserDisconnected } from "@/hooks/Toast/useUserDisconnected";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
 import { userMediaStore } from "@/stores/userMedia.store";
+import { MainFrame } from "@/components/Frame/MainFrame";
+import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
 
 const ConversationPage = () => {
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();

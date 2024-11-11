@@ -1,8 +1,8 @@
 
-import { addInviteAcceptedListener } from '@/lib/socket';
-import { SocketManager } from '@/lib/socketManager';
 import { create } from "@/lib/zustand";
 import { userMediaStore } from '@/stores/userMedia.store';
+import { SocketManager } from '@/lib/socketManager';
+import { addInviteAcceptedListener } from '@/lib/socket';
 
 type LifecycleStage =
   | 'init' // 방 생성하기: 방 생성 및 고유 ID, 사용자 정보 초기화

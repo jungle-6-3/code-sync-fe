@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { userMediaStore } from "@/stores/userMedia.store";
 import { Button } from "@/components/ui/button";
 import { SpinIcon } from "@/components/icons";
 import { WebCamVideoButton, WebCamAudioButton } from "@/components/WebCam";
-import { useCommunicationStore } from "@/stores/communicationState.store";
 import { SocketManager } from "@/lib/socketManager";
+import { userMediaStore } from "@/stores/userMedia.store";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 
 interface ConversationReadyPageProps {
   onSetJoin: (online: boolean) => void;

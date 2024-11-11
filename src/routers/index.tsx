@@ -1,12 +1,15 @@
-import LoginPage from "@/pages/LoginPage";
 import { createBrowserRouter } from "react-router-dom";
-import SignUpPage from "@/pages/SignUpPage";
-import ConversationJunctionPage from "@/pages/conversation";
-import CreateRoomPage from "@/pages/room/CreateRoomPage";
-import PreviousRoom from "@/pages/room/PreviousRoom";
+
 import { UserGuard, UserLoginPageGuard } from "@/hooks/Users/useCheckUserValid";
-import RoomSavePage from "@/pages/room/RoomSavePage";
-import HowToUsePage from "@/pages/room/HowToUsePage";
+import {
+  LoginPage,
+  SignUpPage,
+  HowToUsePage,
+  PreviousRoom,
+  RoomSavePage,
+  CreateRoomPage,
+  ConversationJunctionPage,
+} from "@/routers/lazyComponents";
 
 export const router = createBrowserRouter([
   {
