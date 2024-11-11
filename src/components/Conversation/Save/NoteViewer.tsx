@@ -5,6 +5,7 @@ import { toUint8Array } from "js-base64";
 import * as Y from "yjs";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { useEffect, useMemo, useReducer } from "react";
+import { Switch } from "@/components/ui/switch";
 
 interface ConversationSaveNoteViewerProps {
   data: string;
@@ -16,6 +17,10 @@ const ConversationSaveNoteViewer = ({
   const note = usePreviousRoomStore((state) => state.note);
   const setNote = usePreviousRoomStore((state) => state.setNote);
   const ydoc = usePreviousRoomStore((state) => state.noteYdoc);
+  const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
+  const setNoteIsShared = usePreviousRoomStore(
+    (state) => state.setNoteIsShared,
+  );
   const [forceUpdateCount, forceUpdate] = useReducer((x) => x + 1, 0);
   const editor = useMemo(
     () =>
@@ -57,9 +62,15 @@ const ConversationSaveNoteViewer = ({
   }, []);
 
   return (
-    <div className="h-[calc(100vh-16rem)] py-2">
-      <BlockNoteView editor={editor} sideMenu={true} theme="light" />
-    </div>
+    <>
+      <div className="mx-10 flex justify-end gap-4 text-sm font-light">
+        {noteIsShared ? "공개" : "비공개"}
+        <Switch checked={noteIsShared} onCheckedChange={setNoteIsShared} />
+      </div>
+      <div className="h-[calc(100vh-16rem)] py-2">
+        <BlockNoteView editor={editor} sideMenu={true} theme="light" />
+      </div>
+    </>
   );
 };
 

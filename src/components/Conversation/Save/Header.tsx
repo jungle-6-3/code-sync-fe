@@ -21,6 +21,8 @@ const ydocToBase64 = (ydoc: Y.Doc) => {
 interface BodyType {
   note: { data: string; isShared: boolean };
   drawBoard: { data: string; isShared: boolean };
+  chat: { isShared: boolean };
+  voice: { isShared: boolean };
   canShared: boolean;
 }
 
@@ -37,11 +39,16 @@ const ConversationSaveHeader = ({
   const navigate = useNavigate();
   const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
   const queryClient = useQueryClient();
+  const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
+  const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
+  const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
 
   const onPatchRoom = () => {
     const body: BodyType = {
-      note: { data: ydocToBase64(noteYDoc), isShared: false },
+      note: { data: ydocToBase64(noteYDoc), isShared: noteIsShared },
       drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: drawIsShared },
+      chat: { isShared: chatIsShared },
+      voice: { isShared: voiceIsShared },
       canShared: canShared,
     };
     patchRoom(body, {

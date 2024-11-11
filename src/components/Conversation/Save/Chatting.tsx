@@ -1,4 +1,6 @@
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 
 interface ConversationSaveChatViewerProps {
   chats?: {
@@ -19,6 +21,15 @@ const ConversationSaveChatViewer = ({
   chats,
   voice,
 }: ConversationSaveChatViewerProps) => {
+  const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
+  const setChatIsShared = usePreviousRoomStore(
+    (state) => state.setChatIsShared,
+  );
+  const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
+  const setVoiceIsShared = usePreviousRoomStore(
+    (state) => state.setVoiceIsShared,
+  );
+
   const chatting = [
     ...(chats ?? []).map((c) => ({ ...c, status: "chat" })),
     ...(voice ?? []).map((v) => ({ ...v, status: "voice" })),
@@ -39,8 +50,30 @@ const ConversationSaveChatViewer = ({
     <div className="flex">
       <div className="w-full">
         <div className="flex w-full items-center justify-center space-x-40">
-          <p className="mb-4 text-center text-2xl font-bold">Chatting</p>
-          <p className="mb-4 text-center text-2xl font-bold">Voice Text</p>
+          <div className="mb-4 text-center">
+            <span className="text-sm font-light">
+              {chatIsShared ? "공개" : "비공개"}
+            </span>
+            <div className="my-2">
+              <Switch
+                checked={chatIsShared}
+                onCheckedChange={setChatIsShared}
+              />
+            </div>
+            <span className="text-2xl font-bold">Chatting</span>
+          </div>
+          <div className="mb-4 text-center">
+            <span className="text-sm font-light">
+              {voiceIsShared ? "공개" : "비공개"}
+            </span>
+            <div className="my-2">
+              <Switch
+                checked={voiceIsShared}
+                onCheckedChange={setVoiceIsShared}
+              />
+            </div>
+            <span className="text-2xl font-bold">Voice Text</span>
+          </div>
         </div>
         <div className="h-[calc(100vh-16rem)] py-2">
           {chattingData.map((chat, index) => (
