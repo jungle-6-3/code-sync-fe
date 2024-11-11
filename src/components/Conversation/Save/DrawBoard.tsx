@@ -46,10 +46,6 @@ const ConversationSaveDrawBoardViewer = ({
   }, [drawBoard]);
 
   useEffect(() => {
-    console.log(drawIsShared)
-  }, [drawIsShared])
-
-  useEffect(() => {
     if (drawBoard.length === 0) {
       setDrawBoard(data);
     }
