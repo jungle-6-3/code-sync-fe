@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { fileSysyemStore } from "@/stores/github.store";
+import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import {
@@ -223,26 +223,10 @@ export const MainFrame = () => {
     if (!otherUserSelectedCommitFile) return;
     switch (otherUserSelectedCommitFile) {
       case "MainDrawBoard":
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "MainDrawBoard",
-          language: "",
-          status: "init",
-        });
+        setSelectedCommitFile(ADDITIONAL_FILES.MainDrawBoard);
         break;
       case "BlockNote":
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "BlockNote",
-          language: "",
-          status: "init",
-        });
+        setSelectedCommitFile(ADDITIONAL_FILES.BlockNote);
         break;
       default: {
         const findFile = commitFileList.find(
