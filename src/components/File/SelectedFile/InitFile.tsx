@@ -19,7 +19,7 @@ export const InitFile = ({
 
   return (
     <div className="relative flex h-[55vh] w-full flex-col justify-center">
-      <div className="mx-auto w-[90%] py-3 text-2xl font-semibold">
+      <div className="mx-auto w-[90%] truncate py-3 text-2xl font-semibold">
         File Changed
       </div>
       <Table className="m-auto w-[90%]">
