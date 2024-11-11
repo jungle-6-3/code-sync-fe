@@ -1,19 +1,14 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ConversationCam } from "@/components/WebCam";
+import ConversationPage from "@/pages/conversation/ConversationPage";
+import ConversationReadyPage from "@/pages/conversation/ConversationReadyPage";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 
-const ConversationPage = lazy(
-  () => import("@/pages/conversation/ConversationPage"),
-);
-const ConversationReadyPage = lazy(
-  () => import("@/pages/conversation/ConversationReadyPage"),
-);
-
 const ConversationJunctionPage = () => {
-  const { conversationId } = useParams();
   const [isJoin, setIsJoin] = useState(false);
   const constraintsRef = useRef(null);
+  const { conversationId } = useParams();
   const navigate = useNavigate();
   const onFinishing = useCommunicationStore((state) => state.onFinishing);
 

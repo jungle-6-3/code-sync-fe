@@ -10,7 +10,12 @@ const RoomSavePage = () => {
           to="/room/create"
           className="ml-12 flex w-fit items-center gap-4 p-4"
         >
-          <img src="/favicon.png" alt="facivon" className="h-8 w-8" />
+          <img
+            src="/favicon.png"
+            alt="facivon"
+            className="h-8 w-8"
+            loading="lazy"
+          />
           <div className="text-lg">Code-Sync</div>
         </Link>
       </div>

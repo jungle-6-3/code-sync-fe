@@ -1,6 +1,6 @@
+import { DiffEditor } from "@monaco-editor/react";
 import { type Monaco } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { lazy } from "react";
 interface CodeSplitEditorProps {
   language: string;
   originalValue: string;
@@ -10,12 +10,6 @@ interface CodeSplitEditorProps {
     monaco: Monaco,
   ) => void;
 }
-
-const DiffEditor = lazy(() =>
-  import("@monaco-editor/react").then((module) => ({
-    default: module.DiffEditor,
-  })),
-);
 
 const CodeSplitEditor = ({
   language,
