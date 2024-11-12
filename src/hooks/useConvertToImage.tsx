@@ -1,7 +1,8 @@
 import { RefObject } from "react";
 import { toPng } from "html-to-image";
-import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
+import { fileSysyemStore } from "@/stores/github.store";
 import { drawBoardStore } from "@/stores/drawBoard.store";
+import { ADDITIONAL_FILES } from "@/constant/github";
 
 interface Size {
   width: number;

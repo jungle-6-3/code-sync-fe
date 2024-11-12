@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
+import { Button } from "@/components/ui/button";
+import { fileSysyemStore } from "@/stores/github.store";
+import { ADDITIONAL_FILES } from "@/constant/github";
 
 export const SyncButton = () => {
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
