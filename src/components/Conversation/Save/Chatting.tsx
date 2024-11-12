@@ -80,7 +80,7 @@ const ConversationSaveChatViewer = ({
             <div
               key={`${chat.date}-${index}`}
               className={cn(
-                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px]",
+                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[300px]",
                 chat.status === "voice"
                   ? "translate-x-1/2"
                   : "-translate-x-1/2",
@@ -99,7 +99,7 @@ const ConversationSaveChatViewer = ({
                 </div>
                 <div className="flex-1 text-sm text-gray-700">
                   <p className="font-semibold text-gray-900">{chat.name}</p>
-                  <p className="truncate">{chat.message}</p>
+                  <p className="break-words">{chat.message}</p>
                   <p className="truncate text-xs">{chat.date}</p>
                 </div>
               </div>
