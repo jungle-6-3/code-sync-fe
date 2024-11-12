@@ -1,3 +1,4 @@
+import { SyncButton } from "@/components/Conversation/SyncButton";
 import {
   Table,
   TableBody,
@@ -18,9 +19,9 @@ export const InitFile = ({
   );
 
   return (
-    <div className="second-step relative flex h-[55vh] w-full flex-col justify-center">
-      <div className="mx-auto w-[90%] py-3 text-2xl font-semibold">
-        File Changed
+    <div className="relative flex h-[55vh] w-full flex-col justify-center">
+      <div className="absolute right-12 top-0">
+        <SyncButton />
       </div>
       <Table className="m-auto w-[90%]">
         <TableHeader>
