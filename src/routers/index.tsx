@@ -9,6 +9,7 @@ import {
   RoomSavePage,
   CreateRoomPage,
   ConversationJunctionPage,
+  RoomSharePage,
 } from "@/routers/lazyComponents";
 
 export const router = createBrowserRouter([
@@ -76,4 +77,10 @@ export const router = createBrowserRouter([
       </UserGuard>
     ),
   },
+  {
+    path: "/s/:shareId",
+    element: (
+      <RoomSharePage />
+    )
+  }
 ]);

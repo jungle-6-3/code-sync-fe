@@ -111,3 +111,18 @@ export interface GetPreviousRoomResponseDto {
   };
   canShared: boolean;
 }
+
+export interface getPreviousShareRoomResponseDto {
+    note: {
+      url: string
+    };
+    drawBoard: {
+      url: string
+    };
+    chat: {
+      url: string
+    };
+    voice: {
+      url: string
+    };
+}

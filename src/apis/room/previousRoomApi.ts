@@ -1,4 +1,4 @@
-import { GetPreviousRoomResponseDto, GetPreviousRoomsResponseDto } from "@/apis/conversation/dtos";
+import { GetPreviousRoomResponseDto, GetPreviousRoomsResponseDto, getPreviousShareRoomResponseDto } from "@/apis/conversation/dtos";
 import { PatchConversationDatasRequest } from "@/apis/room/dtos";
 import https from "@/lib/https";
 
@@ -27,5 +27,12 @@ export const patchPreviousRoom = async (
 
 export const getSharedPreviouseRoom = async (shardId: string) => {
   const { data } = await https.get(`/conversations/share/${shardId}`);
+  return data;
+}
+
+export const getPreviousShareRoom = async (
+  shareId: string,
+) => {
+  const {data} = await https.get<getPreviousShareRoomResponseDto>(`/conversations/share/${shareId}`);
   return data;
 }

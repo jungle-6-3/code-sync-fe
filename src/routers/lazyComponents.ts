@@ -7,3 +7,4 @@ export const CreateRoomPage = lazy(() => import("@/pages/room/CreateRoomPage"));
 export const PreviousRoom = lazy(() => import("@/pages/room/PreviousRoom"));
 export const RoomSavePage = lazy(() => import("@/pages/room/RoomSavePage"));
 export const HowToUsePage = lazy(() => import("@/pages/room/HowToUsePage"));
+export const RoomSharePage = lazy(() => import("@/pages/room/RoomSharePage"));
