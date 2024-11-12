@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
@@ -21,11 +21,10 @@ import {
 } from "@/stores/chattingMessage.store";
 import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
-import SelectedFileViewer, {
-  BoardContext,
-} from "@/components/File/SelectedFile";
+import SelectedFileViewer from "@/components/File/SelectedFile";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 import { Button } from "@/components/ui/button";
+import { useConvertToImage } from "@/hooks/useConvertToImage";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
@@ -60,6 +59,9 @@ export const MainFrame = () => {
   const socket = SocketManager.getInstance().socketIOSocket;
   const provider = SocketManager.getInstance().yjsSocket.provider;
   const { checkUser } = useCheckUserQuery();
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const { convertToImage } = useConvertToImage({ elementRef, size });
 
   const otherUserSelectedCommitFile = fileSysyemStore(
     (state) => state.otherUserSelectedCommitFile,
@@ -67,6 +69,23 @@ export const MainFrame = () => {
   const setOtherUserSelectedCommitFile = fileSysyemStore(
     (state) => state.setOtherUserSelectedCommitFile,
   );
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setSize({ width, height });
+      }
+    });
+
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [selectedCommitFile]);
 
   const removeAllCursorStle = () => {
     const cursorStyles = document.querySelectorAll(
@@ -237,8 +256,6 @@ export const MainFrame = () => {
       }
     }
   };
-  const { convertToImage } = useContext(BoardContext);
-
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
@@ -267,17 +284,28 @@ export const MainFrame = () => {
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
             <div className="absolute right-0 top-9 z-[100]">
-              {otherUserSelectedCommitFile &&
-                otherUserSelectedCommitFile !== selectedCommitFile.filename && (
-                  <Button
-                    className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
-                    onClick={navigateToOtherUserFile}
-                    size="sm"
-                    variant="ghost"
-                  >
-                    화면 동기화
-                  </Button>
-                )}
+              {!otherUserSelectedCommitFile && (
+                <div className="absolute bottom-8 text-xs">
+                  아직 상대방이 없어요!
+                </div>
+              )}
+              {otherUserSelectedCommitFile === selectedCommitFile.filename && (
+                <div className="absolute bottom-8 text-xs">
+                  같은 화면을 보고있어요!
+                </div>
+              )}
+              <Button
+                className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                onClick={navigateToOtherUserFile}
+                size="sm"
+                variant="ghost"
+                disabled={
+                  !otherUserSelectedCommitFile ||
+                  otherUserSelectedCommitFile === selectedCommitFile.filename
+                }
+              >
+                화면 동기화
+              </Button>
               <Button
                 onClick={convertToImage}
                 className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
@@ -294,15 +322,17 @@ export const MainFrame = () => {
             defaultSize={70}
             className="relative z-0 flex items-center justify-center"
           >
-            {selectedCommitFile && (
-              <SelectedFileViewer
-                status={selectedCommitFile.status}
-                selectedCommitFile={selectedCommitFile}
-                commitFileList={commitFileList}
-                onEditorMount={onEditorMount}
-                onSplitEditorMount={onDiffEditorMount}
-              />
-            )}
+            <div ref={elementRef} className="h-full w-full">
+              {selectedCommitFile && (
+                <SelectedFileViewer
+                  status={selectedCommitFile.status}
+                  selectedCommitFile={selectedCommitFile}
+                  commitFileList={commitFileList}
+                  onEditorMount={onEditorMount}
+                  onSplitEditorMount={onDiffEditorMount}
+                />
+              )}
+            </div>
           </ResizablePanel>
           {bottomSection !== "" && (
             <>

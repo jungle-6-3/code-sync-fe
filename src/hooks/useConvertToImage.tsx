@@ -1,0 +1,56 @@
+import { RefObject } from "react";
+import { toPng } from "html-to-image";
+import { fileSysyemStore } from "@/stores/github.store";
+import { drawBoardStore } from "@/stores/drawBoard.store";
+
+interface Size {
+  width: number;
+  height: number;
+}
+
+interface UseConvertToImageProps {
+  elementRef: RefObject<HTMLDivElement>;
+  size: Size;
+}
+
+export const useConvertToImage = ({
+  elementRef,
+  size,
+}: UseConvertToImageProps) => {
+  const setIsImageAddedInfo = drawBoardStore(
+    (state) => state.setIsAddedImageInfo,
+  );
+  const setSelectedCommitFile = fileSysyemStore(
+    (state) => state.setSelectedCommitFile,
+  );
+
+  const convertToImage = () => {
+    if (!elementRef.current) return;
+
+    toPng(elementRef.current, { cacheBust: false })
+      .then((dataUrl: string) => {
+        sessionStorage.setItem("image", dataUrl);
+        setIsImageAddedInfo({
+          added: true,
+          size: {
+            width: size.width,
+            height: size.height,
+          },
+        });
+        setSelectedCommitFile({
+          additions: 0,
+          afterContent: "",
+          beforeContent: "",
+          deletions: 0,
+          filename: "MainDrawBoard",
+          language: "",
+          status: "init",
+        });
+      })
+      .catch((err: unknown) => {
+        console.error(err);
+      });
+  };
+
+  return { convertToImage };
+};
