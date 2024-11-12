@@ -284,18 +284,22 @@ export const MainFrame = () => {
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
             <div className="absolute right-0 top-9 z-[100]">
-              <Button
-                className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
-                onClick={navigateToOtherUserFile}
-                size="sm"
-                variant="ghost"
-                disabled={
-                  !otherUserSelectedCommitFile ||
-                  otherUserSelectedCommitFile === selectedCommitFile.filename
-                }
-              >
-                화면 동기화
-              </Button>
+              {(selectedCommitFile.status === "added" ||
+                selectedCommitFile.status === "modified" ||
+                selectedCommitFile.status === "removed") && (
+                <Button
+                  className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                  onClick={navigateToOtherUserFile}
+                  size="sm"
+                  variant="ghost"
+                  disabled={
+                    !otherUserSelectedCommitFile ||
+                    otherUserSelectedCommitFile === selectedCommitFile.filename
+                  }
+                >
+                  화면 동기화
+                </Button>
+              )}
               <Button
                 onClick={convertToImage}
                 className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
@@ -312,7 +316,10 @@ export const MainFrame = () => {
             defaultSize={70}
             className="relative z-0 flex items-center justify-center"
           >
-            <div ref={elementRef} className="h-full w-full">
+            <div
+              ref={elementRef}
+              className="flex h-full w-full items-center justify-center"
+            >
               {selectedCommitFile && (
                 <SelectedFileViewer
                   status={selectedCommitFile.status}

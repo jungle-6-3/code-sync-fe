@@ -26,7 +26,6 @@ export const useConvertToImage = ({
 
   const convertToImage = () => {
     if (!elementRef.current) return;
-
     toPng(elementRef.current, { cacheBust: false })
       .then((dataUrl: string) => {
         sessionStorage.setItem("image", dataUrl);
