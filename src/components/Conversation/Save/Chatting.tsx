@@ -99,7 +99,10 @@ const ConversationSaveChatViewer = ({
                 </div>
                 <div className="flex-1 text-sm text-gray-700">
                   <p className="font-semibold text-gray-900">{chat.name}</p>
-                  <p className="break-words">{chat.message}</p>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    <p className="break-all">{chat.message}</p>
+                  </div>
+
                   <p className="truncate text-xs">{chat.date}</p>
                 </div>
               </div>
