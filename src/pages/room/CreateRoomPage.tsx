@@ -39,7 +39,7 @@ const CreateRoomPage = () => {
 
   useEffect(() => {
     onInit();
-  }, []);
+  }, [onInit]);
 
   const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
     const { owner, repo, prNumber } = extractGitHubPrDetails(value);

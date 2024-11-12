@@ -18,7 +18,7 @@ export const InitFile = ({
   );
 
   return (
-    <div className="relative flex h-[55vh] w-full flex-col justify-center">
+    <div className="second-step relative flex h-[55vh] w-full flex-col justify-center">
       <div className="mx-auto w-[90%] py-3 text-2xl font-semibold">
         File Changed
       </div>

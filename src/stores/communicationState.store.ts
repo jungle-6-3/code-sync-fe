@@ -39,6 +39,10 @@ export const useCommunicationStore = create<CommunicationState>()((set, get) => 
     set({ stage: 'init', isSocketManagerReady: false })
   },
   onReady: (roomUuid) => {
+    if (get().isSocketManagerReady) {
+      SocketManager.getInstance().disconnectAllSockets();
+    }
+    userMediaStore.getState().removeWebcam();
     set({ stage: 'ready', roomUuid, isSocketManagerReady: false })
   },
   onStaging: async () => {

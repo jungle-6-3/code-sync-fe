@@ -38,8 +38,8 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
         .mediaStream?.getTracks()
         .forEach((track) => {
           if (
-            (track.kind === "audio" && !audio) ||
-            (track.kind === "video" && !video)
+            (track.kind === "audio" && audio) ||
+            (track.kind === "video" && video)
           ) {
             track.enabled = true;
           }
@@ -76,8 +76,8 @@ export const userMediaStore = create<UserMediaStore>()((set, get) => ({
             track.enabled = false;
           }
         });
+
       set({
-        mediaStream: !video ? null : get().mediaStream,
         isUserMediaOn: { video, audio },
       });
     }
