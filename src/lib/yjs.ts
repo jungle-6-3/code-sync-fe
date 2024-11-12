@@ -64,7 +64,6 @@ export const initFileStructSync = (
             additions: metadata.additions,
             deletions: metadata.deletions,
           }));
-
         initCommitFileList(files);
       }
     }

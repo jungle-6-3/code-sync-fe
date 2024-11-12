@@ -27,7 +27,7 @@ export const PRBottomFileExplorer = () => {
 
   return (
     <div className="flex h-full flex-col overflow-hidden p-2">
-      <h3 className="font-medium">
+      <h3 className="truncate font-medium">
         Commit Information
         <span className="mt-2 pl-2 text-sm text-gray-600 underline">
           Branch: {prInfo.requireUserInfo.branchName} →{" "}

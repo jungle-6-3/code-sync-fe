@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { Airplay } from "lucide-react";
 
@@ -8,10 +9,14 @@ const TopGNBSharedVideoShowStatus = () => {
 
   return (
     <li>
-      <button className="flex gap-2" onClick={toggleShowWebcam}>
+      <Button
+        className="flex gap-2 truncate"
+        variant="ghost"
+        onClick={toggleShowWebcam}
+      >
         사용자 화면 보기
         <Airplay color="#334155" size={16} />
-      </button>
+      </Button>
     </li>
   );
 };
