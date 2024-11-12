@@ -9,7 +9,7 @@ import TopGNBWifiStatus from "@/components/GNB/TopGNB/WifiStatus";
 const TopGNB = () => {
   return (
     <ul className="flex px-4 text-sm text-slate-700">
-      <div className="direction-rtl flex items-center justify-center overflow-hidden">
+      <div className="direction-rtl flex flex-1 items-center justify-center overflow-hidden">
         <TopGNBCopyUrl />
       </div>
       <div className="flex flex-1 items-center justify-center">
