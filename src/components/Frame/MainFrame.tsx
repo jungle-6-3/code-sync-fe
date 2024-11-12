@@ -25,6 +25,7 @@ import SelectedFileViewer from "@/components/File/SelectedFile";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 import { Button } from "@/components/ui/button";
 import { useConvertToImage } from "@/hooks/useConvertToImage";
+import { cn } from "@/lib/utils";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
@@ -288,7 +289,13 @@ export const MainFrame = () => {
                 selectedCommitFile.status === "modified" ||
                 selectedCommitFile.status === "removed") && (
                 <Button
-                  className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                  className={cn(
+                    "rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
+                    otherUserSelectedCommitFile &&
+                      selectedCommitFile.filename !==
+                        otherUserSelectedCommitFile &&
+                      "bg-blue-500 text-white",
+                  )}
                   onClick={navigateToOtherUserFile}
                   size="sm"
                   variant="ghost"
