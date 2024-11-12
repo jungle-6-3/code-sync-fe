@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
+import { fileSysyemStore } from "@/stores/github.store";
 import { MonacoBinding } from "y-monaco";
 import { editor } from "monaco-editor";
 import {
@@ -25,16 +25,13 @@ import SelectedFileViewer from "@/components/File/SelectedFile";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
 import { Button } from "@/components/ui/button";
 import { useConvertToImage } from "@/hooks/useConvertToImage";
-import { cn } from "@/lib/utils";
+import { SyncButton } from "@/components/Conversation/SyncButton";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
   const bottomSection = sectionSelectStore((state) => state.bottomSection);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
-  );
-  const setSelectedCommitFile = fileSysyemStore(
-    (state) => state.setSelectedCommitFile,
   );
   const roomId = window.location.pathname.split("/")[1];
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
@@ -118,7 +115,7 @@ export const MainFrame = () => {
   }, [provider, ydoc, roomId]);
 
   useEffect(() => {
-    if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    if (!provider || !checkUser?.data) return;
     removeAllCursorStle();
     provider.awareness.setLocalStateField("user", {
       name: checkUser.data.name,
@@ -132,10 +129,10 @@ export const MainFrame = () => {
     return () => {
       provider?.awareness.setLocalStateField("user", null);
     };
-  }, [provider, editor, ydoc, checkUser?.data, selectedCommitFile.filename]);
+  }, [provider, checkUser?.data, selectedCommitFile]);
 
   useEffect(() => {
-    if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    if (!provider || !checkUser?.data) return;
     removeAllCursorStle();
     const handleAwarnessChange = () => {
       const statesArray = Array.from(provider.awareness.getStates());
@@ -161,7 +158,6 @@ export const MainFrame = () => {
       const myId = provider.awareness.clientID;
       const myInfo = totalUserInfo.find(([id]) => id === myId);
       const otherInfo = totalUserInfo.find(([id]) => id !== myId);
-
       if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
       if (
@@ -239,24 +235,6 @@ export const MainFrame = () => {
     setEditor(modifiedEditor);
   };
 
-  const navigateToOtherUserFile = () => {
-    if (!otherUserSelectedCommitFile) return;
-    switch (otherUserSelectedCommitFile) {
-      case "MainDrawBoard":
-        setSelectedCommitFile(ADDITIONAL_FILES.MainDrawBoard);
-        break;
-      case "BlockNote":
-        setSelectedCommitFile(ADDITIONAL_FILES.BlockNote);
-        break;
-      default: {
-        const findFile = commitFileList.find(
-          (file) => file.filename === otherUserSelectedCommitFile,
-        )!;
-        setSelectedCommitFile(findFile);
-        break;
-      }
-    }
-  };
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
@@ -285,36 +263,19 @@ export const MainFrame = () => {
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
             <div className="absolute right-0 top-9 z-[100]">
+              <SyncButton />
               {(selectedCommitFile.status === "added" ||
                 selectedCommitFile.status === "modified" ||
                 selectedCommitFile.status === "removed") && (
                 <Button
-                  className={cn(
-                    "rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
-                    otherUserSelectedCommitFile &&
-                      selectedCommitFile.filename !==
-                        otherUserSelectedCommitFile &&
-                      "bg-blue-500 text-white",
-                  )}
-                  onClick={navigateToOtherUserFile}
+                  onClick={convertToImage}
+                  className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
                   size="sm"
                   variant="ghost"
-                  disabled={
-                    !otherUserSelectedCommitFile ||
-                    otherUserSelectedCommitFile === selectedCommitFile.filename
-                  }
                 >
-                  화면 동기화
+                  코드 이미지로 추출
                 </Button>
               )}
-              <Button
-                onClick={convertToImage}
-                className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
-                size="sm"
-                variant="ghost"
-              >
-                코드 이미지로 추출
-              </Button>
             </div>
           </div>
         )}
