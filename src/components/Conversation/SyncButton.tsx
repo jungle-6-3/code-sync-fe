@@ -35,7 +35,7 @@ export const SyncButton = () => {
   return (
     <Button
       className={cn(
-        "rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
+        "third-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
         otherUserSelectedCommitFile &&
           selectedCommitFile.filename !== otherUserSelectedCommitFile &&
           "bg-blue-500 text-white",

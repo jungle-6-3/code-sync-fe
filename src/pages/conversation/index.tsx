@@ -17,22 +17,20 @@ const steps: StepType[] = [
     selector: ".second-step",
     content: "파일 바뀐 리스트에요. \n각 셀을 클릭하여 파일을 볼 수 있어요.",
     padding: 0,
-    action: (elem) => {
-      setTimeout(() => {
-        const file = elem?.querySelector("tbody tr:first-child") as HTMLElement;
-        console.log(file);
-        file?.click();
-      }, 1000);
+    actionAfter: (elem) => {
+      const file = elem?.querySelector("tbody tr:first-child") as HTMLElement;
+      console.log(file);
+      file?.click();
     },
   },
   {
     selector: ".third-step",
-    content: "따라가기 버튼을 눌러 상대방의 파일로 이동할 수 있어요.",
+    content: "화면 동기화 버튼을 눌러 상대방의 파일로 이동할 수 있어요.",
     padding: 0,
   },
   {
     selector: ".fourth-step",
-    content: "그림판을 눌러 이동할 수 있어요.",
+    content: "이미지로 추출을 눌러 그림판으로 이동할 수 있어요.",
     padding: 0,
   },
 ];
