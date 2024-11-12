@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
@@ -51,11 +52,12 @@ const ConversationSaveChatViewer = ({
       <div className="w-full">
         <div className="flex w-full items-center justify-center space-x-40">
           <div className="mb-4 text-center">
-            <span className="text-sm font-light">
-              {chatIsShared ? "공개" : "비공개"}
-            </span>
-            <div className="my-2">
+            <div className="mx-10 my-5 flex justify-end gap-4">
+              <Label htmlFor="chatSwitch" className="text-sm font-light">
+                {chatIsShared ? "공개" : "비공개"}
+              </Label>
               <Switch
+                id="chatSwitch"
                 checked={chatIsShared}
                 onCheckedChange={setChatIsShared}
               />
@@ -63,11 +65,12 @@ const ConversationSaveChatViewer = ({
             <span className="text-2xl font-bold">Chatting</span>
           </div>
           <div className="mb-4 text-center">
-            <span className="text-sm font-light">
-              {voiceIsShared ? "공개" : "비공개"}
-            </span>
-            <div className="my-2">
+            <div className="mx-10 my-5 flex justify-end gap-4">
+              <Label htmlFor="voiceSwitch" className="text-sm font-light">
+                {voiceIsShared ? "공개" : "비공개"}
+              </Label>
               <Switch
+                id="voiceSwitch"
                 checked={voiceIsShared}
                 onCheckedChange={setVoiceIsShared}
               />
@@ -80,7 +83,7 @@ const ConversationSaveChatViewer = ({
             <div
               key={`${chat.date}-${index}`}
               className={cn(
-                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[300px]",
+                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[18.75rem]",
                 chat.status === "voice"
                   ? "translate-x-1/2"
                   : "-translate-x-1/2",

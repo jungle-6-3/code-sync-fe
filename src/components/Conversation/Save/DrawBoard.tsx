@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { Excalidraw } from "@excalidraw/excalidraw";
@@ -54,9 +55,15 @@ const ConversationSaveDrawBoardViewer = ({
 
   return (
     <>
-      <div className="mx-10 flex justify-end gap-4 text-sm font-light">
-        {drawIsShared ? "공개" : "비공개"}
-        <Switch checked={drawIsShared} onCheckedChange={setDrawIsShared} />
+      <div className="mx-10 flex justify-end gap-4">
+        <Label htmlFor="switch" className="text-sm font-light">
+          {drawIsShared ? "공개" : "비공개"}
+        </Label>
+        <Switch
+          id="switch"
+          checked={drawIsShared}
+          onCheckedChange={setDrawIsShared}
+        />
       </div>
       <div className="h-[calc(100vh-16rem)] w-full" ref={exalidrawDomRef}>
         <Excalidraw

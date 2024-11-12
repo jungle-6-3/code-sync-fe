@@ -49,6 +49,6 @@ export const usePreviousShareRoomQuery = (shareId: string) => {
     queryKey: ["share", shareId],
     queryFn: () => getPreviousShareRoom(shareId),
   });
-  
+
   return { shareData, isError, isLoading };
-}
+};

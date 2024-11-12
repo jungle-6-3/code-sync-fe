@@ -6,6 +6,7 @@ import * as Y from "yjs";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { useEffect, useMemo, useReducer } from "react";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface ConversationSaveNoteViewerProps {
   data: string;
@@ -63,9 +64,15 @@ const ConversationSaveNoteViewer = ({
 
   return (
     <>
-      <div className="mx-10 flex justify-end gap-4 text-sm font-light">
-        {noteIsShared ? "공개" : "비공개"}
-        <Switch checked={noteIsShared} onCheckedChange={setNoteIsShared} />
+      <div className="mx-10 flex justify-end gap-4">
+        <Label htmlFor="switch" className="text-sm font-light">
+          {noteIsShared ? "공개" : "비공개"}
+        </Label>
+        <Switch
+          id="switch"
+          checked={noteIsShared}
+          onCheckedChange={setNoteIsShared}
+        />
       </div>
       <div className="h-[calc(100vh-16rem)] py-2">
         <BlockNoteView editor={editor} sideMenu={true} theme="light" />

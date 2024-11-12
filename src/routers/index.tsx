@@ -79,8 +79,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/s/:shareId",
-    element: (
-      <RoomSharePage />
-    )
-  }
+    element: <RoomSharePage />,
+  },
 ]);

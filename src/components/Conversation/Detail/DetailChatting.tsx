@@ -1,6 +1,4 @@
-import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 
 interface ConversationSaveChatViewerProps {
   chats?: {
@@ -21,15 +19,6 @@ const ConversationShareChatViewer = ({
   chats,
   voice,
 }: ConversationSaveChatViewerProps) => {
-  const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
-  const setChatIsShared = usePreviousRoomStore(
-    (state) => state.setChatIsShared,
-  );
-  const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
-  const setVoiceIsShared = usePreviousRoomStore(
-    (state) => state.setVoiceIsShared,
-  );
-
   const chatting = [
     ...(chats ?? []).map((c) => ({ ...c, status: "chat" })),
     ...(voice ?? []).map((v) => ({ ...v, status: "voice" })),
@@ -51,27 +40,9 @@ const ConversationShareChatViewer = ({
       <div className="w-full">
         <div className="flex w-full items-center justify-center space-x-40">
           <div className="mb-4 text-center">
-            <span className="text-sm font-light">
-              {chatIsShared ? "공개" : "비공개"}
-            </span>
-            <div className="my-2">
-              <Switch
-                checked={chatIsShared}
-                onCheckedChange={setChatIsShared}
-              />
-            </div>
             <span className="text-2xl font-bold">Chatting</span>
           </div>
           <div className="mb-4 text-center">
-            <span className="text-sm font-light">
-              {voiceIsShared ? "공개" : "비공개"}
-            </span>
-            <div className="my-2">
-              <Switch
-                checked={voiceIsShared}
-                onCheckedChange={setVoiceIsShared}
-              />
-            </div>
             <span className="text-2xl font-bold">Voice Text</span>
           </div>
         </div>
@@ -80,7 +51,7 @@ const ConversationShareChatViewer = ({
             <div
               key={`${chat.date}-${index}`}
               className={cn(
-                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[250px]",
+                "mx-auto mb-4 flex w-full max-w-[90%] sm:max-w-[18.75rem]",
                 chat.status === "voice"
                   ? "translate-x-1/2"
                   : "-translate-x-1/2",
@@ -99,7 +70,9 @@ const ConversationShareChatViewer = ({
                 </div>
                 <div className="flex-1 text-sm text-gray-700">
                   <p className="font-semibold text-gray-900">{chat.name}</p>
-                  <p className="truncate">{chat.message}</p>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    <p className="break-all">{chat.message}</p>
+                  </div>
                   <p className="truncate text-xs">{chat.date}</p>
                 </div>
               </div>

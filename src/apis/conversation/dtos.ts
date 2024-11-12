@@ -93,6 +93,10 @@ export class ChattingSocketResponse {
 
 export interface GetPreviousRoomResponseDto {
   title: string;
+  summary: {
+    url: string;
+    isShared: boolean;
+  };
   chat: {
     url: string;
     isShared: boolean;
@@ -113,16 +117,21 @@ export interface GetPreviousRoomResponseDto {
 }
 
 export interface getPreviousShareRoomResponseDto {
-    note: {
-      url: string
-    };
-    drawBoard: {
-      url: string
-    };
-    chat: {
-      url: string
-    };
-    voice: {
-      url: string
-    };
+  title: string;
+  summary: {
+    url: string;
+    isShared: boolean;
+  };
+  note: {
+    url: string;
+  };
+  drawBoard: {
+    url: string;
+  };
+  chat: {
+    url: string;
+  };
+  voice: {
+    url: string;
+  };
 }
