@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import { toPng } from "html-to-image";
-import { fileSysyemStore } from "@/stores/github.store";
+import { ADDITIONAL_FILES, fileSysyemStore } from "@/stores/github.store";
 import { drawBoardStore } from "@/stores/drawBoard.store";
 
 interface Size {
@@ -37,15 +37,7 @@ export const useConvertToImage = ({
             height: size.height,
           },
         });
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "MainDrawBoard",
-          language: "",
-          status: "init",
-        });
+        setSelectedCommitFile(ADDITIONAL_FILES.MainDrawBoard);
       })
       .catch((err: unknown) => {
         console.error(err);
