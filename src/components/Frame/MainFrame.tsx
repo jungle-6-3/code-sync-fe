@@ -284,16 +284,6 @@ export const MainFrame = () => {
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
             <div className="absolute right-0 top-9 z-[100]">
-              {!otherUserSelectedCommitFile && (
-                <div className="absolute bottom-8 text-xs">
-                  아직 상대방이 없어요!
-                </div>
-              )}
-              {otherUserSelectedCommitFile === selectedCommitFile.filename && (
-                <div className="absolute bottom-8 text-xs">
-                  같은 화면을 보고있어요!
-                </div>
-              )}
               <Button
                 className="rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
                 onClick={navigateToOtherUserFile}
