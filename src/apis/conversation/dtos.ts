@@ -20,12 +20,17 @@ export class GetPreviousRoomsResponseDto {
       conversationDatas: {
         uuid: string;
         canShared: boolean;
-      }
+      };
     }[];
   };
-  constructor({ success, data }: {
-    success: boolean; data: {
-      total: number, conversations: {
+  constructor({
+    success,
+    data,
+  }: {
+    success: boolean;
+    data: {
+      total: number;
+      conversations: {
         pk: number;
         creatorPk: number;
         participantPk: number;
@@ -39,14 +44,14 @@ export class GetPreviousRoomsResponseDto {
         conversationDatas: {
           uuid: string;
           canShared: boolean;
-        }
+        };
       }[];
-    }
+    };
   }) {
     this.success = success;
     this.data = {
       total: data.total,
-      conversations: data.conversations.map(conversation => ({
+      conversations: data.conversations.map((conversation) => ({
         pk: conversation.pk,
         creatorPk: conversation.creatorPk,
         participantPk: conversation.participantPk,
@@ -58,7 +63,7 @@ export class GetPreviousRoomsResponseDto {
         creator: conversation.creator,
         participant: conversation.participant,
         conversationDatas: conversation.conversationDatas,
-      }))
+      })),
     };
   }
 }
@@ -86,24 +91,23 @@ export class ChattingSocketResponse {
   }
 }
 
-
 export interface GetPreviousRoomResponseDto {
+  title: string;
   chat: {
-    url: string,
-    isShared: boolean
-  },
+    url: string;
+    isShared: boolean;
+  };
   note: {
-    url: string,
-    isShared: boolean
-  },
+    url: string;
+    isShared: boolean;
+  };
   drawBoard: {
-    url: string,
-    isShared: boolean
-  },
+    url: string;
+    isShared: boolean;
+  };
   voice: {
-    url: string,
-    isShared: boolean
-  },
+    url: string;
+    isShared: boolean;
+  };
   canShared: boolean;
 }
-
