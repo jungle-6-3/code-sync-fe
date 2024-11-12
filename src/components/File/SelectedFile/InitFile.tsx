@@ -20,7 +20,7 @@ export const InitFile = ({
 
   return (
     <div className="relative flex h-[55vh] w-full flex-col justify-center">
-      <div className="mx-auto w-[90%] truncate py-3 text-2xl font-semibold">
+      <div className="absolute right-12 top-0">
         <SyncButton />
       </div>
       <Table className="m-auto w-[90%]">
