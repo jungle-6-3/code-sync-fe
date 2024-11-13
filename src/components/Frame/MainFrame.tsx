@@ -307,7 +307,7 @@ export const MainFrame = () => {
           {bottomSection !== "" && (
             <>
               <ResizableHandle />
-              <ResizablePanel defaultSize={30} className="min-h-[14rem]">
+              <ResizablePanel defaultSize={30} className="min-h-[4rem]">
                 <PRBottomFileExplorer />
               </ResizablePanel>
             </>

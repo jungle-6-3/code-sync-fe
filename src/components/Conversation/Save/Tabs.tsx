@@ -62,7 +62,7 @@ const ConversationSaveTabs = () => {
   return (
     <>
       <ConversationSaveHeader />
-      <Tabs defaultValue="note">
+      <Tabs defaultValue="summary">
         <TabsList>
           <TabsTrigger value="summary">Summary</TabsTrigger>
           <TabsTrigger value="note">Note</TabsTrigger>

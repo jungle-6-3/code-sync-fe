@@ -13,39 +13,53 @@ const ConversationShareTabs = () => {
   if (!shareId) throw new Error("shareId is required");
   const { shareData } = usePreviousShareRoomQuery(shareId);
   const [drawBoardData, noteData, chatData, voiceData, summaryData] =
-    useFetchers([
-      shareData.drawBoard.url,
-      shareData.note.url,
-      shareData.chat.url,
-      shareData.voice.url,
-      shareData.summary.url,
-    ]);
+    useFetchers(
+      [
+        shareData.drawBoard?.url,
+        shareData.note?.url,
+        shareData.chat?.url,
+        shareData.voice?.url,
+        shareData.summary?.url,
+      ].filter((url) => url),
+    );
 
   return (
     <>
       <ConversationShareHeader title={shareData.title} />
-      <Tabs defaultValue="note">
+      <Tabs defaultValue="summary">
         <TabsList>
-          <TabsTrigger value="summary">Summary</TabsTrigger>
-          <TabsTrigger value="note">Note</TabsTrigger>
-          <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
-          <TabsTrigger value="chat">Chat</TabsTrigger>
+          {summaryData && <TabsTrigger value="summary">Summary</TabsTrigger>}
+          {noteData && <TabsTrigger value="note">Note</TabsTrigger>}
+          {drawBoardData && (
+            <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
+          )}
+          {voiceData && chatData && (
+            <TabsTrigger value="chat">Chat</TabsTrigger>
+          )}
         </TabsList>
-        <TabsContent value="summary">
-          <ConversationShareSummaryViewer data={summaryData.data.data} />
-        </TabsContent>
-        <TabsContent value="drawBoard">
-          <ConversationShareDrawBoardViewer data={drawBoardData.data.data} />
-        </TabsContent>
-        <TabsContent value="note">
-          <ConversationShareNoteViewer data={noteData.data.data} />
-        </TabsContent>
-        <TabsContent value="chat">
-          <ConversationShareChatViewer
-            chats={chatData.data.data}
-            voice={voiceData.data.data}
-          />
-        </TabsContent>
+        {summaryData && (
+          <TabsContent value="summary">
+            <ConversationShareSummaryViewer data={summaryData.data.data} />
+          </TabsContent>
+        )}
+        {noteData && (
+          <TabsContent value="drawBoard">
+            <ConversationShareDrawBoardViewer data={drawBoardData.data.data} />
+          </TabsContent>
+        )}
+        {drawBoardData && (
+          <TabsContent value="note">
+            <ConversationShareNoteViewer data={noteData.data.data} />
+          </TabsContent>
+        )}
+        {voiceData && chatData && (
+          <TabsContent value="chat">
+            <ConversationShareChatViewer
+              chats={chatData.data.data}
+              voice={voiceData.data.data}
+            />
+          </TabsContent>
+        )}
       </Tabs>
     </>
   );
