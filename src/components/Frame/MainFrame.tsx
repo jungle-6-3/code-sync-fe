@@ -262,7 +262,7 @@ export const MainFrame = () => {
               </div>
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
-            <div className="absolute right-0 top-9 z-[100]">
+            <div className="absolute right-0 top-9 z-[100] bg-white">
               <SyncButton />
               {(selectedCommitFile.status === "added" ||
                 selectedCommitFile.status === "modified" ||
