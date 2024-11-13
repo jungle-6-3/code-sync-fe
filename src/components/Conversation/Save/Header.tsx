@@ -7,6 +7,7 @@ import { fromUint8Array } from "js-base64";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Y from "yjs";
 import { useQueryClient } from "@tanstack/react-query";
+import { Label } from "@/components/ui/label";
 
 const ydocToBase64 = (ydoc: Y.Doc) => {
   const documentState = Y.encodeStateAsUpdate(ydoc);
@@ -17,6 +18,7 @@ const ydocToBase64 = (ydoc: Y.Doc) => {
 interface BodyType {
   note: { data: string; isShared: boolean };
   drawBoard: { data: string; isShared: boolean };
+  summary: { data: string; isShared: boolean };
   chat: { isShared: boolean };
   voice: { isShared: boolean };
   canShared: boolean;
@@ -35,15 +37,20 @@ const ConversationSaveHeader = () => {
   const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
   const queryClient = useQueryClient();
   const noteIsShared = usePreviousRoomStore((state) => state.noteIsShared);
+  const summaryIsShared = usePreviousRoomStore(
+    (state) => state.summaryIsShared,
+  );
   const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
   const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
   const title = usePreviousRoomStore((state) => state.title);
   const setTitle = usePreviousRoomStore((state) => state.setTitle);
+  const summary = usePreviousRoomStore((state) => state.summary);
 
   const onPatchRoom = () => {
     const body: BodyType = {
       note: { data: ydocToBase64(noteYDoc), isShared: noteIsShared },
       drawBoard: { data: ydocToBase64(drawBoardYDoc), isShared: drawIsShared },
+      summary: { data: summary, isShared: summaryIsShared },
       chat: { isShared: chatIsShared },
       voice: { isShared: voiceIsShared },
       canShared: canShared,
@@ -67,20 +74,19 @@ const ConversationSaveHeader = () => {
     <div className="flex justify-between pb-6">
       <div className="flex items-center">
         <span className="min-w-12 text-lg">제목: </span>
-        <Input
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
+        <Input onChange={(e) => setTitle(e.target.value)} value={title} />
       </div>
-      <div className="flex gap-4">
-        <div className="my-2 text-sm font-light">
-          {canShared ? "공개" : "비공개"}
+      <div className="flex gap-3">
+        <div className="mx-5 my-2 flex justify-end gap-4">
+          <Label htmlFor="switch" className="text-sm font-light">
+            {canShared ? "공개" : "비공개"}
+          </Label>
+          <Switch
+            id="switch"
+            checked={canShared}
+            onCheckedChange={setCanShared}
+          />
         </div>
-        <Switch
-          className="my-2"
-          checked={canShared}
-          onCheckedChange={setCanShared}
-        />
         <Button variant="secondary" asChild>
           <Link to="/room">목록으로</Link>
         </Button>

@@ -36,6 +36,11 @@ interface PreviousRoomStore {
   voiceIsShared: boolean;
   setVoiceIsShared: (voiceIsShared: boolean) => void;
 
+  summary: string;
+  setSummary: (summary: string) => void;
+  summaryIsShared: boolean;
+  setSummaryIsShared: (summaryIsShared: boolean) => void;
+
   canShared: boolean;
   setCanShared: (canShared: boolean) => void;
 }
@@ -67,6 +72,11 @@ export const usePreviousRoomStore = create<PreviousRoomStore>()((set) => ({
   setVoice: (voice: Chatting[]) => set({ voice }),
   voiceIsShared: true,
   setVoiceIsShared: (voiceIsShared) => set({ voiceIsShared }),
+
+  summary: "",
+  setSummary: (summary) => set({ summary }),
+  summaryIsShared: true,
+  setSummaryIsShared: (summaryIsShared) => set({ summaryIsShared }),
 
   canShared: false,
   setCanShared: (canShared) => set({ canShared }),
