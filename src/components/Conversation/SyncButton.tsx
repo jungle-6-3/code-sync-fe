@@ -40,12 +40,7 @@ export const SyncButton = () => {
         "fourth-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
         otherUserSelectedCommitFile &&
           selectedCommitFile.filename !== otherUserSelectedCommitFile &&
-<<<<<<< HEAD
           "animate-pulse bg-blue-500 text-white duration-500",
-=======
-          "bg-blue-500 text-white",
-        isOpen && "bg-blue-500 text-white",
->>>>>>> 489bed770948ce94c0c34dba9427789ade586645
       )}
       onClick={navigateToOtherUserFile}
       size="sm"
