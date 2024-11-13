@@ -38,7 +38,7 @@ export const SyncButton = () => {
         "third-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
         otherUserSelectedCommitFile &&
           selectedCommitFile.filename !== otherUserSelectedCommitFile &&
-          "bg-blue-500 text-white",
+          "animate-pulse bg-blue-500 text-white duration-500",
       )}
       onClick={navigateToOtherUserFile}
       size="sm"
