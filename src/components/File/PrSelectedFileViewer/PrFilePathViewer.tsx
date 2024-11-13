@@ -6,7 +6,7 @@ interface PrFilePathViewerProps {
 
 export const PrFilePathViewer = ({ filePaths }: PrFilePathViewerProps) => {
   return (
-    <span className="flex w-full items-center border-b px-2 py-1 text-sm">
+    <span className="flex w-full items-center border-b py-1 pl-2 text-sm">
       {filePaths.map((filePath, index) => {
         return (
           <span key={index} className="flex items-center">

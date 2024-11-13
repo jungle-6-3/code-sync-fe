@@ -44,6 +44,7 @@ const ConversationPage = () => {
 
   useEffect(() => {
     setIsOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
