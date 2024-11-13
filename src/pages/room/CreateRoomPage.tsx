@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -20,12 +20,14 @@ import { userMediaStore } from "@/stores/userMedia.store";
 import { checkValidPullRequest } from "@/apis/pr/pr";
 import { createRoomSchema } from "@/lib/schema";
 import { extractGitHubPrDetails } from "@/lib/github";
+import { useCommunicationStore } from "@/stores/communicationState.store";
 
 const CreateRoomPage = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const setIsCreator = userMediaStore((state) => state.setIsCreator);
   const { mutate: createRoom } = useConversationMutation();
+  const onInit = useCommunicationStore((state) => state.onInit);
 
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createRoomSchema>>({
@@ -34,6 +36,10 @@ const CreateRoomPage = () => {
       ghPrLink: "",
     },
   });
+
+  useEffect(() => {
+    onInit();
+  }, [onInit]);
 
   const onSubmit = async (value: z.infer<typeof createRoomSchema>) => {
     const { owner, repo, prNumber } = extractGitHubPrDetails(value);

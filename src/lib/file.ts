@@ -247,6 +247,9 @@ export const removeFileFromList = (
   return fileList.filter((file) => file.filename !== removeFile.filename);
 };
 
-export const getNextSelectedFile = (fileList:PrChangedFileInfo[],defaultFile:PrChangedFileInfo) => {
-  return fileList.length > 0 ? fileList[fileList.length -1] : defaultFile
-}
+export const getNextSelectedFile = (
+  fileList: PrChangedFileInfo[],
+  defaultFile: PrChangedFileInfo,
+) => {
+  return fileList.length > 0 ? fileList[fileList.length - 1] : defaultFile;
+};

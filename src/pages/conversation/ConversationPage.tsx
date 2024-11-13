@@ -8,6 +8,7 @@ import { SocketManager } from "@/lib/socketManager";
 import { userMediaStore } from "@/stores/userMedia.store";
 import { MainFrame } from "@/components/Frame/MainFrame";
 import { LeftGNB, TopGNB, BottomGNB } from "@/components/GNB";
+import { useTour } from "@reactour/tour";
 
 const ConversationPage = () => {
   const { onToast: onJoinRequestByToast } = useJoinRequestByToast();
@@ -19,6 +20,8 @@ const ConversationPage = () => {
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
+  const { setIsOpen } = useTour();
+
   if (!isSocketManagerReady) throw new Error("socketManager is not ready");
   const socket = SocketManager.getInstance().socketIOSocket;
 
@@ -39,13 +42,17 @@ const ConversationPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [peers]);
 
+  useEffect(() => {
+    setIsOpen(true);
+  }, []);
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <nav className="border-b p-1">
         <TopGNB />
       </nav>
       <div className="flex h-full">
-        <nav className="border-r">
+        <nav className="first-step border-r">
           <LeftGNB />
         </nav>
         <MainFrame />

@@ -23,15 +23,15 @@ import { ChattingSocketResponse } from "@/apis/conversation/dtos";
 import { sectionSelectStore } from "@/stores/chattingRoom.store";
 import SelectedFileViewer from "@/components/File/SelectedFile";
 import useCheckUserQuery from "@/hooks/Users/useCheckUserQuery";
+import { Button } from "@/components/ui/button";
+import { useConvertToImage } from "@/hooks/useConvertToImage";
+import { SyncButton } from "@/components/Conversation/SyncButton";
 
 export const MainFrame = () => {
   const leftSection = sectionSelectStore((state) => state.leftSection);
   const bottomSection = sectionSelectStore((state) => state.bottomSection);
   const selectedCommitFile = fileSysyemStore(
     (state) => state.selectedCommitFile,
-  );
-  const setSelectedCommitFile = fileSysyemStore(
-    (state) => state.setSelectedCommitFile,
   );
   const roomId = window.location.pathname.split("/")[1];
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
@@ -57,6 +57,9 @@ export const MainFrame = () => {
   const socket = SocketManager.getInstance().socketIOSocket;
   const provider = SocketManager.getInstance().yjsSocket.provider;
   const { checkUser } = useCheckUserQuery();
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const { convertToImage } = useConvertToImage({ elementRef, size });
 
   const otherUserSelectedCommitFile = fileSysyemStore(
     (state) => state.otherUserSelectedCommitFile,
@@ -64,6 +67,23 @@ export const MainFrame = () => {
   const setOtherUserSelectedCommitFile = fileSysyemStore(
     (state) => state.setOtherUserSelectedCommitFile,
   );
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setSize({ width, height });
+      }
+    });
+
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [selectedCommitFile]);
 
   const removeAllCursorStle = () => {
     const cursorStyles = document.querySelectorAll(
@@ -95,7 +115,7 @@ export const MainFrame = () => {
   }, [provider, ydoc, roomId]);
 
   useEffect(() => {
-    if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    if (!provider || !checkUser?.data) return;
     removeAllCursorStle();
     provider.awareness.setLocalStateField("user", {
       name: checkUser.data.name,
@@ -109,10 +129,10 @@ export const MainFrame = () => {
     return () => {
       provider?.awareness.setLocalStateField("user", null);
     };
-  }, [provider, editor, ydoc, checkUser?.data, selectedCommitFile.filename]);
+  }, [provider, checkUser?.data, selectedCommitFile]);
 
   useEffect(() => {
-    if (!editor || !provider || !ydoc || !checkUser?.data) return;
+    if (!provider || !checkUser?.data) return;
     removeAllCursorStle();
     const handleAwarnessChange = () => {
       const statesArray = Array.from(provider.awareness.getStates());
@@ -138,7 +158,6 @@ export const MainFrame = () => {
       const myId = provider.awareness.clientID;
       const myInfo = totalUserInfo.find(([id]) => id === myId);
       const otherInfo = totalUserInfo.find(([id]) => id !== myId);
-
       if (!myInfo?.[1]?.user?.cursor || !otherInfo?.[1]?.user?.cursor) return;
       const otherUserCurrentCursor = otherInfo[1].user.cursor;
       if (
@@ -216,41 +235,6 @@ export const MainFrame = () => {
     setEditor(modifiedEditor);
   };
 
-  const navigateToOtherUserFile = () => {
-    if (!otherUserSelectedCommitFile) return;
-    switch (otherUserSelectedCommitFile) {
-      case "MainDrawBoard":
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "MainDrawBoard",
-          language: "",
-          status: "init",
-        });
-        break;
-      case "BlockNote":
-        setSelectedCommitFile({
-          additions: 0,
-          afterContent: "",
-          beforeContent: "",
-          deletions: 0,
-          filename: "BlockNote",
-          language: "",
-          status: "init",
-        });
-        break;
-      default: {
-        const findFile = commitFileList.find(
-          (file) => file.filename === otherUserSelectedCommitFile,
-        )!;
-        setSelectedCommitFile(findFile);
-        break;
-      }
-    }
-  };
-
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
@@ -267,7 +251,7 @@ export const MainFrame = () => {
       )}
       <ResizablePanel defaultSize={80} order={2}>
         {selectedCommitFile.filename !== "" && (
-          <>
+          <div className="relative">
             <div className="flex items-center justify-between">
               <div className="flex w-full overflow-x-scroll border-b">
                 {clickedFileList.map((file, index) => {
@@ -276,33 +260,44 @@ export const MainFrame = () => {
                   );
                 })}
               </div>
-              {otherUserSelectedCommitFile &&
-                otherUserSelectedCommitFile !== selectedCommitFile.filename && (
-                  <button
-                    className="mr-5 text-nowrap text-sm"
-                    onClick={navigateToOtherUserFile}
-                  >
-                    Sync View
-                  </button>
-                )}
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
-          </>
+            <div className="absolute right-0 top-9 z-[100]">
+              <SyncButton />
+              {(selectedCommitFile.status === "added" ||
+                selectedCommitFile.status === "modified" ||
+                selectedCommitFile.status === "removed") && (
+                <Button
+                  onClick={convertToImage}
+                  className="fourth-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                  size="sm"
+                  variant="ghost"
+                >
+                  코드 이미지로 추출
+                </Button>
+              )}
+            </div>
+          </div>
         )}
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel
             defaultSize={70}
-            className="z-0 flex items-center justify-center"
+            className="relative z-0 flex items-center justify-center"
           >
-            {selectedCommitFile && (
-              <SelectedFileViewer
-                status={selectedCommitFile.status}
-                selectedCommitFile={selectedCommitFile}
-                commitFileList={commitFileList}
-                onEditorMount={onEditorMount}
-                onSplitEditorMount={onDiffEditorMount}
-              />
-            )}
+            <div
+              ref={elementRef}
+              className="flex h-full w-full items-center justify-center"
+            >
+              {selectedCommitFile && (
+                <SelectedFileViewer
+                  status={selectedCommitFile.status}
+                  selectedCommitFile={selectedCommitFile}
+                  commitFileList={commitFileList}
+                  onEditorMount={onEditorMount}
+                  onSplitEditorMount={onDiffEditorMount}
+                />
+              )}
+            </div>
           </ResizablePanel>
           {bottomSection !== "" && (
             <>

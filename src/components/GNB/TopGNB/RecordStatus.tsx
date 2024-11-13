@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useVoiceSave } from "@/hooks/Conversation/useVoiceSave";
 import { Circle, Disc2 } from "lucide-react";
 import { useReducer } from "react";
@@ -21,13 +22,13 @@ const TopGNBRecordStatus = () => {
   return (
     <li>
       {recordStatus ? (
-        <button onClick={onRecordStopClick}>
+        <Button onClick={onRecordStopClick} variant="ghost" className="p-0">
           <Disc2 color="#334155" size={16} />
-        </button>
+        </Button>
       ) : (
-        <button onClick={onRecordClick}>
+        <Button onClick={onRecordClick} variant="ghost" className="p-0">
           <Circle color="#334155" size={16} />
-        </button>
+        </Button>
       )}
     </li>
   );

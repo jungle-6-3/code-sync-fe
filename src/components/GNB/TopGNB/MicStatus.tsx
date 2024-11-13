@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { Mic, MicOff } from "lucide-react";
@@ -9,7 +10,7 @@ const TopGNBMicStatus = () => {
   const isSocketManagerReady = useCommunicationStore(
     (state) => state.isSocketManagerReady,
   );
-  
+
   if (!isSocketManagerReady) return null;
 
   const onMicToggle = () => {
@@ -27,13 +28,13 @@ const TopGNBMicStatus = () => {
   return (
     <li>
       {micStatus ? (
-        <button onClick={onMicToggle}>
+        <Button onClick={onMicToggle} variant="ghost" className="p-0">
           <Mic color="#334155" size={16} />
-        </button>
+        </Button>
       ) : (
-        <button onClick={onMicToggle}>
+        <Button onClick={onMicToggle} variant="ghost" className="p-0">
           <MicOff color="#334155" size={16} />
-        </button>
+        </Button>
       )}
     </li>
   );

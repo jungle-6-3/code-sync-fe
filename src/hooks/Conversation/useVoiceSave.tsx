@@ -2,7 +2,10 @@ import { SocketManager } from "@/lib/socketManager";
 import { useCommunicationStore } from "@/stores/communicationState.store";
 import { useEffect, useRef } from "react";
 
-export const useVoiceSave = (recordStatus: boolean, language: "ko-KR" | "en-US" = "ko-KR") => {
+export const useVoiceSave = (
+  recordStatus: boolean,
+  language: "ko-KR" | "en-US" = "ko-KR",
+) => {
   const recognition = useRef(
     new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
   ).current;
@@ -91,4 +94,11 @@ export const useVoiceSave = (recordStatus: boolean, language: "ko-KR" | "en-US" 
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordStatus]);
+
+  useEffect(() => {
+    return () => {
+      recognition.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 };

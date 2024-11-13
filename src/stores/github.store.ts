@@ -11,6 +11,7 @@ import {
   getNextSelectedFile,
   removeFileFromList,
 } from "@/lib/file";
+import { ADDITIONAL_FILES } from "@/constant/github";
 
 interface PrInfoProps {
   userId: string;
@@ -151,22 +152,12 @@ export const prInfoStore = create<PrInfoPropsStore>()((set) => ({
     }),
 }));
 
-const DEFAULT_FILE: PrChangedFileInfo = {
-  filename: "",
-  status: "init",
-  language: "",
-  additions: 0,
-  deletions: 0,
-  afterContent: "",
-  beforeContent: "",
-};
-
 export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
-  selectedCommitFile: DEFAULT_FILE,
+  selectedCommitFile: ADDITIONAL_FILES.DEFAULT_FILE,
   otherUserSelectedCommitFile: "",
   commitFileList: [],
   commentsList: [],
-  clickedFileList: [],
+  clickedFileList: [ADDITIONAL_FILES.DEFAULT_FILE],
   setSelectedCommitFile: (newFile) => {
     set((state) => {
       const isFileInList = state.clickedFileList.some(
@@ -197,7 +188,10 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
         state.selectedCommitFile.filename === removeFile.filename;
       if (isCurrentFileCanRemoved) {
         get().setSelectedCommitFile(
-          getNextSelectedFile(updateClickedFileList, DEFAULT_FILE),
+          getNextSelectedFile(
+            updateClickedFileList,
+            ADDITIONAL_FILES.DEFAULT_FILE,
+          ),
         );
       }
       return { clickedFileList: updateClickedFileList };

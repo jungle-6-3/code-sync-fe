@@ -17,6 +17,7 @@ interface CommunicationState {
   stage: LifecycleStage;
   isReconnecting: boolean;
   roomUuid?: string;
+  onInit: () => void;
   onReady: (roomUuid: string) => void;
   onStaging: () => Promise<boolean>;
   onWaiting: () => void;
@@ -30,7 +31,20 @@ export const useCommunicationStore = create<CommunicationState>()((set, get) => 
   stage: 'init',
   isSocketManagerReady: false,
   isReconnecting: false,
-  onReady: (roomUuid) => set({ stage: 'ready', roomUuid }),
+  onInit: () => {
+    if (get().isSocketManagerReady) {
+      SocketManager.getInstance().disconnectAllSockets();
+    }
+    userMediaStore.getState().removeWebcam();
+    set({ stage: 'init', isSocketManagerReady: false })
+  },
+  onReady: (roomUuid) => {
+    if (get().isSocketManagerReady) {
+      SocketManager.getInstance().disconnectAllSockets();
+    }
+    userMediaStore.getState().removeWebcam();
+    set({ stage: 'ready', roomUuid, isSocketManagerReady: false })
+  },
   onStaging: async () => {
     const roomUuid = get().roomUuid;
     await SocketManager.getInstance(roomUuid).ready();
@@ -48,7 +62,6 @@ export const useCommunicationStore = create<CommunicationState>()((set, get) => 
     }
     set({ stage: 'finishing', isSocketManagerReady: false });
     userMediaStore.getState().removeWebcam();
-
     set({ stage: 'init', isSocketManagerReady: false });
   },
 }));

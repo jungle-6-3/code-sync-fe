@@ -55,14 +55,6 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/room/save",
-    element: (
-      <UserGuard>
-        <RoomSavePage />
-      </UserGuard>
-    ),
-  },
-  {
     path: "/room/:postId",
     element: (
       <UserGuard>
