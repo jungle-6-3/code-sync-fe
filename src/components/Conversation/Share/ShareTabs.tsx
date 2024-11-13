@@ -25,42 +25,44 @@ const ConversationShareTabs = () => {
 
   return (
     <>
-      <ConversationShareHeader title={shareData.title} />
-      <Tabs defaultValue="summary">
-        <TabsList>
-          {summaryData && <TabsTrigger value="summary">Summary</TabsTrigger>}
-          {noteData && <TabsTrigger value="note">Note</TabsTrigger>}
+        <ConversationShareHeader title={shareData.title} />
+        <Tabs defaultValue="summary">
+          <TabsList>
+            {summaryData && <TabsTrigger value="summary">Summary</TabsTrigger>}
+            {noteData && <TabsTrigger value="note">Note</TabsTrigger>}
+            {drawBoardData && (
+              <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
+            )}
+            {voiceData && chatData && (
+              <TabsTrigger value="chat">Chat</TabsTrigger>
+            )}
+          </TabsList>
+          {summaryData && (
+            <TabsContent value="summary">
+              <ConversationShareSummaryViewer data={summaryData.data.data} />
+            </TabsContent>
+          )}
+          {noteData && (
+            <TabsContent value="drawBoard">
+              <ConversationShareDrawBoardViewer
+                data={drawBoardData.data.data}
+              />
+            </TabsContent>
+          )}
           {drawBoardData && (
-            <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
+            <TabsContent value="note">
+              <ConversationShareNoteViewer data={noteData.data.data} />
+            </TabsContent>
           )}
           {voiceData && chatData && (
-            <TabsTrigger value="chat">Chat</TabsTrigger>
+            <TabsContent value="chat">
+              <ConversationShareChatViewer
+                chats={chatData.data.data}
+                voice={voiceData.data.data}
+              />
+            </TabsContent>
           )}
-        </TabsList>
-        {summaryData && (
-          <TabsContent value="summary">
-            <ConversationShareSummaryViewer data={summaryData.data.data} />
-          </TabsContent>
-        )}
-        {noteData && (
-          <TabsContent value="drawBoard">
-            <ConversationShareDrawBoardViewer data={drawBoardData.data.data} />
-          </TabsContent>
-        )}
-        {drawBoardData && (
-          <TabsContent value="note">
-            <ConversationShareNoteViewer data={noteData.data.data} />
-          </TabsContent>
-        )}
-        {voiceData && chatData && (
-          <TabsContent value="chat">
-            <ConversationShareChatViewer
-              chats={chatData.data.data}
-              voice={voiceData.data.data}
-            />
-          </TabsContent>
-        )}
-      </Tabs>
+        </Tabs>
     </>
   );
 };

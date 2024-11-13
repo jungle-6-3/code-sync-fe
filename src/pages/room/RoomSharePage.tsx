@@ -1,3 +1,4 @@
+import ErrorBoundary from "@/components/Conversation/Share/ErrorBoundary";
 import ConversationShareTabs from "@/components/Conversation/Share/ShareTabs";
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
@@ -15,9 +16,11 @@ const RoomSavePage = () => {
         </Link>
       </div>
       <div className="px-24 pb-6 pt-6">
-        <Suspense>
-          <ConversationShareTabs />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense>
+            <ConversationShareTabs />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </>
   );
