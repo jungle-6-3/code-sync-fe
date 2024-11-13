@@ -1,7 +1,4 @@
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 
 interface ConversationSaveChatViewerProps {
   chats?: {
@@ -18,19 +15,10 @@ interface ConversationSaveChatViewerProps {
   }[];
 }
 
-const ConversationSaveChatViewer = ({
+const ConversationShareChatViewer = ({
   chats,
   voice,
 }: ConversationSaveChatViewerProps) => {
-  const chatIsShared = usePreviousRoomStore((state) => state.chatIsShared);
-  const setChatIsShared = usePreviousRoomStore(
-    (state) => state.setChatIsShared,
-  );
-  const voiceIsShared = usePreviousRoomStore((state) => state.voiceIsShared);
-  const setVoiceIsShared = usePreviousRoomStore(
-    (state) => state.setVoiceIsShared,
-  );
-
   const chatting = [
     ...(chats ?? []).map((c) => ({ ...c, status: "chat" })),
     ...(voice ?? []).map((v) => ({ ...v, status: "voice" })),
@@ -52,29 +40,9 @@ const ConversationSaveChatViewer = ({
       <div className="w-full">
         <div className="flex w-full items-center justify-center space-x-40">
           <div className="mb-4 text-center">
-            <div className="mx-10 my-5 flex justify-end gap-4">
-              <Label htmlFor="chatSwitch" className="text-sm font-light">
-                {chatIsShared ? "공개" : "비공개"}
-              </Label>
-              <Switch
-                id="chatSwitch"
-                checked={chatIsShared}
-                onCheckedChange={setChatIsShared}
-              />
-            </div>
             <span className="text-2xl font-bold">Chatting</span>
           </div>
           <div className="mb-4 text-center">
-            <div className="mx-10 my-5 flex justify-end gap-4">
-              <Label htmlFor="voiceSwitch" className="text-sm font-light">
-                {voiceIsShared ? "공개" : "비공개"}
-              </Label>
-              <Switch
-                id="voiceSwitch"
-                checked={voiceIsShared}
-                onCheckedChange={setVoiceIsShared}
-              />
-            </div>
             <span className="text-2xl font-bold">Voice Text</span>
           </div>
         </div>
@@ -105,7 +73,6 @@ const ConversationSaveChatViewer = ({
                   <div className="max-h-[400px] overflow-y-auto">
                     <p className="break-all">{chat.message}</p>
                   </div>
-
                   <p className="truncate text-xs">{chat.date}</p>
                 </div>
               </div>
@@ -117,4 +84,4 @@ const ConversationSaveChatViewer = ({
   );
 };
 
-export default ConversationSaveChatViewer;
+export default ConversationShareChatViewer;

@@ -1,5 +1,3 @@
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { usePreviousRoomStore } from "@/stores/previousRoom.store";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
@@ -12,7 +10,7 @@ interface ConversationSaveDrawBoardViewerProps {
   data: string;
 }
 
-const ConversationSaveDrawBoardViewer = ({
+const ConversationShareDrawBoardViewer = ({
   data,
 }: ConversationSaveDrawBoardViewerProps) => {
   const exalidrawDomRef = useRef<HTMLDivElement | null>(null);
@@ -23,10 +21,6 @@ const ConversationSaveDrawBoardViewer = ({
   const ydoc = usePreviousRoomStore((state) => state.drawBoardYdoc);
   const yElements = ydoc.getArray<Y.Map<unknown>>("elements");
   const yAssets = ydoc.getMap("assets");
-  const drawIsShared = usePreviousRoomStore((state) => state.drawIsShared);
-  const setDrawIsShared = usePreviousRoomStore(
-    (state) => state.setDrawIsShared,
-  );
 
   useEffect(() => {
     if (!api) return;
@@ -55,16 +49,6 @@ const ConversationSaveDrawBoardViewer = ({
 
   return (
     <>
-      <div className="mx-10 flex justify-end gap-4">
-        <Label htmlFor="switch" className="text-sm font-light">
-          {drawIsShared ? "공개" : "비공개"}
-        </Label>
-        <Switch
-          id="switch"
-          checked={drawIsShared}
-          onCheckedChange={setDrawIsShared}
-        />
-      </div>
       <div className="h-[calc(100vh-16rem)] w-full" ref={exalidrawDomRef}>
         <Excalidraw
           initialData={{
@@ -75,10 +59,11 @@ const ConversationSaveDrawBoardViewer = ({
           }
           excalidrawAPI={setApi}
           theme="light"
+          viewModeEnabled={true}
         />
       </div>
     </>
   );
 };
 
-export default ConversationSaveDrawBoardViewer;
+export default ConversationShareDrawBoardViewer;

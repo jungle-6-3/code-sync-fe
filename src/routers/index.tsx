@@ -9,7 +9,9 @@ import {
   RoomSavePage,
   CreateRoomPage,
   ConversationJunctionPage,
+  RoomSharePage,
 } from "@/routers/lazyComponents";
+import { Suspense } from "react";
 
 export const router = createBrowserRouter([
   {
@@ -66,6 +68,14 @@ export const router = createBrowserRouter([
       <UserGuard>
         <ConversationJunctionPage />
       </UserGuard>
+    ),
+  },
+  {
+    path: "/s/:shareId",
+    element: (
+      <Suspense>
+        <RoomSharePage />
+      </Suspense>
     ),
   },
 ]);

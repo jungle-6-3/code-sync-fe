@@ -2,6 +2,7 @@ import ConversationSaveChatViewer from "@/components/Conversation/Save/Chatting"
 import ConversationSaveDrawBoardViewer from "@/components/Conversation/Save/DrawBoard";
 import ConversationSaveHeader from "@/components/Conversation/Save/Header";
 import ConversationSaveNoteViewer from "@/components/Conversation/Save/NoteViewer";
+import ConversationSaveSummaryViewer from "@/components/Conversation/Save/Summary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { useFetchers } from "@/hooks/useFetcher";
@@ -30,14 +31,19 @@ const ConversationSaveTabs = () => {
   const setChatIsShared = usePreviousRoomStore(
     (state) => state.setChatIsShared,
   );
+  const setSummaryIsShared = usePreviousRoomStore(
+    (state) => state.setSummaryIsShared,
+  );
   const setTitle = usePreviousRoomStore((state) => state.setTitle);
   const setCanShared = usePreviousRoomStore((state) => state.setCanShared);
-  const [drawBoardData, noteData, chatData, voiceData] = useFetchers([
-    roomData.drawBoard.url,
-    roomData.note.url,
-    roomData.chat.url,
-    roomData.voice.url,
-  ]);
+  const [drawBoardData, noteData, chatData, voiceData, summaryData] =
+    useFetchers([
+      roomData.drawBoard.url,
+      roomData.note.url,
+      roomData.chat.url,
+      roomData.voice.url,
+      roomData.summary.url,
+    ]);
 
   useEffect(() => {
     setNoteYdoc(new Y.Doc());
@@ -47,19 +53,25 @@ const ConversationSaveTabs = () => {
     setDrawIsShared(roomData.drawBoard.isShared);
     setNoteIsShared(roomData.note.isShared);
     setVoiceIsShared(roomData.voice.isShared);
+    setSummaryIsShared(roomData.summary.isShared);
     setTitle(roomData.title);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   return (
     <>
       <ConversationSaveHeader />
-      <Tabs defaultValue="note">
+      <Tabs defaultValue="summary">
         <TabsList>
+          <TabsTrigger value="summary">Summary</TabsTrigger>
           <TabsTrigger value="note">Note</TabsTrigger>
           <TabsTrigger value="drawBoard">DrawBoard</TabsTrigger>
           <TabsTrigger value="chat">Chat</TabsTrigger>
         </TabsList>
+        <TabsContent value="summary">
+          <ConversationSaveSummaryViewer data={summaryData.data.data} />
+        </TabsContent>
         <TabsContent value="drawBoard">
           <ConversationSaveDrawBoardViewer data={drawBoardData.data.data} />
         </TabsContent>
@@ -69,7 +81,7 @@ const ConversationSaveTabs = () => {
         <TabsContent value="chat">
           <ConversationSaveChatViewer
             chats={chatData.data.data}
-            voice={voiceData.data.data.voiceChats}
+            voice={voiceData.data.data}
           />
         </TabsContent>
       </Tabs>
