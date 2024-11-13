@@ -24,7 +24,6 @@ const ConversationSaveSummaryViewer = ({
   const editor = useCreateBlockNote();
 
   const debouncedSetSummary = debounce((markdown: string) => {
-    console.log(markdown)
     setSummary(markdown);
   }, 300);
 
