@@ -16,7 +16,6 @@ export const useExit = () => {
 
   useEffect(() => {
     socket.on("room-closed", () => {
-      onFinishing();
       alert("방을 닫습니다.");
       navigat("/room/create");
     });
@@ -27,6 +26,7 @@ export const useExit = () => {
   }, [socket]);
 
   const exit = () => {
+    onFinishing();
     if (!isCreator) {
       return;
     }

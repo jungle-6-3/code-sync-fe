@@ -57,6 +57,7 @@ export const useCommunicationStore = create<CommunicationState>()((set, get) => 
   onWaiting: () => set({ stage: 'waiting' }),
   onSaving: () => set({ stage: 'saving' }),
   onFinishing: () => {
+    userMediaStore.setState({ isShowWebcam: false })
     if (get().isSocketManagerReady) {
       SocketManager.getInstance().disconnectAllSockets();
     }

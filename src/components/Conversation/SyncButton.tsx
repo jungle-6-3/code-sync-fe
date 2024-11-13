@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { fileSysyemStore } from "@/stores/github.store";
 import { ADDITIONAL_FILES } from "@/constant/github";
+import { useTour } from "@reactour/tour";
 
 export const SyncButton = () => {
   const commitFileList = fileSysyemStore((state) => state.commitFileList);
@@ -14,6 +15,7 @@ export const SyncButton = () => {
   const otherUserSelectedCommitFile = fileSysyemStore(
     (state) => state.otherUserSelectedCommitFile,
   );
+  const { isOpen } = useTour();
   const navigateToOtherUserFile = () => {
     if (!otherUserSelectedCommitFile) return;
     switch (otherUserSelectedCommitFile) {
@@ -35,17 +37,23 @@ export const SyncButton = () => {
   return (
     <Button
       className={cn(
-        "third-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
+        "fourth-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800",
         otherUserSelectedCommitFile &&
           selectedCommitFile.filename !== otherUserSelectedCommitFile &&
+<<<<<<< HEAD
           "animate-pulse bg-blue-500 text-white duration-500",
+=======
+          "bg-blue-500 text-white",
+        isOpen && "bg-blue-500 text-white",
+>>>>>>> 489bed770948ce94c0c34dba9427789ade586645
       )}
       onClick={navigateToOtherUserFile}
       size="sm"
       variant="ghost"
       disabled={
-        !otherUserSelectedCommitFile ||
-        otherUserSelectedCommitFile === selectedCommitFile.filename
+        (!otherUserSelectedCommitFile ||
+          otherUserSelectedCommitFile === selectedCommitFile.filename) &&
+        !isOpen
       }
     >
       화면 동기화
