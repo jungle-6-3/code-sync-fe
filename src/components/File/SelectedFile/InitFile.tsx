@@ -19,7 +19,7 @@ export const InitFile = ({
   );
 
   return (
-    <div className="second-step relative flex h-[55vh] w-full flex-col justify-center">
+    <div className="third-step relative flex h-[55vh] w-full flex-col justify-center">
       <div className="absolute right-12 top-0">
         <SyncButton />
       </div>

@@ -269,7 +269,7 @@ export const MainFrame = () => {
                 selectedCommitFile.status === "removed") && (
                 <Button
                   onClick={convertToImage}
-                  className="fourth-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
+                  className="fifth-step rounded-none border-b-2 border-blue-700 text-sm text-slate-800"
                   size="sm"
                   variant="ghost"
                 >

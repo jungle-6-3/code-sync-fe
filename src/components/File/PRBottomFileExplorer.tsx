@@ -26,7 +26,7 @@ export const PRBottomFileExplorer = () => {
   }, [commentsList]);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden p-2">
+    <div className="second-step flex h-full flex-col overflow-hidden p-2">
       <h3 className="truncate font-medium">
         Commit Information
         <span className="mt-2 pl-2 text-sm text-gray-600 underline">
