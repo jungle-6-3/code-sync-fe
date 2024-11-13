@@ -1,4 +1,4 @@
-import ConversationShareTabs from "@/components/Conversation/Detail/DetailTabs";
+import ConversationShareTabs from "@/components/Conversation/Share/ShareTabs";
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
 

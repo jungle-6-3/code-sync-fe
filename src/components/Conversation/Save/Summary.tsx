@@ -5,17 +5,7 @@ import { useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { useCreateBlockNote } from "@blocknote/react";
 import { Label } from "@/components/ui/label";
-
-function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  delay: number,
-): T {
-  let timer: NodeJS.Timeout;
-  return ((...args: Parameters<T>) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
-  }) as T;
-}
+import debounce from "@/lib/debounce";
 
 interface ConversationSaveSummaryViewerProps {
   data: string;
@@ -34,8 +24,9 @@ const ConversationSaveSummaryViewer = ({
   const editor = useCreateBlockNote();
 
   const debouncedSetSummary = debounce((markdown: string) => {
+    console.log(markdown)
     setSummary(markdown);
-  }, 500);
+  }, 300);
 
   useEffect(() => {
     async function loadInitialHTML() {
@@ -68,7 +59,7 @@ const ConversationSaveSummaryViewer = ({
             const markdown = await editor.blocksToMarkdownLossy(
               editor.document,
             );
-            debouncedSetSummary(markdown); // 디바운스된 함수로 저장
+            debouncedSetSummary(markdown); 
           }}
         />
       </div>

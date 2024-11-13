@@ -1,8 +1,8 @@
-import ConversationShareChatViewer from "@/components/Conversation/Detail/DetailChatting";
-import ConversationShareDrawBoardViewer from "@/components/Conversation/Detail/DetailDrawBoard";
-import ConversationShareHeader from "@/components/Conversation/Detail/DetailHeader";
-import ConversationShareNoteViewer from "@/components/Conversation/Detail/DetailNoteViewer";
-import ConversationShareSummaryViewer from "@/components/Conversation/Detail/DetailSummary";
+import ConversationShareChatViewer from "@/components/Conversation/Share/ShareChatting";
+import ConversationShareDrawBoardViewer from "@/components/Conversation/Share/ShareDrawBoard";
+import ConversationShareHeader from "@/components/Conversation/Share/ShareHeader";
+import ConversationShareNoteViewer from "@/components/Conversation/Share/ShareNoteViewer";
+import ConversationShareSummaryViewer from "@/components/Conversation/Share/ShareSummary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreviousShareRoomQuery } from "@/hooks/Conversation/usePreviousRoomQuery";
 import { useFetchers } from "@/hooks/useFetcher";

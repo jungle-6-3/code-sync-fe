@@ -32,7 +32,6 @@
     "html-to-image": "^1.11.11",
     "js-base64": "^3.7.7",
     "lucide-react": "^0.453.0",
-    "marked": "^15.0.0",
     "monaco-editor": "^0.52.0",
     "next-themes": "^0.3.0",
     "peerjs": "^1.5.4",
