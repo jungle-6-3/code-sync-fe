@@ -235,6 +235,10 @@ export const MainFrame = () => {
     setEditor(modifiedEditor);
   };
 
+  useEffect(() => {
+    console.log("clickedFileList", clickedFileList);
+  }, [clickedFileList]);
+
   return (
     <ResizablePanelGroup direction="horizontal" autoSave="main-frame">
       {leftSection !== "" && (
@@ -262,7 +266,7 @@ export const MainFrame = () => {
               </div>
             </div>
             <PrFilePathViewer filePaths={selectedTotalFilePath} />
-            <div className="absolute right-0 top-9 z-[100] bg-white">
+            <div className="absolute right-0 top-9 z-[100] bg-white p-0">
               <SyncButton />
               {(selectedCommitFile.status === "added" ||
                 selectedCommitFile.status === "modified" ||

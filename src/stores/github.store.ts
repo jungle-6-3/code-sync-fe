@@ -157,7 +157,7 @@ export const fileSysyemStore = create<fileSysyemPropsStore>()((set, get) => ({
   otherUserSelectedCommitFile: "",
   commitFileList: [],
   commentsList: [],
-  clickedFileList: [ADDITIONAL_FILES.DEFAULT_FILE],
+  clickedFileList: [],
   setSelectedCommitFile: (newFile) => {
     set((state) => {
       const isFileInList = state.clickedFileList.some(
