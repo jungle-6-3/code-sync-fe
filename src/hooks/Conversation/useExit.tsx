@@ -11,12 +11,14 @@ export const useExit = () => {
   );
   const isCreator = userMediaStore((state) => state.isCreator);
   const onFinishing = useCommunicationStore((state) => state.onFinishing);
+  const onSaving = useCommunicationStore((state) => state.onSaving);
   if (!isSocketManagerReady) throw new Error("소켓이 준비되지 않았어요.");
   const socket = SocketManager.getInstance().socketIOSocket;
 
   useEffect(() => {
     socket.on("room-closed", () => {
       alert("방을 닫습니다.");
+      onFinishing();
       navigat("/room/create");
     });
     return () => {
@@ -26,7 +28,7 @@ export const useExit = () => {
   }, [socket]);
 
   const exit = () => {
-    onFinishing();
+    onSaving();
     if (!isCreator) {
       return;
     }
