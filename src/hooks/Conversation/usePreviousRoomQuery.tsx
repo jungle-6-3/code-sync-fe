@@ -41,14 +41,12 @@ export const usePreviouseRoomPatchMutate = (dataPk: string) => {
 };
 
 export const usePreviousShareRoomQuery = (shareId: string) => {
-  const {
-    data: shareData,
-    isError,
-    isLoading,
-  } = useSuspenseQuery({
+  const { data: shareData } = useSuspenseQuery({
     queryKey: ["share", shareId],
     queryFn: () => getPreviousShareRoom(shareId),
+    retry: 0,
+    staleTime: 0,
   });
 
-  return { shareData, isError, isLoading };
+  return { shareData };
 };
