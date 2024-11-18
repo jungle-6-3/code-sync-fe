@@ -123,7 +123,7 @@ const MainTopFrom = () => {
       >
         <div
           ref={elementRef}
-          className="flex h-full w-full flex-col items-center justify-center"
+          className="flex h-full w-full flex-col items-center justify-center bg-white"
         >
           {selectedCommitFile.filename !== "" && (
             <div className="relative w-full flex-1">
